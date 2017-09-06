@@ -42,7 +42,7 @@ abstract class AbstractLoader
      */
     public function __construct($url, $apiKey, $version, $site = null)
     {
-        if ('/' !== $url[strlen($url) - 1]) {
+        if (strlen($url) && substr($url, -1) != '/') {
             $url .= '/';
         }
 

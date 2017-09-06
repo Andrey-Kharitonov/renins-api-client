@@ -2,7 +2,7 @@
     "name": "renins/api-client-link-auto",
     "description": "PHP client for Renaissance Auto Integration API",
     "type": "library",
-    "keywords": ["API", "Renins", "SOAP"],
+    "keywords": ["API", "Renins", "SOAP", "Rest"],
     "homepage": "http://www.renins.com/",
     "license": "MIT",
     "authors": [
@@ -12,8 +12,9 @@
         }
     ],
     "require": {
-        "php": ">=5.6.0",
+        "php": ">=7",
         "ext-soap": "*",
+        "ext-curl": "*",
         "ext-xml": "*"
     },
     "require-dev": {
