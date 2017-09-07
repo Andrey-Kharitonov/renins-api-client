@@ -8,6 +8,18 @@ use ReflectionProperty;
 abstract class Container
 {
     /**
+     * @param array $data - pairs of (key => value)
+     */
+    public function __construct(array $data = [])
+    {
+        if ($data) {
+            foreach($data as $name => $value) {
+                $this->$name = $value;
+            }
+        }
+    }
+
+    /**
      * Get array of properties. It checks for required fields.
      * @return array
      */

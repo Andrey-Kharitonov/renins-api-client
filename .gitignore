@@ -1,7 +1,7 @@
 /vendor
 /bin
 composer.phar
-phpunit.xml
+composer.lock
 .idea
 .DS_Store
 .settings

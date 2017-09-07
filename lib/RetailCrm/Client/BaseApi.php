@@ -25,7 +25,7 @@ abstract class BaseApi
      * @param string $partnerUid
      * @param bool $test
      */
-    public function __construct(string $clientSystemName, string $partnerUid, $test = true)
+    public function __construct(string $clientSystemName, string $partnerUid = '', $test = true)
     {
         $this->clientSystemName = $clientSystemName;
         $this->partnerUid = $partnerUid;

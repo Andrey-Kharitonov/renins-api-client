@@ -1,0 +1,11 @@
+<ArrayOfBrand xmlns="http://renins.com/" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+    <Brand>
+        <Name>Acerbi</Name>
+    </Brand>
+    <Brand>
+        <Name>Acura</Name>
+    </Brand>
+    <Brand>
+        <Name>Яровит Моторс</Name>
+    </Brand>
+</ArrayOfBrand>

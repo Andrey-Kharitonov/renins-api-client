@@ -9,7 +9,9 @@ abstract class Rest
     public function __construct(string $xml)
     {
         $this->xml = $xml;
-        $this->parseXml();
+        if (strlen($xml)) {
+            $this->parseXml();
+        }
     }
 
     abstract protected function parseXml();

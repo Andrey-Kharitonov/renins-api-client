@@ -31,7 +31,7 @@ class Parser
      */
     public function parse(string $xml) {
         $reader = new \XMLReader();
-        $reader->XML($xml);
+        $reader->XML($xml, null, LIBXML_NOERROR | LIBXML_NOWARNING);
         try {
             $xpath = '';
             while($reader->read()) {
