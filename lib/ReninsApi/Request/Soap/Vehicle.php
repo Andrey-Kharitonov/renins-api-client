@@ -4,108 +4,57 @@ namespace ReninsApi\Request\Soap;
 
 use ReninsApi\Helpers\Utils;
 use ReninsApi\Request\Container;
-use Respect\Validation\Validator;
 
 /**
  * Some vehicle
- *
- * @property $manufacturer string
- * @property $model string
- * @property $antiTheftDeviceInfo string
- * @property $PUUDeviceInfo string
- * @property $manufacturerType string
- * @property $isNew string
- * @property $carIdent Container
  */
 class Vehicle extends Container
 {
     protected static $rules = [
-        'isNew' => 'logical',
+        'manufacturer' => ['toString', 'required'],
+        'model' => ['toString', 'required'],
+        'antiTheftDeviceInfo' => ['container'],
+        'PUUDeviceInfo' => ['container'],
+        'manufacturerType' => ['toInteger', 'required', 'in:0,1'],
+        'isNew' => ['toLogical'],
+        'carIdent' => ['container'],
     ];
 
-    protected $manufacturer;
-    protected $model;
-    protected $antiTheftDeviceInfo;
-    protected $PUUDeviceInfo;
-    protected $manufacturerType;
-    protected $isNew;
+    /**
+     * @var string
+     */
+    public $manufacturer;
 
     /**
-     * @var Container
+     * @var string
      */
-    protected $carIdent;
+    public $model;
 
-    public function setManufacturer($value) {
-        $this->manufacturer = ($value !== null) ? (string) $value : null;
-        return $this;
-    }
+    /**
+     * @var AntiTheftDeviceInfo
+     */
+    public $antiTheftDeviceInfo;
 
-    public function getManufacturer() {
-        return $this->manufacturer;
-    }
+    /**
+     * @var PUUDeviceInfo
+     */
+    public $PUUDeviceInfo;
 
-    public function setModel($value) {
-        $this->model = ($value !== null) ? (string) $value : null;
-        return $this;
-    }
+    /**
+     * @var int|string
+     */
+    public $manufacturerType;
 
-    public function getModel() {
-        return $this->model;
-    }
+    /**
+     * @var mixed
+     */
+    public $isNew;
 
-    public function setAntiTheftDeviceInfo($value) {
-        $this->antiTheftDeviceInfo = ($value !== null) ? (string) $value : null;
-        return $this;
-    }
+    /**
+     * @var CarIdent
+     */
+    public $carIdent;
 
-    public function getAntiTheftDeviceInfo() {
-        return $this->antiTheftDeviceInfo;
-    }
-
-    public function setPUUDeviceInfo($value) {
-        $this->PUUDeviceInfo = ($value !== null) ? (string) $value : null;
-        return $this;
-    }
-
-    public function getPUUDeviceInfo() {
-        return $this->PUUDeviceInfo;
-    }
-
-    public function setManufacturerType($value) {
-        if ($value !== null) {
-            $value = (int) $value;
-            if ($value != 0 && $value != 1) {
-                throw new \InvalidArgumentException("Invalid value for manufacturerType. Allow 0, 1, null.");
-            }
-        }
-        $this->manufacturerType = $value;
-        return $this;
-    }
-
-    public function getManufacturerType() {
-        return $this->manufacturerType;
-    }
-
-
-    public function setCarIdent(CarIdent $value) {
-        $this->carIdent = $value;
-        return $this;
-    }
-
-    public function getCarIdent() {
-        return $this->carIdent;
-    }
-
-    public function setIsNew($value) {
-        Validator::
-
-        $this->isNew = $value;
-        return $this;
-    }
-
-    public function getIsNew() {
-        return $this->isNew;
-    }
 
     public function toXml(): \SimpleXMLElement {
         parent::toXml();
@@ -117,11 +66,13 @@ class Vehicle extends Container
         if ($this->model !== null) {
             $xml->addChild('Model', $this->model);
         }
-        if ($this->antiTheftDeviceInfo !== null) {
-            $xml->addChild('AntiTheftDeviceInfo', $this->antiTheftDeviceInfo);
+        if ($this->antiTheftDeviceInfo) {
+            $added = $xml->addChild('AntiTheftDeviceInfo');
+            Utils::sxmlAppendContainer($added, $this->antiTheftDeviceInfo);
         }
-        if ($this->PUUDeviceInfo !== null) {
-            $xml->addChild('PUUDeviceInfo', $this->PUUDeviceInfo);
+        if ($this->PUUDeviceInfo) {
+            $added = $xml->addChild('PUUDeviceInfo');
+            Utils::sxmlAppendContainer($added, $this->PUUDeviceInfo);
         }
         if ($this->manufacturerType !== null) {
             $xml->addChild('ManufacturerType', $this->manufacturerType);
@@ -129,12 +80,9 @@ class Vehicle extends Container
         if ($this->isNew) {
             $xml->addChild('IsNew', $this->isNew);
         }
-
         if ($this->carIdent) {
             $added = $xml->addChild('CarIdent');
-            foreach($this->carIdent->toXml()->children() as $child) {
-                Utils::sxmlAppend($added, $child);
-            }
+            Utils::sxmlAppendContainer($added, $this->carIdent);
         }
 
         return $xml;

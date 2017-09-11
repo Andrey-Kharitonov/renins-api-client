@@ -2,6 +2,8 @@
 
 namespace ReninsApi\Helpers;
 
+use ReninsApi\Request\Container;
+
 class Utils
 {
     /**
@@ -31,5 +33,11 @@ class Utils
         $toDom = dom_import_simplexml($to);
         $fromDom = dom_import_simplexml($from);
         $toDom->appendChild($toDom->ownerDocument->importNode($fromDom, true));
+    }
+
+    public static function sxmlAppendContainer(\SimpleXMLElement $to, Container $fromContainer) {
+        foreach($fromContainer->toXml()->children() as $child) {
+            Utils::sxmlAppend($to, $child);
+        }
     }
 }
