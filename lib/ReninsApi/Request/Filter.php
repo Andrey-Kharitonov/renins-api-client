@@ -56,7 +56,13 @@ class Filter
     public static function filterToLogical($value) {
         if ($value === null) return $value;
 
-        return ($value) ? 'YES' : 'NO';
+        if ($value === 'YES') {
+            return true;
+        } elseif ($value === 'NO') {
+            return false;
+        } else {
+            return ($value) ? 'YES' : 'NO';
+        }
     }
 
     public static function filterToInteger($value) {
@@ -79,5 +85,18 @@ class Filter
         if ($value === null) return $value;
 
         return (double) $value;
+    }
+
+    public function filterToDate($value) {
+        if ($value === null) return $value;
+
+        if (is_string($value)) {
+            $dt = \DateTime::createFromFormat('Y-m-d', $value);
+            return ($dt) ? $dt->format('Y-m-d') : null;
+        } elseif ($value instanceof \DateTime) {
+            return $value->format('Y-m-d');
+        } else {
+            return null;
+        }
     }
 }

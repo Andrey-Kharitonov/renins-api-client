@@ -84,7 +84,7 @@ abstract class Container
         $data = [];
 
         foreach ($reflectionClass->getProperties(
-            ReflectionProperty::IS_PUBLIC | ReflectionProperty::IS_PROTECTED | ReflectionProperty::IS_PRIVATE
+            ReflectionProperty::IS_PUBLIC | ReflectionProperty::IS_PROTECTED
         ) as $property) {
             if ($property->isStatic()) continue;
             $name = $property->getName();
@@ -184,5 +184,58 @@ abstract class Container
         }
 
         return $this;
+    }
+
+    /**
+     * Helper for typical adding of properties as attributes.
+     * It doesn't use getters!
+     * Use only into inheritances of toXml() after validate().
+     * @param \SimpleXMLElement $xml
+     * @param array $properties
+     */
+    protected function toXmlAttributes(\SimpleXMLElement $xml, array $properties) {
+        foreach ($properties as $property) {
+            if (!property_exists($this, $property)) {
+                throw new ContainerException('Property "' . get_class($this) . '.' . $property . '" is not found');
+            }
+
+            $value = $this->{$property};
+            if ($value !== null) {
+                if ($value instanceof Container || $value instanceof ContainerCollection) {
+                    throw new ContainerException('Property "' . get_class($this) . '.' . $property . '" can not be used in Container::toXmlAttributes()');
+                } else {
+                    $xml->addAttribute($property, $value);
+                }
+            }
+        }
+    }
+
+    /**
+     * Helper for typical adding of properties as tags.
+     * It doesn't use getters!
+     * Use only into inheritances of toXml() after validate().
+     * @param \SimpleXMLElement $xml
+     * @param array $properties
+     */
+    protected function toXmlTags(\SimpleXMLElement $xml, array $properties) {
+        foreach ($properties as $property) {
+            if (!property_exists($this, $property)) {
+                throw new ContainerException('Property "' . get_class($this) . '.' . $property . '" is not found');
+            }
+
+            $value = $this->{$property};
+            if ($value !== null) {
+                if ($value instanceof Container) {
+                    $added = $xml->addChild($property);
+                    $value->toXml($added);
+                } elseif ($value instanceof ContainerCollection) {
+                    $added = $xml->addChild($property);
+                    $tagName = (substr($property, -1) == 's') ? substr($property, 0, strlen($property) - 1) : $property . 'Item';
+                    $value->toXml($added, $tagName);
+                } else {
+                    $xml->addChild($property, $value);
+                }
+            }
+        }
     }
 }

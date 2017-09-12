@@ -66,17 +66,19 @@ class Validator
     }
 
     public static function checkNotEmpty($value, $params = null) {
+        if ($value === null) return true;
+
         if (is_string($value)) {
             //"0" isn't empty
             if ($value === '') {
                 return 'Is empty';
             }
         } elseif($value instanceof ContainerCollection) {
-
-        } else {
-            if (empty($value)) {
+            if ($value->count() <= 0) {
                 return 'Is empty';
             }
+        } elseif (empty($value)) {
+            return 'Is empty';
         }
         return true;
     }
@@ -179,6 +181,16 @@ class Validator
 
         if ($value instanceof ContainerCollection) {
             return "Isn't container collection";
+        }
+        return true;
+    }
+
+    public static function checkDate($value, $params = null) {
+        if ($value === null) return true;
+
+        $dt = \DateTime::createFromFormat('Y-m-d', $value);
+        if (!$dt || $dt->format('Y-m-d') !== $value) {
+            return "Isn't correct date";
         }
         return true;
     }
