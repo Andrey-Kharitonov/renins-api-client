@@ -4,39 +4,99 @@ namespace ReninsApi\Request;
 
 use ReflectionClass;
 use ReflectionProperty;
-use ReninsApi\Request\Validator\Validator;
-use ReninsApi\Request\Validator\ValidatorException;
 
 abstract class Container
 {
     protected static $rules = [];
+
+    protected $_filter;
+    protected $_validator;
 
     /**
      * @param array $data - pairs of (key => value)
      */
     public function __construct(array $data = [])
     {
+        $this->_filter = new Filter(static::$rules);
+        $this->_validator = new Validator(static::$rules);
+
         if ($data) {
-            foreach($data as $name => $value) {
-                $this->{$name} = $value;
+            //get public properties
+            $publicProperties = [];
+            $reflectionClass = new ReflectionClass($this);
+            foreach ($reflectionClass->getProperties(
+                ReflectionProperty::IS_PUBLIC
+            ) as $property) {
+                if ($property->isStatic()) continue;
+                $publicProperties[$property->getName()] = true;
+            }
+
+            //set data
+            foreach($data as $property => $value) {
+                if (isset($publicProperties[$property])) {
+                    //public property will be set directly
+                    $this->{$property} = $value;
+                } else {
+                    $this->__set($property, $value);
+                }
             }
         }
     }
 
+    public function __set($name, $value)
+    {
+        $setter = 'set' . $name;
+
+        if (method_exists($this, $setter)) {
+            //via getter
+            return $this->{$setter}($value);
+        } elseif (property_exists($this, $name)) {
+            //directly via filter
+            $this->{$name} = $this->_filter->filter($value, $name);
+            return $this;
+        }
+
+        throw new ContainerException('Property "' . get_class($this) . '.' . $name . '" is not found');
+    }
+
+    public function __get($name)
+    {
+        $getter = 'get' . $name;
+
+        if (method_exists($this, $getter)) {
+            //via getter
+            return $this->{$getter}();
+        } elseif (property_exists($this, $name)) {
+            //directly
+            return $this->{$name};
+        }
+
+        throw new ContainerException('Property "' . get_class($this) . '.' . $name . '" is not found');
+    }
+
+
     /**
-     * Get public properties with values
+     * Get public, protected, private properties with values. Getter wil be used.
      * @return array
      */
-    public function getData() {
+    protected function _getData() {
         $reflectionClass = new ReflectionClass($this);
         $data = [];
 
         foreach ($reflectionClass->getProperties(
-            ReflectionProperty::IS_PUBLIC
+            ReflectionProperty::IS_PUBLIC | ReflectionProperty::IS_PROTECTED | ReflectionProperty::IS_PRIVATE
         ) as $property) {
             if ($property->isStatic()) continue;
             $name = $property->getName();
-            $data[$name] = $this->{$name};
+
+            if (substr($name, 0, 1) == '_') continue;
+
+            $getter = 'get' . $name;
+            if (method_exists($this, $getter)) {
+                $data[$name] = $this->{$getter}();
+            } else {
+                $data[$name] = $this->{$name};
+            }
         }
 
         return $data;
@@ -44,20 +104,18 @@ abstract class Container
 
     /**
      * Recursively validation.
-     * @param bool $throwException
      * @return array
      */
-    public function validate($throwException = false) {
-        $data = $this->getData();
+    public function validate() {
+        $data = $this->_getData();
 
         //validate my properties
-        $validator = new Validator(static::$rules);
-        $validator->validate($data);
-        $errors = $validator->getErrors();
+        $this->_validator->validate($data);
+        $errors = $this->_validator->getErrors();
 
         //validate included containers
         foreach($data as $property => $value) {
-            if ($value instanceof Container) {
+            if ($value instanceof Container || $value instanceof ContainerCollection) {
                 $errorsVal = $value->validate();
                 foreach ($errorsVal as $propertyVal => $errorVal) {
                     $errors[$property . '.' . $propertyVal] = $errorVal;
@@ -65,13 +123,21 @@ abstract class Container
             }
         }
 
-        if ($errors && $throwException) {
-            $exc = new ValidatorException("Invalid data");
+        return $errors;
+    }
+
+    /**
+     * Recursively validation with error.
+     * @return $this
+     */
+    public function validateThrow() {
+        $errors = $this->validate();
+        if ($errors) {
+            $exc = new ValidatorMultiException("Invalid data");
             $exc->setErrors($errors);
             throw $exc;
         }
-
-        return $errors;
+        return $this;
     }
 
     /**
@@ -81,11 +147,11 @@ abstract class Container
      */
     public function toArray(): array
     {
-        $this->validate( true);
+        $this->validateThrow();
 
-        $data = $this->getData();
+        $data = $this->_getData();
         foreach($data as $property => $value) {
-            if ($value instanceof Container) {
+            if ($value instanceof Container || $value instanceof ContainerCollection) {
                 $data[$property] = $value->toArray();
             }
         }
@@ -95,11 +161,28 @@ abstract class Container
     /**
      * Get XML by properties recursively.
      * It will execute method validate() before.
-     * @return \SimpleXMLElement
+     * @param \SimpleXMLElement $xml
+     * @return $this
      */
-    public function toXml(): \SimpleXMLElement {
-        $this->validate( true);
+    public function toXml(\SimpleXMLElement $xml) {
+        $this->validateThrow();
 
-        return null;
+        $data = $this->_getData();
+        foreach($data as $property => $value) {
+            if ($value === null) continue;
+
+            if ($value instanceof Container) {
+                $added = $xml->addChild($property);
+                $value->toXml($added);
+            } elseif ($value instanceof ContainerCollection) {
+                $added = $xml->addChild($property);
+                $tagName = (substr($property, -1) == 's') ? substr($property, 0, strlen($property) - 1) : $property . 'Item';
+                $value->toXml($added, $tagName);
+            } else {
+                $xml->addChild($property, $value);
+            }
+        }
+
+        return $this;
     }
 }

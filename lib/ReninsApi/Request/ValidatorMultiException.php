@@ -1,8 +1,8 @@
 <?php
 
-namespace ReninsApi\Request\Validator;
+namespace ReninsApi\Request;
 
-class ValidatorException extends \RuntimeException
+class ValidatorMultiException extends \RuntimeException
 {
     protected $errors = [];
 

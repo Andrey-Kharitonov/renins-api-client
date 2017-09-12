@@ -2,89 +2,37 @@
 
 namespace ReninsApi\Request\Soap;
 
-use ReninsApi\Helpers\Utils;
 use ReninsApi\Request\Container;
 
 /**
  * Some vehicle
+ *
+ * @property string $Manufacturer
+ * @property string $Model
+ * @property AntiTheftDeviceInfo $AntiTheftDeviceInfo
+ * @property PUUDeviceInfo $PUUDeviceInfo
+ * @property int $ManufacturerType
+ * @property string $IsNew
+ * @property CarIdent $CarIdent
  */
 class Vehicle extends Container
 {
     protected static $rules = [
-        'manufacturer' => ['toString', 'required'],
-        'model' => ['toString', 'required'],
-        'antiTheftDeviceInfo' => ['container'],
+        'Manufacturer' => ['toString', 'required', 'notEmpty'],
+        'Model' => ['toString', 'required', 'notEmpty'],
+        'AntiTheftDeviceInfo' => ['container'],
         'PUUDeviceInfo' => ['container'],
         'manufacturerType' => ['toInteger', 'required', 'in:0,1'],
         'isNew' => ['toLogical'],
-        'carIdent' => ['container'],
+        'CarIdent' => ['container'],
     ];
 
-    /**
-     * @var string
-     */
-    public $manufacturer;
+    protected $manufacturer;
+    protected $model;
+    protected $antiTheftDeviceInfo;
+    protected $PUUDeviceInfo;
+    protected $manufacturerType;
+    protected $isNew;
+    protected $carIdent;
 
-    /**
-     * @var string
-     */
-    public $model;
-
-    /**
-     * @var AntiTheftDeviceInfo
-     */
-    public $antiTheftDeviceInfo;
-
-    /**
-     * @var PUUDeviceInfo
-     */
-    public $PUUDeviceInfo;
-
-    /**
-     * @var int|string
-     */
-    public $manufacturerType;
-
-    /**
-     * @var mixed
-     */
-    public $isNew;
-
-    /**
-     * @var CarIdent
-     */
-    public $carIdent;
-
-
-    public function toXml(): \SimpleXMLElement {
-        parent::toXml();
-
-        $xml = new \SimpleXMLElement('<root/>');
-        if ($this->manufacturer !== null) {
-            $xml->addChild('Manufacture', $this->manufacturer);
-        }
-        if ($this->model !== null) {
-            $xml->addChild('Model', $this->model);
-        }
-        if ($this->antiTheftDeviceInfo) {
-            $added = $xml->addChild('AntiTheftDeviceInfo');
-            Utils::sxmlAppendContainer($added, $this->antiTheftDeviceInfo);
-        }
-        if ($this->PUUDeviceInfo) {
-            $added = $xml->addChild('PUUDeviceInfo');
-            Utils::sxmlAppendContainer($added, $this->PUUDeviceInfo);
-        }
-        if ($this->manufacturerType !== null) {
-            $xml->addChild('ManufacturerType', $this->manufacturerType);
-        }
-        if ($this->isNew) {
-            $xml->addChild('IsNew', $this->isNew);
-        }
-        if ($this->carIdent) {
-            $added = $xml->addChild('CarIdent');
-            Utils::sxmlAppendContainer($added, $this->carIdent);
-        }
-
-        return $xml;
-    }
 }
