@@ -2,12 +2,14 @@
 
 namespace ReninsApi\Client\Methods\V2;
 
+use ReninsApi\Helpers\Utils;
 use ReninsApi\Request\Soap\CalculationCasco;
 use ReninsApi\Request\ValidatorMultiException;
 use ReninsApi\Soap\Client as SoapClient;
+use ReninsApi\Soap\ClientResponseException as SoapClientResponseException;
 
 /**
- * CASCO calculation
+ * Calculation
  */
 trait Calculation
 {
@@ -22,22 +24,43 @@ trait Calculation
 
         $this->logMessage(__METHOD__, 'Preparing xml');
         try {
-            $xml = new \SimpleXMLElement('<Request/>');
-            $xml->addAttribute('ClientSystemName', $this->clientSystemName);
-            $xml->addAttribute('partnerUid', $this->partnerUid);
-            $params->toXml($xml);
-            $doc = $xml->asXML();
+            $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><MakeCalculation xmlns="http://renins.com/"></MakeCalculation>');
+            $doc = $xml->addChild('doc');
+            $request = $doc->addChild('Request', null, '');
+            $request->addAttribute('ClientSystemName', $this->clientSystemName);
+            $request->addAttribute('partnerUid', $this->partnerUid);
+            $params->toXml($request);
+            $xmlStr = Utils::sxmlToStr($xml);
         } catch (ValidatorMultiException $exc) {
             $this->logMessage(__METHOD__, $exc->getMessage(), ['errors' => $exc->getErrors()]);
             throw $exc;
+        } catch (\Exception $exc) {
+            $this->logMessage(__METHOD__, $exc->getMessage());
+            throw $exc;
         }
 
-        $this->logMessage(__METHOD__, 'Sending request', ['doc' => $doc]);
+        $this->logMessage(__METHOD__, 'Making request', [$xmlStr]);
         try {
-            $res = $client->makeRequest('MakeCalculation', ['doc' => $doc]);
-            $this->logMessage(__METHOD__, 'Successful', ['request' => $client->getLastRequest(), 'response' => $client->getLastResponse()]);
+            $args = [new \SoapVar($xmlStr, XSD_ANYXML)];
+            $res = $client->makeRequest('MakeCalculation', $args);
+            $this->logMessage(__METHOD__, 'Successful', [
+                'request' => $client->getLastRequest(),
+                'response' => $client->getLastResponse(),
+                'header' => $client->getLastHeader(),
+            ]);
+        } catch(SoapClientResponseException $exc) {
+            $this->logMessage(__METHOD__, $exc->getMessage(), [
+                'request' => $client->getLastRequest(),
+                'response' => $client->getLastResponse(),
+                'header' => $client->getLastHeader(),
+                'errors' => $exc->getErrors(),
+            ]);
+            throw $exc;
         } catch(\Exception $exc) {
-            $this->logMessage(__METHOD__, $exc->getMessage(), ['request' => $client->getLastRequest(), 'response' => $client->getLastResponse()]);
+            $this->logMessage(__METHOD__, $exc->getMessage(), [
+                'request' => $client->getLastRequest(),
+                'response' => $client->getLastResponse(),
+            ]);
             throw $exc;
         }
 

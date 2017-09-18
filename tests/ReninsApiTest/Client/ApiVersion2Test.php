@@ -5,6 +5,7 @@ namespace ReninsApiTest\Client;
 use PHPUnit\Framework\TestCase;
 use ReninsApi\Client\ApiVersion2;
 use ReninsApi\Helpers\LogEvent;
+use ReninsApi\Helpers\Utils;
 use ReninsApi\Request\ContainerCollection;
 
 class ApiVersion2Test extends TestCase
@@ -33,10 +34,16 @@ class ApiVersion2Test extends TestCase
     public function testVehicleBrandsAll()
     {
         $client = new ApiVersion2(self::CLIENT_SYSTEM_NAME);
+        $client->onLog = [$this, 'onLog'];
+
         $response = $client->vehicleBrandsAll('Легковое ТС');
         $this->assertInstanceOf(\ReninsApi\Response\Rest\VehicleBrandsAll::class, $response);
         $this->assertGreaterThan(10, count($response->getBrands()));
-        $this->assertContains('ВАЗ', $response->getBrands());
+
+        $filtered = array_filter($response->getBrands(), function($item) {
+            return $item['Name'] == 'ВАЗ';
+        });
+        $this->assertEquals(1, count($filtered));
     }
 
     /**
@@ -45,13 +52,38 @@ class ApiVersion2Test extends TestCase
     public function testVehicleBrandsAll2()
     {
         $client = new ApiVersion2(self::CLIENT_SYSTEM_NAME);
+        $client->onLog = [$this, 'onLog'];
+
         $response = $client->vehicleBrandsAll('Invalid value');
         $this->assertInstanceOf(\ReninsApi\Response\Rest\VehicleBrandsAll::class, $response);
         $this->assertEquals(0, count($response->getBrands()));
     }
 
     /**
+     * @group rest
+     */
+    public function testVehicleBrandsAllWithModels()
+    {
+        $client = new ApiVersion2(self::CLIENT_SYSTEM_NAME);
+        $client->onLog = [$this, 'onLog'];
+
+        $response = $client->vehicleBrandsAllWithModels('Легковое ТС');
+        $this->assertInstanceOf(\ReninsApi\Response\Rest\VehicleBrandsAll::class, $response);
+        $this->assertGreaterThan(10, count($response->getBrands()));
+
+        $filtered = array_filter($response->getBrands(), function($item) {
+            return $item['Name'] == 'ВАЗ';
+        });
+        $this->assertEquals(1, count($filtered));
+
+        $filtered = array_values($filtered);
+        $this->assertArrayHasKey('Models', $filtered[0]);
+        $this->assertGreaterThan(10, count($filtered[0]['Models']));
+    }
+
+    /**
      * @group soap
+     * @group current
      */
     public function testCalcCasco()
     {
@@ -71,8 +103,8 @@ class ApiVersion2Test extends TestCase
         $Covers->add(new \ReninsApi\Request\Soap\Cover(['code' => 'USHERB', 'sum' => 100000]));
 
         $Vehicle = new \ReninsApi\Request\Soap\Vehicle();
-        $Vehicle->Manufacturer = 'Manufacturer';
-        $Vehicle->Model = 'Model';
+        $Vehicle->Manufacturer = 'ВАЗ';
+        $Vehicle->Model = '1117 Kalina';
         $Vehicle->Year = 2013;
         $Vehicle->Cost = 336000;
         $Vehicle->Type = 'Легковое ТС';
@@ -82,7 +114,7 @@ class ApiVersion2Test extends TestCase
         $Vehicle->CarBodyType = 'Седан';
 
         $Drivers = new \ReninsApi\Request\Soap\Drivers();
-        $Drivers->MultiDrive = true;
+        $Drivers->Multidrive = true;
         $Drivers->MinAge = 31;
         $Drivers->MinExperience = 5;
 
@@ -101,6 +133,7 @@ class ApiVersion2Test extends TestCase
         $Policy->Participants = $Participants;
 
         $request = new \ReninsApi\Request\Soap\CalculationCasco();
+        $request->genUuid();
         $request->Policy = $Policy;
 
         $client->calcCasco($request);

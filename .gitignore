@@ -13,3 +13,4 @@ composer.lock
 *.log
 /test.php
 tmp*.xsd
+/tests/logs/*

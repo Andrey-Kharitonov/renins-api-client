@@ -9,7 +9,7 @@ use ReninsApi\Request\ContainerCollection;
  * Drivers
  *
  * @property int $type
- * @property string|bool $MultiDrive
+ * @property string|bool $Multidrive
  * @property int $MinAge
  * @property int $MinExperience
  * @property ContainerCollection $Driver
@@ -18,7 +18,7 @@ class Drivers extends Container
 {
     protected static $rules = [
         'type' => ['toInteger', 'in:1|2'],
-        'MultiDrive' => ['toLogical', 'required'],
+        'Multidrive' => ['toLogical', 'required'],
         'MinAge' => ['toInteger', 'min:0'],
         'MinExperience' => ['toInteger', 'min:0'],
         'Driver' => ['containerCollection'],
@@ -28,7 +28,7 @@ class Drivers extends Container
     {
         $this->validateThrow();
 
-        $this->toXmlAttributes($xml, ['type', 'MultiDrive']);
+        $this->toXmlAttributes($xml, ['type', 'Multidrive']);
         $this->toXmlTags($xml, ['MinAge', 'MinExperience']);
 
         if ($this->Driver !== null) {
@@ -39,7 +39,7 @@ class Drivers extends Container
     }
 
     protected $type;
-    protected $MultiDrive;
+    protected $Multidrive;
     protected $MinAge;
     protected $MinExperience;
     protected $Driver;

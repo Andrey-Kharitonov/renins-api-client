@@ -1,3 +1,7 @@
+# Прмеры соманд для тестирования
+
+phpunit --testsuite client --group soap --debug
+
 # PHP-клиент для retailCRM API
 
 PHP-клиент для работы с [retailCRM API](http://www.retailcrm.ru/docs/Developers/ApiVersion5).

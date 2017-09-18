@@ -155,6 +155,9 @@ class Validator
         if (count($limits) < 2) {
             throw new ValidatorException("Invalid parameters for rule \"between\" ({$params})");
         }
+        $limits = array_map(function($v) {
+            return trim($v);
+        }, $limits);
 
         $res = static::checkMin($value, $limits[0]);
         if ($res !== true) {
@@ -212,5 +215,40 @@ class Validator
     {
         return self::checkIn($value, 'Паспорт РФ|PASSPORT|DRIVING_LICENCE|ZAGRAN_PASSPORT|FOREIGN_PASSPORT|MILITARY_CARD'
             . '|REGISTRATION_CERTIFICATE|RESIDENTIAL_PERMIT|SOLDIER_IDENTIFY_CARD|PTS|DIAGNOSTIC_CARD|TALON_TECHOSMOTR|STS');
+    }
+
+    public static function checkLength($value, $params = null)
+    {
+        if ($value === null) return true;
+
+        $limits = explode(',', $params);
+        $limits = array_map(function($v) {
+            return trim($v);
+        }, $limits);
+
+        if (is_array($value)) {
+            if ($limits[0] != '' && count($value) < $limits[0]) {
+                return 'Length of array is less than ' . $limits[0];
+            }
+            if (isset($limits[1]) && $limits[1] != '' && count($value) > $limits[1]) {
+                return 'Length of array is greater than ' . $limits[1];
+            }
+        } elseif ($value instanceof ContainerCollection) {
+            if ($limits[0] != '' && $value->count() < $limits[0]) {
+                return 'Length of collection is less than ' . $limits[0];
+            }
+            if (isset($limits[1]) && $limits[1] != '' && $value->count() > $limits[1]) {
+                return 'Length of collection is greater than ' . $limits[1];
+            }
+        } else {
+            if ($limits[0] != '' && strlen($value) < $limits[0]) {
+                return 'Length of string is less than ' . $limits[0];
+            }
+            if (isset($limits[1]) && $limits[1] != '' && strlen($value) > $limits[1]) {
+                return 'Length of string is greater than ' . $limits[1];
+            }
+        }
+
+        return true;
     }
 }
