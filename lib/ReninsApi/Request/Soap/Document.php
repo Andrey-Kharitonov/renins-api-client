@@ -29,8 +29,4 @@ class Document extends Container
 
         return $this;
     }
-
-    protected $type;
-    protected $Serial;
-    protected $Number;
 }

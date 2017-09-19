@@ -8,7 +8,7 @@ use ReninsApi\Request\Container;
  * Option
  *
  * @property int $type
- * @property string|bool $enabled
+ * @property string $enabled
  */
 class Option extends Container
 {
@@ -26,7 +26,4 @@ class Option extends Container
 
         return $this;
     }
-
-    protected $type;
-    protected $enabled;
 }

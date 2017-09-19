@@ -20,9 +20,4 @@ class AntiTheftDeviceInfo extends Container
         'AntiTheftTrackerBrand' => ['toString'],
         'AntiTheftTrackerModel' => ['toString'],
     ];
-
-    protected $AntiTheftDeviceBrand;
-    protected $AntiTheftDeviceModel;
-    protected $AntiTheftTrackerBrand;
-    protected $AntiTheftTrackerModel;
 }

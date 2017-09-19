@@ -8,7 +8,7 @@ use ReninsApi\Request\Container;
 /**
  * Some calculation
  *
- * @property int $type
+ * @property int $type - default 0
  * @property string $uid
  * @property Policy $Policy
  */
@@ -20,6 +20,11 @@ class CalculationCasco extends Container
         'Policy' => ['container', 'required'],
     ];
 
+    protected function init()
+    {
+        $this->set('type', 0);
+    }
+
     public function toXml(\SimpleXMLElement $xml)
     {
         $this->validateThrow();
@@ -29,10 +34,6 @@ class CalculationCasco extends Container
 
         return $this;
     }
-
-    protected $type = 0;
-    protected $uid;
-    protected $Policy;
 
     /**
      * Generate unique uid

@@ -27,7 +27,4 @@ class Insurant extends Container
 
         return $this;
     }
-
-    protected $type;
-    protected $INN;
 }

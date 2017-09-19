@@ -7,7 +7,7 @@ use ReninsApi\Request\Container;
 /**
  * Telematics
  *
- * @property string|bool $enabled
+ * @property string $enabled
  * @property int $Points
  * @property int $LossCount
  */
@@ -28,8 +28,4 @@ class Telematics extends Container
 
         return $this;
     }
-
-    protected $type;
-    protected $Points;
-    protected $LossCount;
 }

@@ -16,7 +16,4 @@ class PUUDeviceInfo extends Container
         'PUUDeviceModel' => ['toString', 'required', 'notEmpty'],
         'AutoStart' => ['toLogical'],
     ];
-
-    protected $PUUDeviceModel;
-    protected $AutoStart;
 }

@@ -19,8 +19,4 @@ class Participants extends Container
         'Insurant' => ['container', 'required'],
         'BeneficiaryType' => ['toInteger', 'participantType'],
     ];
-
-    protected $Drivers;
-    protected $Insurant;
-    protected $BeneficiaryType;
 }

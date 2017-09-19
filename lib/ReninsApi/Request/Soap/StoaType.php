@@ -8,7 +8,7 @@ use ReninsApi\Request\Container;
  * Stoa type
  *
  * @property int $type
- * @property string|bool $enabled
+ * @property string $enabled
  */
 class StoaType extends Container
 {
@@ -26,7 +26,4 @@ class StoaType extends Container
 
         return $this;
     }
-
-    protected $type;
-    protected $enabled;
 }

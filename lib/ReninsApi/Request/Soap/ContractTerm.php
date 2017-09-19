@@ -13,7 +13,7 @@ use ReninsApi\Request\ContainerCollection;
  * @property int $DurationMonth
  * @property int $PeriodUseMonth
  * @property int $PaymentType
- * @property string $Currency
+ * @property string $Currency - default RUR
  * @property string $Purpose
  */
 class ContractTerm extends Container
@@ -28,11 +28,8 @@ class ContractTerm extends Container
         'Purpose' => ['toString', 'required', 'notEmpty'],
     ];
 
-    protected $Product;
-    protected $ProgramType;
-    protected $DurationMonth;
-    protected $PeriodUseMonth;
-    protected $PaymentType;
-    protected $Currency = 'RUR';
-    protected $Purpose;
+    protected function init()
+    {
+        $this->set('Currency', 'RUR');
+    }
 }

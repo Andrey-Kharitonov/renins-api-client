@@ -40,19 +40,11 @@ class ContainerCollection implements Iterator
     }
 
     /**
-     * Find container
-     * @param Container $container
-     * @return bool|int - false: if not exists
+     * Get container by index
+     * @return Container|null
      */
-    public function find(Container $container) {
-        $found = false;
-        foreach($this->items as $index => $item) {
-            if ($item === $container) {
-                $found = $index;
-                break;
-            }
-        }
-        return $found;
+    public function get($index) {
+        return ($index >= 0 && $index < count($this->items)) ? $this->items[$index] : null;
     }
 
     /**

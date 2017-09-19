@@ -36,17 +36,4 @@ class Vehicle extends Container
         'CarBodyType' => ['toString', 'required', 'notEmpty'],
         'CarIdent' => ['container'],
     ];
-
-    protected $Manufacturer;
-    protected $Model;
-    protected $Year;
-    protected $Cost;
-    protected $Type;
-    protected $AntiTheftDeviceInfo;
-    protected $PUUDeviceInfo;
-    protected $ManufacturerType;
-    protected $IsNew;
-    protected $Power;
-    protected $CarBodyType;
-    protected $CarIdent;
 }

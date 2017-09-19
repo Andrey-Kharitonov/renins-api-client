@@ -17,9 +17,6 @@ class Cover extends Container
         'sum' => ['toDouble', 'required', 'notEmpty', 'min:0'],
     ];
 
-    protected $code;
-    protected $sum;
-
     public function toXml(\SimpleXMLElement $xml)
     {
         $this->validateThrow();

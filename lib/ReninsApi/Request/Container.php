@@ -2,15 +2,14 @@
 
 namespace ReninsApi\Request;
 
-use ReflectionClass;
-use ReflectionProperty;
-
 abstract class Container
 {
     protected static $rules = [];
 
-    protected $_filter;
-    protected $_validator;
+    private $data = [];
+
+    private $_filter;
+    private $_validator;
 
     /**
      * @param array $data - pairs of (key => value)
@@ -20,86 +19,53 @@ abstract class Container
         $this->_filter = new Filter(static::$rules);
         $this->_validator = new Validator(static::$rules);
 
-        if ($data) {
-            //get public properties
-            $publicProperties = [];
-            $reflectionClass = new ReflectionClass($this);
-            foreach ($reflectionClass->getProperties(
-                ReflectionProperty::IS_PUBLIC
-            ) as $property) {
-                if ($property->isStatic()) continue;
-                $publicProperties[$property->getName()] = true;
-            }
+        $this->init();
 
-            //set data
-            foreach($data as $property => $value) {
-                if (isset($publicProperties[$property])) {
-                    //public property will be set directly
-                    $this->{$property} = $value;
-                } else {
-                    $this->__set($property, $value);
-                }
-            }
+        //set data
+        foreach($data as $property => $value) {
+            $this->set($property, $value);
         }
+    }
+
+    /**
+     * Will be called before set initial data
+     */
+    protected function init() {
+    }
+
+    public function set($name, $value) {
+        if (!isset(static::$rules[$name])) {
+            throw new ContainerException("Property {$name} not found");
+        }
+
+        $this->data[$name] = $this->_filter->filter($value, $name);
+        return $this;
     }
 
     public function __set($name, $value)
     {
-        $setter = 'set' . $name;
+        $this->set($name, $value);
+    }
 
-        if (method_exists($this, $setter)) {
-            //via getter
-            return $this->{$setter}($value);
-        } elseif (property_exists($this, $name)) {
-            //directly via filter
-            $this->{$name} = $this->_filter->filter($value, $name);
-            return $this;
+    public function get($name, $def = null) {
+        if (array_key_exists($name, $this->data)) {
+            return $this->data[$name];
         }
-
-        throw new ContainerException('Property "' . get_class($this) . '.' . $name . '" is not found');
+        return $def;
     }
 
     public function __get($name)
     {
-        $getter = 'get' . $name;
-
-        if (method_exists($this, $getter)) {
-            //via getter
-            return $this->{$getter}();
-        } elseif (property_exists($this, $name)) {
-            //directly
-            return $this->{$name};
-        }
-
-        throw new ContainerException('Property "' . get_class($this) . '.' . $name . '" is not found');
+        return $this->get($name);
     }
 
+    public function getData() {
+        return $this->data;
+    }
 
-    /**
-     * Get public, protected, private properties with values. Getter wil be used.
-     * @return array
-     */
-    protected function _getData() {
-        $reflectionClass = new ReflectionClass($this);
-        $data = [];
-
-        foreach ($reflectionClass->getProperties(
-            ReflectionProperty::IS_PUBLIC | ReflectionProperty::IS_PROTECTED
-        ) as $property) {
-            if ($property->isStatic()) continue;
-            $name = $property->getName();
-
-            if (substr($name, 0, 1) == '_') continue;
-
-            $getter = 'get' . $name;
-            if (method_exists($this, $getter)) {
-                $data[$name] = $this->{$getter}();
-            } else {
-                $data[$name] = $this->{$name};
-            }
-        }
-
-        return $data;
+    public function clear() {
+        $this->data = [];
+        $this->init();
     }
 
     /**
@@ -107,7 +73,7 @@ abstract class Container
      * @return array
      */
     public function validate() {
-        $data = $this->_getData();
+        $data = $this->getData();
 
         //validate my properties
         $this->_validator->validate($data);
@@ -141,15 +107,15 @@ abstract class Container
     }
 
     /**
-     * Get array of properties recursively.
-     * It will execute method validate() before.
+     * Get array of [property => value]  recursively.
+     * It will execute method validateThrow() before.
      * @return array
      */
     public function toArray(): array
     {
         $this->validateThrow();
 
-        $data = $this->_getData();
+        $data = $this->getData();
         foreach($data as $property => $value) {
             if ($value instanceof Container || $value instanceof ContainerCollection) {
                 $data[$property] = $value->toArray();
@@ -160,14 +126,14 @@ abstract class Container
 
     /**
      * Get XML by properties recursively.
-     * It will execute method validate() before.
+     * It will execute method validateThrow() before.
      * @param \SimpleXMLElement $xml
      * @return $this
      */
     public function toXml(\SimpleXMLElement $xml) {
         $this->validateThrow();
 
-        $data = $this->_getData();
+        $data = $this->getData();
         foreach($data as $property => $value) {
             if ($value === null) continue;
 
@@ -187,55 +153,101 @@ abstract class Container
     }
 
     /**
-     * Helper for typical adding of properties as attributes.
-     * It doesn't use getters!
-     * Use only into inheritances of toXml() after validate().
+     * Helper for typical adding of properties like xml attributes.
+     * Use into inheritances of toXml() after validation.
      * @param \SimpleXMLElement $xml
      * @param array $properties
+     * @return $this
      */
     protected function toXmlAttributes(\SimpleXMLElement $xml, array $properties) {
         foreach ($properties as $property) {
-            if (!property_exists($this, $property)) {
-                throw new ContainerException('Property "' . get_class($this) . '.' . $property . '" is not found');
-            }
+            $value = $this->get($property);
+            if ($value === null) continue;
 
-            $value = $this->{$property};
-            if ($value !== null) {
-                if ($value instanceof Container || $value instanceof ContainerCollection) {
-                    throw new ContainerException('Property "' . get_class($this) . '.' . $property . '" can not be used in Container::toXmlAttributes()');
-                } else {
-                    $xml->addAttribute($property, $value);
-                }
+            if ($value instanceof Container || $value instanceof ContainerCollection) {
+                throw new ContainerException('Property "' . get_class($this) . '.' . $property . '" can not be used in Container::toXmlAttributes()');
+            } else {
+                $xml->addAttribute($property, $value);
             }
         }
+        return $this;
     }
 
     /**
-     * Helper for typical adding of properties as tags.
-     * It doesn't use getters!
-     * Use only into inheritances of toXml() after validate().
+     * Helper for typical adding of properties like xml tags.
+     * Use into inheritances of toXml() after validate().
      * @param \SimpleXMLElement $xml
      * @param array $properties
      */
     protected function toXmlTags(\SimpleXMLElement $xml, array $properties) {
         foreach ($properties as $property) {
-            if (!property_exists($this, $property)) {
-                throw new ContainerException('Property "' . get_class($this) . '.' . $property . '" is not found');
-            }
+            $value = $this->get($property);
+            if ($value === null) continue;
 
-            $value = $this->{$property};
-            if ($value !== null) {
-                if ($value instanceof Container) {
-                    $added = $xml->addChild($property);
-                    $value->toXml($added);
-                } elseif ($value instanceof ContainerCollection) {
-                    $added = $xml->addChild($property);
-                    $tagName = (substr($property, -1) == 's') ? substr($property, 0, strlen($property) - 1) : $property . 'Item';
-                    $value->toXml($added, $tagName);
-                } else {
-                    $xml->addChild($property, $value);
-                }
+            if ($value instanceof Container) {
+                $added = $xml->addChild($property);
+                $value->toXml($added);
+            } elseif ($value instanceof ContainerCollection) {
+                $added = $xml->addChild($property);
+                $tagName = (substr($property, -1) == 's') ? substr($property, 0, strlen($property) - 1) : $property . 'Item';
+                $value->toXml($added, $tagName);
+            } else {
+                $xml->addChild($property, $value);
             }
         }
     }
+
+    /**
+     * Set properties by xml attributes and children tags.
+     * @param \SimpleXMLElement $xml
+     * @return $this
+     */
+    public function fromXml(\SimpleXMLElement $xml) {
+        foreach($xml->attributes() as $name => $value) {
+            $name = (string) $name;
+            $value = (string) $value;
+            $this->set($name, $value);
+        }
+
+        foreach($xml->children() as $child) {
+            $name = $child->getName();
+            $value = (string) $child;
+            $this->set($name, $value);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Helper for typical import properties from xml attributes.
+     * Use into inheritances of fromXml().
+     * @param \SimpleXMLElement $xml
+     * @param array $properties
+     */
+    protected function fromXmlAttributes(\SimpleXMLElement $xml, array $properties) {
+        foreach($xml->attributes() as $name => $value) {
+            if (!in_array($name, $properties)) continue;
+
+            $name = (string) $name;
+            $value = (string) $value;
+            $this->set($name, $value);
+        }
+    }
+
+    /**
+     * Helper for typical import properties from xml children tags.
+     * Use into inheritances of fromXml().
+     * @param \SimpleXMLElement $xml
+     * @param array $properties
+     */
+    protected function fromXmlTags(\SimpleXMLElement $xml, array $properties) {
+        foreach($xml->children() as $child) {
+            $name = $child->getName();
+            if (!in_array($name, $properties)) continue;
+
+            $value = (string) $child;
+            $this->set($name, $value);
+        }
+    }
+
 }

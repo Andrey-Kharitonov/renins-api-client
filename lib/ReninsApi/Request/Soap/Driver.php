@@ -8,7 +8,7 @@ use ReninsApi\Request\ContainerCollection;
 /**
  * Driver
  *
- * @property int $IsIP
+ * @property string $IsIP
  * @property string $FirstName
  * @property string $MiddleName
  * @property string $LastName
@@ -43,16 +43,4 @@ class Driver extends Container
 
         return $this;
     }
-
-
-    protected $IsIP;
-    protected $FirstName;
-    protected $MiddleName;
-    protected $LastName;
-    protected $BirthDate;
-    protected $Gender;
-    protected $MaritalStatus;
-    protected $HasChildren;
-    protected $DriveExperience;
-    protected $Documents;
 }

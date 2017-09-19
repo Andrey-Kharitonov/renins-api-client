@@ -9,7 +9,7 @@ use ReninsApi\Request\ContainerCollection;
  * Drivers
  *
  * @property int $type
- * @property string|bool $Multidrive
+ * @property string $Multidrive
  * @property int $MinAge
  * @property int $MinExperience
  * @property ContainerCollection $Driver
@@ -37,10 +37,4 @@ class Drivers extends Container
 
         return $this;
     }
-
-    protected $type;
-    protected $Multidrive;
-    protected $MinAge;
-    protected $MinExperience;
-    protected $Driver;
 }

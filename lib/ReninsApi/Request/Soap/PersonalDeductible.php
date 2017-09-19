@@ -16,7 +16,4 @@ class PersonalDeductible extends Container
         'Age' => ['toInteger', 'required', 'min:0'],
         'Experience' => ['toInteger', 'required', 'min:0'],
     ];
-
-    protected $Age;
-    protected $Experience;
 }

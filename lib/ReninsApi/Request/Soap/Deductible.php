@@ -26,7 +26,4 @@ class Deductible extends Container
 
         return $this;
     }
-
-    protected $type;
-    protected $sum;
 }

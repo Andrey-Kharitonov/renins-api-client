@@ -65,12 +65,24 @@ class Filter
     public static function filterToLogical($value, $params) {
         if ($value === null) return $value;
 
-        if ($value === 'YES') {
-            return true;
-        } elseif ($value === 'NO') {
-            return false;
+        if (strcasecmp($value, 'YES') == 0) {
+            return 'YES';
+        } elseif (strcasecmp($value, 'NO') == 0) {
+            return 'NO';
         } else {
             return ($value) ? 'YES' : 'NO';
+        }
+    }
+
+    public static function filterToBoolean($value, $params) {
+        if ($value === null) return $value;
+
+        if (strcasecmp($value, 'true') == 0) {
+            return 'true';
+        } elseif (strcasecmp($value, 'false') == 0) {
+            return 'false';
+        } else {
+            return ($value) ? 'true' : 'false';
         }
     }
 
@@ -109,14 +121,35 @@ class Filter
         }
     }
 
+    /*
     public function filterToContainer($value, $className) {
-        if ($value === null || $value instanceof Container) return $value;
+        if (!$className) {
+            throw new FilterException("Parameter className is required for rule toContainer");
+        }
+
+        if ($value === null) return $value;
+
+        if ($value instanceof Container) {
+            if (!($value instanceof $className)) {
+                throw new \InvalidArgumentException("Invalid type of value. It's Container, but isn't {$className}");
+            }
+            return $value;
+        }
+
+        if (!is_array($value)) {
+            throw new \InvalidArgumentException("Invalid type of value, array is expected");
+        }
 
         return new $className($value);
     }
 
     public function filterToContainerCollection($value, $className) {
-        if ($value === null || $value instanceof Container) return $value;
+        if (!$className) {
+            throw new FilterException("Parameter className is required for rule toContainerCollection");
+        }
+
+        if ($value === null) return $value;
+        if ($value instanceof ContainerCollection) return $value;
 
         if (!is_array($value)) {
             throw new \InvalidArgumentException("Invalid type of value, array is expected");
@@ -124,11 +157,12 @@ class Filter
 
         $coll = new ContainerCollection();
         foreach ($value as $item) {
-            $coll->add($item);
+            $coll->add(new $className($item));
         }
 
         return $coll;
     }
+    */
 
 
 }

@@ -10,25 +10,25 @@ use ReninsApi\Request\ContainerCollection;
  *
  * @property ContainerCollection $Stoa
  * @property Deductible $Deductible
- * @property string|bool $KeysDocsDeductible
- * @property string|bool $Uts
+ * @property string $KeysDocsDeductible
+ * @property string $Uts
  * @property PersonalDeductible $PersonalDeductible
  * @property string $Packet
- * @property string|bool $TotalDestruction
+ * @property string $TotalDestruction
  * @property string $BankName
  * @property string $LeasingID
- * @property string|bool $LeasingEnabled
- * @property string|bool $BankEnabled
+ * @property string $LeasingEnabled
+ * @property string $BankEnabled
  * @property ContainerCollection $CustomOptions
- * @property string|bool $NewClient
- * @property string|bool $GAPEnabled
- * @property string|bool $B2BDiscount
+ * @property string $NewClient
+ * @property string $GAPEnabled
+ * @property string $B2BDiscount
  * @property double $Rebate
  * @property int $Division
  * @property string $DivisionForCalc
  * @property string $DivisionForDelivery
- * @property string|bool $TradeINEnabled
- * @property string|bool $LosslessInsurer
+ * @property string $TradeINEnabled
+ * @property string $LosslessInsurer
  * @property double $HomingCoef
  * @property Telematics $Telematics
  */
@@ -36,10 +36,10 @@ class Casco extends Container
 {
     protected static $rules = [
         'Stoa' => ['containerCollection', 'required', 'notEmpty'],
-        'Deductible' => ['toContainer'],
+        'Deductible' => ['container'],
         'KeysDocsDeductible' => ['toLogical'],
         'Uts' => ['toLogical'],
-        'PersonalDeductible' => ['toContainer'],
+        'PersonalDeductible' => ['container'],
         'Packet' => ['toString'],
         'TotalDestruction' => ['toLogical'],
         'BankName' => ['toString'],
@@ -57,7 +57,7 @@ class Casco extends Container
         'TradeINEnabled' => ['toLogical'],
         'LosslessInsurer' => ['toLogical'],
         'HomingCoef' => ['toDouble'],
-        'Telematics' => ['toContainer'],
+        'Telematics' => ['container'],
     ];
 
     public function toXml(\SimpleXMLElement $xml)
@@ -74,28 +74,4 @@ class Casco extends Container
 
         return $this;
     }
-
-    protected $Stoa;
-    protected $Deductible;
-    protected $KeysDocsDeductible;
-    protected $Uts;
-    protected $PersonalDeductible;
-    protected $Packet;
-    protected $TotalDestruction;
-    protected $BankName;
-    protected $LeasingID;
-    protected $LeasingEnabled;
-    protected $BankEnabled;
-    protected $CustomOptions;
-    protected $NewClient;
-    protected $GAPEnabled;
-    protected $B2BDiscount;
-    protected $Rebate;
-    protected $Division;
-    protected $DivisionForCalc;
-    protected $DivisionForDelivery;
-    protected $TradeINEnabled;
-    protected $LosslessInsurer;
-    protected $HomingCoef;
-    protected $Telematics;
 }

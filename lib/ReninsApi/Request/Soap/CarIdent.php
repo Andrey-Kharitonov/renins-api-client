@@ -34,9 +34,4 @@ class CarIdent extends Container
 
         return $errors;
     }
-
-    protected $LicensePlate;
-    protected $VIN;
-    protected $BodyNumber;
-    protected $ChassisNumber;
 }
