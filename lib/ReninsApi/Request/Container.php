@@ -33,6 +33,13 @@ abstract class Container
     protected function init() {
     }
 
+    /**
+     * Set property value
+     *
+     * @param $name
+     * @param $value
+     * @return $this
+     */
     public function set($name, $value) {
         if (!isset(static::$rules[$name])) {
             throw new ContainerException("Property {$name} not found");
@@ -47,6 +54,13 @@ abstract class Container
         $this->set($name, $value);
     }
 
+    /**
+     * Get property value
+     *
+     * @param $name
+     * @param mixed $def
+     * @return mixed|null
+     */
     public function get($name, $def = null) {
         if (array_key_exists($name, $this->data)) {
             return $this->data[$name];
@@ -59,10 +73,18 @@ abstract class Container
         return $this->get($name);
     }
 
+    /**
+     * Get all data
+     *
+     * @return array
+     */
     public function getData() {
         return $this->data;
     }
 
+    /**
+     * Clear and init
+     */
     public function clear() {
         $this->data = [];
         $this->init();

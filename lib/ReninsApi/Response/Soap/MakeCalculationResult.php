@@ -17,40 +17,20 @@ use ReninsApi\Request\ContainerCollection;
 class MakeCalculationResult extends Container
 {
     protected static $rules = [
-        'program_name' => ['toString'],
-        'program_guid' => ['toString'],
-        'expired_date' => ['toString'],
+        'program_name' => ['toString'], //unknown type
+        'program_guid' => ['toString'], //unknown type
+        'expired_date' => ['toString'], //unknown type
         'printToken' => ['toString'],
         'CalcResults' => ['containerCollection'],
     ];
 
-    protected $program_name;
-    protected $program_guid;
-    protected $expired_date;
-    protected $printToken;
-    protected $CalcResults;
-
     public function fromXml(\SimpleXMLElement $xml) {
-        foreach($xml->attributes() as $name => $value) {
-            $name = (string) $name;
-            $value = (string) $value;
-            if (isset($this->_publicProperties[$name])) {
-                //public property will be set directly
-                $this->{$name} = $value;
-            } else {
-                $this->__set($name, $value);
-            }
-        }
+        $this->fromXmlAttributes($xml, ['program_name', 'program_guid', 'expired_date', 'printToken']);
 
-        foreach($xml->children() as $child) {
-            $name = $child->getName();
-            $value = (string) $child;
-            if (isset($this->_publicProperties[$name])) {
-                //public property will be set directly
-                $this->{$name} = $value;
-            } else {
-                $this->__set($name, $value);
-            }
+        if ($xml) {
+            $coll = new ContainerCollection();
+            $coll->fromXml($xml, CalcResults::class);
+            $this->set('CalcResults', $coll);
         }
 
         return $this;

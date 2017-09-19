@@ -114,6 +114,22 @@ class ContainerCollection implements Iterator
         return $this;
     }
 
+    /**
+     * Fill collection from xml children tags
+     * @param \SimpleXMLElement $xml
+     * @param string $containerClass
+     * @return $this
+     */
+    public function fromXml(\SimpleXMLElement $xml, string $containerClass) {
+        foreach ($xml->children() as $child) {
+            /* @var Container $cont */
+            $cont = new $containerClass();
+            $cont->fromXml($child);
+            $this->add($cont);
+        }
+        return $this;
+    }
+
     /*
      * ITERATOR
      */
