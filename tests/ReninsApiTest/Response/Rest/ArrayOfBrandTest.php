@@ -14,8 +14,8 @@ class ArrayOfBrandTest extends TestCase
     {
         $xml = @file_get_contents(Utils::pathCombine(DATA_DIR, 'VehicleBrandsAllWithModels_response.xml'));
         $resp = ArrayOfBrand::createFromXml($xml);
-        $resp->validateThrow();
         $this->assertInstanceOf(ArrayOfBrand::class, $resp);
+        $resp->validateThrow();
         $this->assertInstanceOf(ContainerCollection::class, $resp->Brand);
         $this->assertGreaterThan(10, $resp->Brand->count());
 

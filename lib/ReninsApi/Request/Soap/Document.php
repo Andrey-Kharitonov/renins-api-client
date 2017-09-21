@@ -14,7 +14,7 @@ use ReninsApi\Request\ContainerCollection;
  */
 class Document extends Container
 {
-    protected static $rules = [
+    protected $rules = [
         'type' => ['toString', 'required', 'docType'],
         'Serial' => ['toString'],
         'Number' => ['toString', 'required', 'notEmpty'],

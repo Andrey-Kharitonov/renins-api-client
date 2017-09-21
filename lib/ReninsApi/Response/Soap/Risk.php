@@ -22,4 +22,14 @@ class Risk extends Container
         'TakeIntoRate' => ['toString'],
         'Coefs' => ['containerCollection'],
     ];
+
+    public function fromXml(\SimpleXMLElement $xml) {
+        $this->fromXmlAttributes($xml, ['Name', 'Bonus', 'Sum', 'TakeIntoRate']);
+
+        if ($xml->Coefs) {
+            $this->Coefs = ContainerCollection::createFromXml($xml->Coefs[0], Coef::class);
+        }
+
+        return $this;
+    }
 }

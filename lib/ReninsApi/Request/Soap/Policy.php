@@ -16,11 +16,11 @@ use ReninsApi\Request\ContainerCollection;
  */
 class Policy extends Container
 {
-    protected static $rules = [
-        'ContractTerm' => ['container', 'required'],
-        'Covers' => ['containerCollection'],
-        'Vehicle' => ['container', 'required'],
-        'Participants' => ['container', 'required'],
-        'Casco' => ['container', 'required'],
+    protected $rules = [
+        'ContractTerm' => ['container:' . ContractTerm::class, 'required'],
+        'Covers' => ['containerCollection:' . Cover::class],
+        'Vehicle' => ['container:' . Vehicle::class, 'required'],
+        'Participants' => ['container:' . Participants::class, 'required'],
+        'Casco' => ['container:' . Casco::class, 'required'],
     ];
 }

@@ -2,7 +2,7 @@
 
 namespace ReninsApi\Soap;
 
-use ReninsApi\Request\Container;
+use ReninsApi\Response\Soap\MakeCalculationResult;
 
 /**
  * Soap client
@@ -78,9 +78,9 @@ class Client
      *
      * @param string $method - http method, default: 'get'
      * @param array $arguments
-     * @return \SimpleXMLElement
+     * @return MakeCalculationResult
      */
-    public function makeRequest(string $method, array $arguments = []): \SimpleXMLElement {
+    public function makeRequest(string $method, array $arguments = []): MakeCalculationResult {
         $soap = new \SoapClient($this->wsdl, [
             'exceptions' => true,
             'connection_timeout' => 30,
@@ -97,7 +97,7 @@ class Client
             $this->lastResponse = $soap->__getLastResponseHeaders() . $soap->__getLastResponse();
         }
 
-        print_r($res);
+        //print_r($res);
 
         if (!is_object($res)
             || empty($res->MakeCalculationResult)
@@ -106,25 +106,6 @@ class Client
             throw new ClientException("Unexpected type of answer. Expected {MakeCalculationResult: any: \"...\"}");
         }
 
-        $xml = $res->MakeCalculationResult->any;
-        $xmlObj = new \SimpleXMLElement($xml);
-
-        $calcResultsNode = $xmlObj->xpath('/root/CalcResults');
-        if (!$calcResultsNode) {
-            throw new ClientException("Path /root/CalcResults not found");
-        }
-
-        if ($calcResultsNode[0]['Success'] == 'false') {
-            $errors = [];
-            foreach($calcResultsNode[0]->Messages->Message as $message) {
-                $errors[] = ((trim($message['level']) != '') ? strtoupper(trim($message['level'])) . ' ' : '') . ((trim($message['code'])) ? trim($message['code']) . '. ' : '') . $message;
-            }
-
-            $exc = new ClientResponseException("Request error");
-            $exc->setErrors($errors);
-            throw $exc;
-        }
-
-        return $xmlObj;
+        return MakeCalculationResult::createFromXml($res->MakeCalculationResult->any);
     }
 }

@@ -21,7 +21,7 @@ use ReninsApi\Request\ContainerCollection;
  */
 class Driver extends Container
 {
-    protected static $rules = [
+    protected $rules = [
         'IsIP' => ['toLogical'],
         'FirstName' => ['toString', 'notEmpty'],
         'MiddleName' => ['toString', 'notEmpty'],
@@ -31,7 +31,7 @@ class Driver extends Container
         'MaritalStatus' => ['toInteger', 'between:1,4'],
         'HasChildren' => ['toLogical'],
         'DriveExperience' => ['toDate'],
-        'Documents' => ['containerCollection'],
+        'Documents' => ['containerCollection:' . Document::class],
     ];
 
     public function toXml(\SimpleXMLElement $xml)

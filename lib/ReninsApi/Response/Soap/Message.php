@@ -18,4 +18,10 @@ class Message extends Container
         'level' => ['toString'], //'', 'Critical', 'Warning' ...
         'text' => ['toString'],
     ];
+
+    public function fromXml(\SimpleXMLElement $xml) {
+        $this->fromXmlAttributes($xml, ['code', 'level']);
+        $this->text = (string) $xml;
+        return $this;
+    }
 }

@@ -12,7 +12,7 @@ use ReninsApi\Request\Container;
  */
 class Option extends Container
 {
-    protected static $rules = [
+    protected $rules = [
         'type' => ['toInteger', 'required', 'min:0'], //0-15
         'enabled' => ['toLogical', 'required'],
     ];

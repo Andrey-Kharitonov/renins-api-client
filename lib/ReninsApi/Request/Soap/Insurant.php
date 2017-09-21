@@ -13,7 +13,7 @@ use ReninsApi\Request\ContainerCollection;
  */
 class Insurant extends Container
 {
-    protected static $rules = [
+    protected $rules = [
         'type' => ['toInteger', 'required', 'participantType'],
         'INN' => ['toString'],
     ];

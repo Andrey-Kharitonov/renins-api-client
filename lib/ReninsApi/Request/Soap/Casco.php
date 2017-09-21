@@ -34,19 +34,19 @@ use ReninsApi\Request\ContainerCollection;
  */
 class Casco extends Container
 {
-    protected static $rules = [
-        'Stoa' => ['containerCollection', 'required', 'notEmpty'],
-        'Deductible' => ['container'],
+    protected $rules = [
+        'Stoa' => ['containerCollection:' . StoaType::class, 'required', 'notEmpty'],
+        'Deductible' => ['container:' . Deductible::class],
         'KeysDocsDeductible' => ['toLogical'],
         'Uts' => ['toLogical'],
-        'PersonalDeductible' => ['container'],
+        'PersonalDeductible' => ['container:' . PersonalDeductible::class],
         'Packet' => ['toString'],
         'TotalDestruction' => ['toLogical'],
         'BankName' => ['toString'],
         'LeasingID' => ['toString'],
         'LeasingEnabled' => ['toLogical'],
         'BankEnabled' => ['toLogical'],
-        'CustomOptions' => ['containerCollection', 'length:,7'],
+        'CustomOptions' => ['containerCollection:' . Option::class, 'length:,7'],
         'NewClient' => ['toLogical'],
         'GAPEnabled' => ['toLogical'],
         'B2BDiscount' => ['toLogical'],
@@ -57,7 +57,7 @@ class Casco extends Container
         'TradeINEnabled' => ['toLogical'],
         'LosslessInsurer' => ['toLogical'],
         'HomingCoef' => ['toDouble'],
-        'Telematics' => ['container'],
+        'Telematics' => ['container:' . Telematics::class],
     ];
 
     public function toXml(\SimpleXMLElement $xml)
@@ -69,7 +69,7 @@ class Casco extends Container
         $this->Stoa->toXml($added, 'StoaType');
 
         //Other tags are typical
-        $rules = array_diff_key(static::$rules, ['Stoa' => true]);
+        $rules = array_diff_key($this->rules, ['Stoa' => true]);
         $this->toXmlTags($xml, array_keys($rules));
 
         return $this;

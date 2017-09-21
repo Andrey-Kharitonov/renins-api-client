@@ -14,7 +14,7 @@ use ReninsApi\Request\Container;
  */
 class CarIdent extends Container
 {
-    protected static $rules = [
+    protected $rules = [
         'LicensePlate' => 'toString',
         'VIN' => 'toString',
         'BodyNumber' => 'toString',

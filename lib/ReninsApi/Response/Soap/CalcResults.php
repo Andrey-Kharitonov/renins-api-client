@@ -3,6 +3,7 @@ namespace ReninsApi\Response\Soap;
 
 use ReninsApi\Request\Container;
 use ReninsApi\Request\ContainerCollection;
+use ReninsApi\Request\Soap\Deductible;
 
 /**
  * Calc results
@@ -18,8 +19,8 @@ use ReninsApi\Request\ContainerCollection;
  * @property Currency $Currency
  * @property User $User
  * @property ContainerCollection $InsuranceObjects
- * @property SomeList $Options
- * @property SomeList $StoaTypes
+ * @property Options $Options
+ * @property StoaTypes $StoaTypes
  * @property Deductible $Deductible
  * @property string $KeysDocsDeductible
  * @property string $DriversDeductible
@@ -55,4 +56,40 @@ class CalcResults extends Container
         'CoefLoss' => ['toString'], //unknown type
         'CoefProlongation' => ['toString'], //unknown type
     ];
+
+    public function fromXml(\SimpleXMLElement $xml) {
+        $this->fromXmlAttributes($xml, ['SuppressPercentage', 'PercentageAccuracy', 'Success', 'b2b_id', 'AccountNumber']);
+
+        if ($xml->Messages) {
+            $this->Messages = ContainerCollection::createFromXml($xml->Messages[0], Message::class);
+        }
+        if ($xml->Risks) {
+            $this->Risks = Risks::createFromXml($xml->Risks[0]);
+        }
+        if ($xml->Total) {
+            $this->Total = Total::createFromXml($xml->Total[0]);
+        }
+        if ($xml->Currency) {
+            $this->Currency = Currency::createFromXml($xml->Currency[0]);
+        }
+        if ($xml->User) {
+            $this->User = User::createFromXml($xml->User[0]);
+        }
+        if ($xml->InsuranceObjects) {
+            $this->InsuranceObjects = ContainerCollection::createFromXml($xml->InsuranceObjects[0], InsuranceObject::class);
+        }
+        if ($xml->Options) {
+            $this->Options = Options::createFromXml($xml->Options[0]);
+        }
+        if ($xml->StoaTypes) {
+            $this->StoaTypes = StoaTypes::createFromXml($xml->StoaTypes[0]);
+        }
+        if ($xml->Deductible) {
+            $this->Deductible = Deductible::createFromXml($xml->Deductible[0]);
+        }
+
+        $this->fromXmlTags($xml, ['KeysDocsDeductible', 'DriversDeductible', 'FourLossDeductible', 'TotalDestruction', 'LossCount', 'CoefLoss', 'CoefProlongation']);
+
+        return $this;
+    }
 }

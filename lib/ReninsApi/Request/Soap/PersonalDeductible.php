@@ -12,7 +12,7 @@ use ReninsApi\Request\Container;
  */
 class PersonalDeductible extends Container
 {
-    protected static $rules = [
+    protected $rules = [
         'Age' => ['toInteger', 'required', 'min:0'],
         'Experience' => ['toInteger', 'required', 'min:0'],
     ];

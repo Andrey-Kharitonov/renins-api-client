@@ -12,9 +12,9 @@ use ReninsApi\Request\Container;
  */
 class Deductible extends Container
 {
-    protected static $rules = [
+    protected $rules = [
         'type' => ['toInteger', 'required', 'notEmpty'], //1-4
-        'sum' => ['toInteger', 'required', 'min:0'], //0, 5000, 7500, ..., 50000
+        'sum' => ['toDouble', 'required', 'min:0'], //0, 5000, 7500, ..., 50000
     ];
 
     public function toXml(\SimpleXMLElement $xml)
@@ -24,6 +24,12 @@ class Deductible extends Container
         $xml->addAttribute('type', $this->type);
         $xml[0] = $this->sum;
 
+        return $this;
+    }
+
+    public function fromXml(\SimpleXMLElement $xml) {
+        $this->fromXmlAttributes($xml, ['type']);
+        $this->sum = (string) $xml;
         return $this;
     }
 }

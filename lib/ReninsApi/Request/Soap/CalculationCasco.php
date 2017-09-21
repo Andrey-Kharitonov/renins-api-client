@@ -14,10 +14,10 @@ use ReninsApi\Request\Container;
  */
 class CalculationCasco extends Container
 {
-    protected static $rules = [
+    protected $rules = [
         'type' => ['toInteger', 'required', 'in:0|1'],
         'uid' => ['toString', 'required', 'notEmpty'],
-        'Policy' => ['container', 'required'],
+        'Policy' => ['container:' . Policy::class, 'required'],
     ];
 
     protected function init()

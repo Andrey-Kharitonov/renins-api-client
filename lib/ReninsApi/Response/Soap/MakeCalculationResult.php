@@ -27,11 +27,9 @@ class MakeCalculationResult extends Container
     public function fromXml(\SimpleXMLElement $xml) {
         $this->fromXmlAttributes($xml, ['program_name', 'program_guid', 'expired_date', 'printToken']);
 
-        if ($xml) {
-            $coll = new ContainerCollection();
-            $coll->fromXml($xml, CalcResults::class);
-            $this->set('CalcResults', $coll);
-        }
+        $coll = new ContainerCollection();
+        $coll->fromXml($xml, CalcResults::class);
+        $this->set('CalcResults', $coll);
 
         return $this;
     }

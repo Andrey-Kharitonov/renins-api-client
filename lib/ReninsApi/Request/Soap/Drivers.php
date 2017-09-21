@@ -16,12 +16,12 @@ use ReninsApi\Request\ContainerCollection;
  */
 class Drivers extends Container
 {
-    protected static $rules = [
+    protected $rules = [
         'type' => ['toInteger', 'in:1|2'],
         'Multidrive' => ['toLogical', 'required'],
         'MinAge' => ['toInteger', 'min:0'],
         'MinExperience' => ['toInteger', 'min:0'],
-        'Driver' => ['containerCollection'],
+        'Driver' => ['containerCollection:' . Driver::class],
     ];
 
     public function toXml(\SimpleXMLElement $xml)

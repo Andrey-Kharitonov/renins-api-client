@@ -14,7 +14,7 @@ use ReninsApi\Request\Container;
  */
 class AntiTheftDeviceInfo extends Container
 {
-    protected static $rules = [
+    protected $rules = [
         'AntiTheftDeviceBrand' => ['toString', 'required', 'notEmpty'],
         'AntiTheftDeviceModel' => ['toString', 'required', 'notEmpty'],
         'AntiTheftTrackerBrand' => ['toString'],

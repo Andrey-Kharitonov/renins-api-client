@@ -15,6 +15,7 @@ class ApiVersion2CascoTest extends TestCase
     }
 
     /**
+     * Test valid request
      * @group soap
      * @group current
      */
@@ -38,8 +39,8 @@ class ApiVersion2CascoTest extends TestCase
         $Vehicle = new \ReninsApi\Request\Soap\Vehicle();
         $Vehicle->Manufacturer = 'ВАЗ';
         $Vehicle->Model = '1117 Kalina';
-        $Vehicle->Year = 2013;
-        $Vehicle->Cost = 336000;
+        $Vehicle->Year = date('Y');
+        $Vehicle->Cost = 400000;
         $Vehicle->Type = 'Легковое ТС';
         $Vehicle->ManufacturerType = 1;
         $Vehicle->IsNew = true;
@@ -63,6 +64,7 @@ class ApiVersion2CascoTest extends TestCase
         $Stoa = new ContainerCollection([
             new \ReninsApi\Request\Soap\StoaType(['type' => 3, 'enabled' => false]),
             new \ReninsApi\Request\Soap\StoaType(['type' => 2, 'enabled' => true]),
+            new \ReninsApi\Request\Soap\StoaType(['type' => 4, 'enabled' => true]),
         ]);
 
         $Casco = new \ReninsApi\Request\Soap\Casco();
@@ -80,7 +82,8 @@ class ApiVersion2CascoTest extends TestCase
         $request->genUuid();
         $request->Policy = $Policy;
 
-        $client->calcCasco($request);
+        $response = $client->calcCasco($request);
+        $this->assertInstanceOf(\ReninsApi\Response\Soap\MakeCalculationResult::class, $response);
     }
 
 

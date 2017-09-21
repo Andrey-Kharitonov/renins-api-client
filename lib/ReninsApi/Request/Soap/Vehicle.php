@@ -22,18 +22,18 @@ use ReninsApi\Request\Container;
  */
 class Vehicle extends Container
 {
-    protected static $rules = [
+    protected $rules = [
         'Manufacturer' => ['toString', 'required', 'notEmpty'],
         'Model' => ['toString', 'required', 'notEmpty'],
         'Year' => ['toInteger', 'required', 'notEmpty'],
         'Cost' => ['toDouble', 'required', 'notEmpty', 'min:0'],
         'Type' => ['toString', 'required', 'vehicleType'],
-        'AntiTheftDeviceInfo' => ['container'],
-        'PUUDeviceInfo' => ['container'],
+        'AntiTheftDeviceInfo' => ['container:' . AntiTheftDeviceInfo::class],
+        'PUUDeviceInfo' => ['container:' . PUUDeviceInfo::class],
         'ManufacturerType' => ['toInteger', 'required', 'in:0|1'],
         'IsNew' => ['toLogical'],
         'Power' => ['toInteger', 'required', 'notEmpty'],
         'CarBodyType' => ['toString', 'required', 'notEmpty'],
-        'CarIdent' => ['container'],
+        'CarIdent' => ['container:' . CarIdent::class],
     ];
 }

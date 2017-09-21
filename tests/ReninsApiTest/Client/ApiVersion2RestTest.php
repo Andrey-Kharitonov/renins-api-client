@@ -5,6 +5,7 @@ namespace ReninsApiTest\Client;
 use PHPUnit\Framework\TestCase;
 use ReninsApi\Client\ApiVersion2;
 use ReninsApi\Helpers\LogEvent;
+use ReninsApi\Request\ContainerCollection;
 
 class ApiVersion2RestTest extends TestCase
 {
@@ -31,13 +32,9 @@ class ApiVersion2RestTest extends TestCase
         $client->onLog = [$this, 'onLog'];
 
         $response = $client->vehicleBrandsAll('Легковое ТС');
-        $this->assertInstanceOf(\ReninsApi\Response\Rest\VehicleBrandsAll::class, $response);
-        $this->assertGreaterThan(10, count($response->getBrands()));
-
-        $filtered = array_filter($response->getBrands(), function($item) {
-            return $item['Name'] == 'ВАЗ';
-        });
-        $this->assertEquals(1, count($filtered));
+        $this->assertInstanceOf(\ReninsApi\Response\Rest\ArrayOfBrand::class, $response);
+        $this->assertInstanceOf(ContainerCollection::class, $response->Brand);
+        $this->assertGreaterThan(10, $response->Brand->count());
     }
 
     /**
@@ -49,8 +46,8 @@ class ApiVersion2RestTest extends TestCase
         $client->onLog = [$this, 'onLog'];
 
         $response = $client->vehicleBrandsAll('Invalid value');
-        $this->assertInstanceOf(\ReninsApi\Response\Rest\VehicleBrandsAll::class, $response);
-        $this->assertEquals(0, count($response->getBrands()));
+        $this->assertInstanceOf(\ReninsApi\Response\Rest\ArrayOfBrand::class, $response);
+        $this->assertEquals(0, $response->Brand->count());
     }
 
     /**
@@ -62,16 +59,8 @@ class ApiVersion2RestTest extends TestCase
         $client->onLog = [$this, 'onLog'];
 
         $response = $client->vehicleBrandsAllWithModels('Легковое ТС');
-        $this->assertInstanceOf(\ReninsApi\Response\Rest\VehicleBrandsAll::class, $response);
-        $this->assertGreaterThan(10, count($response->getBrands()));
-
-        $filtered = array_filter($response->getBrands(), function($item) {
-            return $item['Name'] == 'ВАЗ';
-        });
-        $this->assertEquals(1, count($filtered));
-
-        $filtered = array_values($filtered);
-        $this->assertArrayHasKey('Models', $filtered[0]);
-        $this->assertGreaterThan(10, count($filtered[0]['Models']));
+        $this->assertInstanceOf(\ReninsApi\Response\Rest\ArrayOfBrand::class, $response);
+        $this->assertInstanceOf(ContainerCollection::class, $response->Brand);
+        $this->assertGreaterThan(10, $response->Brand->count());
     }
 }

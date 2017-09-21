@@ -18,7 +18,7 @@ use ReninsApi\Request\ContainerCollection;
  */
 class ContractTerm extends Container
 {
-    protected static $rules = [
+    protected $rules = [
         'Product' => ['toInteger', 'required', 'between:1,6'],
         'ProgramType' => ['toString', 'required', 'notEmpty'],
         'DurationMonth' => ['toInteger', 'required', 'min:1'],

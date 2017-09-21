@@ -14,9 +14,9 @@ use ReninsApi\Request\ContainerCollection;
  */
 class Participants extends Container
 {
-    protected static $rules = [
-        'Drivers' => ['container', 'required'],
-        'Insurant' => ['container', 'required'],
+    protected $rules = [
+        'Drivers' => ['container:' . Drivers::class, 'required'],
+        'Insurant' => ['container:' . Insurant::class, 'required'],
         'BeneficiaryType' => ['toInteger', 'participantType'],
     ];
 }

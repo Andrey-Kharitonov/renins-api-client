@@ -13,7 +13,7 @@ use ReninsApi\Request\Container;
  */
 class Telematics extends Container
 {
-    protected static $rules = [
+    protected $rules = [
         'enabled' => ['toLogical', 'required'],
         'Points' => ['toInteger'],
         'LossCount' => ['toInteger'],

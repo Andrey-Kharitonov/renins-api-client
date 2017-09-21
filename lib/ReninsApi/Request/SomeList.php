@@ -1,5 +1,5 @@
 <?php
-namespace ReninsApi\Response\Soap;
+namespace ReninsApi\Request;
 
 use ReninsApi\Request\Container;
 use ReninsApi\Request\ContainerCollection;
@@ -9,7 +9,7 @@ use ReninsApi\Request\ContainerCollection;
  *
  * @property string $list
  */
-class SomeList extends Container
+abstract class SomeList extends Container
 {
     protected $rules = [
         'list' => ['toString'],

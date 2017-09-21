@@ -12,7 +12,7 @@ use ReninsApi\Request\Container;
  */
 class Cover extends Container
 {
-    protected static $rules = [
+    protected $rules = [
         'code' => ['toString', 'required', 'in:UGON|USHERB|DO|NS|DAGO'],
         'sum' => ['toDouble', 'required', 'notEmpty', 'min:0'],
     ];

@@ -12,7 +12,7 @@ use ReninsApi\Request\Container;
  */
 class PUUDeviceInfo extends Container
 {
-    protected static $rules = [
+    protected $rules = [
         'PUUDeviceModel' => ['toString', 'required', 'notEmpty'],
         'AutoStart' => ['toLogical'],
     ];

@@ -56,7 +56,7 @@ abstract class Container
      * @return $this
      */
     public function set($name, $value) {
-        if (!isset($this->rules[$name])) {
+        if (!$this->has($name)) {
             throw new ContainerException("Property {$name} not found");
         }
 
@@ -86,6 +86,16 @@ abstract class Container
     public function __get($name)
     {
         return $this->get($name);
+    }
+
+    /**
+     * Проверяет ниличие свойства
+     * @param $name
+     * @return bool
+     */
+    public function has($name)
+    {
+        return isset($this->rules[$name]);
     }
 
     /**
@@ -242,14 +252,18 @@ abstract class Container
     public function fromXml(\SimpleXMLElement $xml) {
         foreach($xml->attributes() as $name => $value) {
             $name = (string) $name;
-            $value = (string) $value;
-            $this->set($name, $value);
+            if ($this->has($name)) {
+                $value = (string) $value;
+                $this->set($name, $value);
+            }
         }
 
         foreach($xml->children() as $child) {
             $name = $child->getName();
-            $value = (string) $child;
-            $this->set($name, $value);
+            if ($this->has($name)) {
+                $value = (string) $child;
+                $this->set($name, $value);
+            }
         }
 
         return $this;

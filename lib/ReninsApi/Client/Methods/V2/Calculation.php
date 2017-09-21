@@ -5,8 +5,8 @@ namespace ReninsApi\Client\Methods\V2;
 use ReninsApi\Helpers\Utils;
 use ReninsApi\Request\Soap\CalculationCasco;
 use ReninsApi\Request\ValidatorMultiException;
+use ReninsApi\Response\Soap\MakeCalculationResult;
 use ReninsApi\Soap\Client as SoapClient;
-use ReninsApi\Soap\ClientResponseException as SoapClientResponseException;
 
 /**
  * Calculation
@@ -15,7 +15,7 @@ trait Calculation
 {
     /**
      * @param CalculationCasco $params
-     * @return \ReninsApi\Response\Rest\VehicleBrandsAll
+     * @return MakeCalculationResult
      * @throws \Exception
      */
     public function calcCasco(CalculationCasco $params) {
@@ -48,14 +48,6 @@ trait Calculation
                 'response' => $client->getLastResponse(),
                 'header' => $client->getLastHeader(),
             ]);
-        } catch(SoapClientResponseException $exc) {
-            $this->logMessage(__METHOD__, $exc->getMessage(), [
-                'request' => $client->getLastRequest(),
-                'response' => $client->getLastResponse(),
-                'header' => $client->getLastHeader(),
-                'errors' => $exc->getErrors(),
-            ]);
-            throw $exc;
         } catch(\Exception $exc) {
             $this->logMessage(__METHOD__, $exc->getMessage(), [
                 'request' => $client->getLastRequest(),
@@ -65,5 +57,7 @@ trait Calculation
         }
 
         print_r($res);
+
+        return $res;
     }
 }

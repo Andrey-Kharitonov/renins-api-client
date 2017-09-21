@@ -111,6 +111,8 @@ class Client
             throw new CurlException($error, $errno);
         }
 
+        //print_r($responseBody);
+
         return $responseBody;
     }
 }

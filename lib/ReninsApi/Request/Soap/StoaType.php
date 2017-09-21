@@ -12,7 +12,7 @@ use ReninsApi\Request\Container;
  */
 class StoaType extends Container
 {
-    protected static $rules = [
+    protected $rules = [
         'type' => ['toInteger', 'required', 'notEmpty'], //1-8
         'enabled' => ['toLogical', 'required'],
     ];
