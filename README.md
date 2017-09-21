@@ -1,109 +1,101 @@
-# Прмеры соманд для тестирования
+# Как развернуть проект для тестирования
 
-phpunit --testsuite client --group soap --debug
+Установите [composer](https://getcomposer.org/download/)
 
-# PHP-клиент для retailCRM API
+Установите php версии не ниже 7.1
 
-PHP-клиент для работы с [retailCRM API](http://www.retailcrm.ru/docs/Developers/ApiVersion5).
+Клонируйте репозиторий
 
-Рекомендуем обращаться к [документации](http://retailcrm.github.io/api-client-php) по библиотеке, в частности по классу [RetailCrm\ApiClient](http://retailcrm.github.io/api-client-php/class-RetailCrm.ApiClient.html).
-
-## Обязательные требования
-
-* PHP версии 5.4 и выше
-* PHP-расширение cURL
-
-## Установка
-
-1) Установите [composer](https://getcomposer.org/download/)
-
-2) Выполните в папке проекта:
 ```bash
-composer require retailcrm/api-client-php ~5.0
+git clone git@git.epam.com:reni-ddc/RENI-DDC.git
 ```
 
-В конфиг `composer.json` вашего проекта будет добавлена библиотека `retailcrm/api-client-php`, которая установится в папку `vendor/`. При отсутствии файла конфига или папки с вендорами они будут созданы.
+Выполните в папке проекта:
+```bash
+composer install
+```
 
-В случае, если до этого в вашем проекте не использовался `composer`, подключите файл автозагрузки вендоров. Для этого укажите в коде проекта:
+Выполняйте команды "phpunit". Подробнее в разделе "Тестирование".
+
+# Клиент
+
+Может быть создан через фабрику ReninsApi\Factory или напрямую как экземпляр класса ReninsApi\Client\ApiVersion2.
+Клиент может работать в режиме теста. В этом случае будут использован тестовый стенд сервиса.
+
+Клиент использует REST-запросы и SOAP-запросы. REST для получения некоторых справочных данных.
+Например: список марок и моделей авто. SOAP используется для расчетов по продуктам и для получения печатных форм.
+
+# Контейнеры
+
+Основная логика приложения построена на контейнерах - классах унаследованных от ReninsApi\Request\Container.
+Контейнер может иметь свойства любого типа, в т.ч. другие контейнеры и коллекцию контейнеров.
+
+* Контейнер моежт проверить сам себя на валидность. Для этого он содержит защищенное свойство $rules.
+Валидация запускается явным образом (методы validate() или validateThrow()). Валидация проводится рекурсивно по
+всем вложенным контейнерам и коллекциям
+* После проверки можно запросить массив ошибок (метод getErrors()) 
+* Контейнер может быть сериализован в XML или массив (методы toXml() и toArray()). Это также производится рекурсивно.
+* Контейнер может быть создан из XML (метод fromXml() или стат. метод createFromXml()). Конечно контейнер создаст все
+вложенные контейнеры и коллекции 
+
+##Правила валидации
+
+$rules представляет собой массив, ассоц. по именам свойств. Каждое свойство обязательно должно быть указано в $rules. Можно указать
+пустой массив правил. Правила для каждого свойства можно указаывать в виде строки через запятую или в виде массива. 
+
+Пример правил:
+
 ```php
-require 'path/to/vendor/autoload.php';
+    protected $rules = [
+        'IsIP' => ['toLogical'],
+        'FirstName' => ['toString', 'notEmpty'],
+        'MiddleName' => ['toString', 'notEmpty'],
+        'LastName' => ['toString', 'notEmpty'],
+        'BirthDate' => ['toDate'],
+        'Gender' => ['toString', 'in:M|F'],
+        'MaritalStatus' => ['toInteger', 'between:1,4'],
+        'HasChildren' => ['toLogical'],
+        'DriveExperience' => ['toDate'],
+        'Documents' => ['containerCollection:' . Document::class],
+    ];
 ```
+ 
+Правила начинающиеся на 'to' являются фильтрами. Они служат только для конвертации значения при записи в свойство.
+Остальные правила являются валидаторами и проверяют значение свойства. Правила фильтрации обрабатываются ReninsApi\Request\Filter, правила валидации -
+Правила фильтрации обрабатываются ReninsApi\Request\Validator.
 
-## Примеры использования
+Некоторые правила должны(могут) иметь параметры, указанные после двоеточия. Подробнее о правилах см. в ReninsApi\Request\Validator 
 
-### Получение информации о заказе
+## Процесс валидации 
+
+После вызова validate() можно запросить список ошибок методом getErrors(). Метод вернет плоский массив ошибок, ассоц. по названию свойств.
+
 ```php
-$client = new \RetailCrm\ApiClient(
-    'https://demo.retailcrm.ru',
-    'T9DMPvuNt7FQJMszHUdG8Fkt6xHsqngH',
-    \RetailCrm\ApiClient::V5
-);
-
-try {
-    $response = $client-request->ordersGet('M-2342');
-} catch (\RetailCrm\Exception\CurlException $e) {
-    echo "Сетевые проблемы. Ошибка подключения к retailCRM: " . $e->getMessage();
-}
-
-if ($response->isSuccessful()) {
-    echo $response->order['totalSumm'];
-    // или $response['order']['totalSumm'];
-    // или
-    //    $order = $response->getOrder();
-    //    $order['totalSumm'];
-} else {
-    echo sprintf(
-        "Ошибка получения информации о заказа: [Статус HTTP-ответа %s] %s",
-        $response->getStatusCode(),
-        $response->getErrorMsg()
-    );
-
-    // получить детализацию ошибок
-    //if (isset($response['errors'])) {
-    //    print_r($response['errors']);
-    //}
-}
+[
+    'Policy.Vehicle.Manufacturer' => '... текст ошибки ...'
+    'Policy.Vehicle.Model' => '... текст ошибки ...'
+    'Policy.Covers.0.code' => '... текст ошибки ...'
+    'Policy.Covers.1.code' => '... текст ошибки ...'
+]
 ```
 
-### Создание заказа
-```php
+Как видно из примера коллекции (Policy.Covers) также проверяются и результаты их проверок также собираются в список ошибок.
 
-$client = new \RetailCrm\ApiClient(
-    'https://demo.retailcrm.ru',
-    'T9DMPvuNt7FQJMszHUdG8Fkt6xHsqngH',
-    \RetailCrm\ApiClient::V4
-);
+Метод validateThrow() создаст исключение ReninsApi\Request\ValidatorMultiException. Это исключение также имеет метод getErrors(),
+которое вернет тот самый массив ошибок.
 
-try {
-    $response = $client-request->ordersCreate(array(
-        'externalId' => 'some-shop-order-id',
-        'firstName' => 'Vasily',
-        'lastName' => 'Pupkin',
-        'items' => array(
-            //...
-        ),
-        'delivery' => array(
-            'code' => 'russian-post',
-        )
-    ));
-} catch (\RetailCrm\Exception\CurlException $e) {
-    echo "Сетевые проблемы. Ошибка подключения к retailCRM: " . $e->getMessage();
-}
+Метод validateThrow() вызывается перед каждым SOAP или REST запросом, а также после получения ответа и конвертации его в соотв. контейнер.
 
-if ($response->isSuccessful() && 201 === $response->getStatusCode()) {
-    echo 'Заказ успешно создан. ID заказа в retailCRM = ' . $response->id;
-        // или $response['id'];
-        // или $response->getId();
-} else {
-    echo sprintf(
-        "Ошибка создания заказа: [Статус HTTP-ответа %s] %s",
-        $response->getStatusCode(),
-        $response->getErrorMsg()
-    );
+# Тестирование
 
-    // получить детализацию ошибок
-    //if (isset($response['errors'])) {
-    //    print_r($response['errors']);
-    //}
-}
+Тесты разделены на 3 части (--testsuite): client, request, response.
+Каждая часть имеет группы (--group): soap, client.
+Если мы хотим запустить тест только для client и толко для soap, то
+
+```bash
+phpunit --testsuite client --group soap --debug
 ```
+
+В папке tests/logs будут созданы логи тестирования в формате Html (Monolog).
+
+

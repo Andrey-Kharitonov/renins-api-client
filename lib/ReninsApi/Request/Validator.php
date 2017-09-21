@@ -64,6 +64,12 @@ class Validator
      * VALIDATION METHODS
      */
 
+    /**
+     * Will return error, if $value === null
+     * @param $value
+     * @param $params
+     * @return bool|string
+     */
     public static function checkRequired($value, $params = null)
     {
         if ($value === null) {
@@ -72,6 +78,13 @@ class Validator
         return true;
     }
 
+    /**
+     * Will return error, if it is empty container, empty string (except "0") or empty($value)
+     * It will pass null! Check null by rule 'required'
+     * @param $value
+     * @param $params
+     * @return bool|string
+     */
     public static function checkNotEmpty($value, $params = null)
     {
         if ($value === null) return true;
@@ -91,11 +104,25 @@ class Validator
         return true;
     }
 
+    /**
+     * Will return error, if it isn't "YES" or "NO"
+     * It will pass null.
+     * @param $value
+     * @param $params
+     * @return bool|string
+     */
     public static function checkLogical($value, $params = null)
     {
         return static::checkIn($value, 'YES|NO');
     }
 
+    /**
+     * Will return error, if it isn't included in $params
+     * It will pass null.
+     * @param $value
+     * @param $params - string "value1|value2|value3"
+     * @return bool|string
+     */
     public static function checkIn($value, $params = null)
     {
         if ($value === null) return true;
@@ -123,6 +150,13 @@ class Validator
         return true;
     }
 
+    /**
+     * Will return error, if it isn't double type
+     * It will pass null.
+     * @param $value
+     * @param $params
+     * @return bool|string
+     */
     public static function checkSum($value, $params = null)
     {
         if ($value === null) return true;
@@ -133,6 +167,13 @@ class Validator
         return true;
     }
 
+    /**
+     * Will return error, if $value < $params
+     * It will pass null.
+     * @param $value
+     * @param $params
+     * @return bool|string
+     */
     public static function checkMin($value, $params = null)
     {
         if ($value === null) return true;
@@ -143,6 +184,13 @@ class Validator
         return true;
     }
 
+    /**
+     * Will return error, if $value > $params
+     * It will pass null.
+     * @param $value
+     * @param $params
+     * @return bool|string
+     */
     public static function checkMax($value, $params = null)
     {
         if ($value === null) return true;
@@ -153,6 +201,13 @@ class Validator
         return true;
     }
 
+    /**
+     * Will return error, if $value < min or $value > max
+     * It will pass null.
+     * @param $value
+     * @param $params - string "min,max"
+     * @return bool|string
+     */
     public static function checkBetween($value, $params = null)
     {
         if ($value === null) return true;
@@ -176,6 +231,13 @@ class Validator
         return true;
     }
 
+    /**
+     * Will return error, if $value isn't instance of $className
+     * It will pass null.
+     * @param $value
+     * @param $className
+     * @return bool|string
+     */
     public static function checkContainer($value, $className = null)
     {
         if (!$className) {
@@ -191,6 +253,13 @@ class Validator
         return true;
     }
 
+    /**
+     * Will return error, if $value isn't instance of ContainerCollection or collection contains containers of class different $className
+     * It will pass null.
+     * @param $value
+     * @param $className
+     * @return bool|string
+     */
     public static function checkContainerCollection($value, $className = null)
     {
         if (!$className) {
@@ -209,6 +278,13 @@ class Validator
         return true;
     }
 
+    /**
+     * It should be string "Y-m-d".
+     * Null will be passed.
+     * @param $value
+     * @param $params
+     * @return bool|string
+     */
     public static function checkDate($value, $params = null)
     {
         if ($value === null) return true;
@@ -236,6 +312,13 @@ class Validator
             . '|REGISTRATION_CERTIFICATE|RESIDENTIAL_PERMIT|SOLDIER_IDENTIFY_CARD|PTS|DIAGNOSTIC_CARD|TALON_TECHOSMOTR|STS');
     }
 
+    /**
+     * Will return error, if $value have length < min or > max
+     * It will pass null.
+     * @param $value
+     * @param $params - Examples: "min,max", ",max", "min,"
+     * @return bool|string
+     */
     public static function checkLength($value, $params = null)
     {
         if ($value === null) return true;
