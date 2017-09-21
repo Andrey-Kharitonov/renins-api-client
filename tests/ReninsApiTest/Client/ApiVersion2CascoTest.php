@@ -14,16 +14,7 @@ class ApiVersion2CascoTest extends TestCase
         $loggerCalc->info("{$event->method}: {$event->message}", $event->data);
     }
 
-    /**
-     * Test valid request
-     * @group soap
-     * @group current
-     */
-    public function testCalcCasco()
-    {
-        $client = new ApiVersion2(CLIENT_SYSTEM_NAME, PARTNER_UID);
-        $client->onLog = [$this, 'onLog'];
-
+    private function getCascoRequest() {
         $ContractTerm = new \ReninsApi\Request\Soap\ContractTerm();
         $ContractTerm->Product = 1;
         $ContractTerm->ProgramType = 'KASKO';
@@ -64,7 +55,7 @@ class ApiVersion2CascoTest extends TestCase
         $Stoa = new ContainerCollection([
             new \ReninsApi\Request\Soap\StoaType(['type' => 3, 'enabled' => false]),
             new \ReninsApi\Request\Soap\StoaType(['type' => 2, 'enabled' => true]),
-            new \ReninsApi\Request\Soap\StoaType(['type' => 4, 'enabled' => true]),
+            //new \ReninsApi\Request\Soap\StoaType(['type' => 5, 'enabled' => true]),
         ]);
 
         $Casco = new \ReninsApi\Request\Soap\Casco();
@@ -82,9 +73,42 @@ class ApiVersion2CascoTest extends TestCase
         $request->genUuid();
         $request->Policy = $Policy;
 
-        $response = $client->calcCasco($request);
-        $this->assertInstanceOf(\ReninsApi\Response\Soap\MakeCalculationResult::class, $response);
+        return $request;
     }
 
+    /**
+     * @group soap
+     */
+    public function testCalcCascoSuccessful()
+    {
+        $client = new ApiVersion2(CLIENT_SYSTEM_NAME, PARTNER_UID);
+        $client->onLog = [$this, 'onLog'];
+
+        $request = $this->getCascoRequest();
+
+        $response = $client->calcCasco($request);
+        //print_r($response->toArray());
+        $this->assertInstanceOf(\ReninsApi\Response\Soap\MakeCalculationResult::class, $response);
+        $this->assertEquals($response->isSuccessful(), true);
+    }
+
+    /**
+     * @group soap
+     * @group current
+     */
+    public function testCalcCascoInvalid()
+    {
+        $client = new ApiVersion2(CLIENT_SYSTEM_NAME, PARTNER_UID);
+        $client->onLog = [$this, 'onLog'];
+
+        $request = $this->getCascoRequest();
+        $request->Policy->Vehicle->Manufacturer = 'Here is error';
+        $request->Policy->Vehicle->Model = 'Here is error';
+
+        $response = $client->calcCasco($request);
+        //print_r($response->toArray());
+        $this->assertInstanceOf(\ReninsApi\Response\Soap\MakeCalculationResult::class, $response);
+        $this->assertEquals($response->isSuccessful(), false);
+    }
 
 }

@@ -22,7 +22,7 @@ class Risks extends Container
         'CanBeChoosen' => ['toString'], //unknown type
         'Visible' => ['toBoolean'],
         'Enabled' => ['toBoolean'],
-        'Risk' => ['containerCollection'],
+        'Risk' => ['containerCollection:' . Risk::class],
     ];
 
     public function fromXml(\SimpleXMLElement $xml) {

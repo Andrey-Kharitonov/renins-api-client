@@ -160,8 +160,6 @@ abstract class Container
      */
     public function toArray(): array
     {
-        $this->validateThrow();
-
         $data = $this->getData();
         foreach($data as $property => $value) {
             if ($value instanceof Container || $value instanceof ContainerCollection) {
@@ -178,8 +176,6 @@ abstract class Container
      * @return $this
      */
     public function toXml(\SimpleXMLElement $xml) {
-        $this->validateThrow();
-
         $data = $this->getData();
         foreach($data as $property => $value) {
             if ($value === null) continue;

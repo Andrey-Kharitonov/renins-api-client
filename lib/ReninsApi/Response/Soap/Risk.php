@@ -20,7 +20,7 @@ class Risk extends Container
         'Bonus' => ['toString'], //unknown type
         'Sum' => ['toString'], //unknown type
         'TakeIntoRate' => ['toString'],
-        'Coefs' => ['containerCollection'],
+        'Coefs' => ['containerCollection:' . Coef::class],
     ];
 
     public function fromXml(\SimpleXMLElement $xml) {

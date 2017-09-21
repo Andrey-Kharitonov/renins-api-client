@@ -21,7 +21,7 @@ class MakeCalculationResult extends Container
         'program_guid' => ['toString'], //unknown type
         'expired_date' => ['toString'], //unknown type
         'printToken' => ['toString'],
-        'CalcResults' => ['containerCollection'],
+        'CalcResults' => ['containerCollection:' . CalcResults::class],
     ];
 
     public function fromXml(\SimpleXMLElement $xml) {
@@ -32,6 +32,30 @@ class MakeCalculationResult extends Container
         $this->set('CalcResults', $coll);
 
         return $this;
+    }
+
+    /**
+     * Is successful response
+     * @return bool
+     */
+    public function isSuccessful() {
+        if (!$this->CalcResults || !$this->CalcResults->count()) {
+            return true;
+        }
+
+        /*
+         * If there is successful CalcResults, it will mean successful response
+         */
+        $ret = false;
+        foreach($this->CalcResults as $calcResults) {
+            /* @var CalcResults $calcResults */
+            if ($calcResults->Success == 'true') {
+                $ret = true;
+                break;
+            }
+        }
+
+        return $ret;
     }
 
 }

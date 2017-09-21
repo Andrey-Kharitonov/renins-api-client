@@ -121,46 +121,4 @@ class Filter
         }
     }
 
-    /*
-    public function filterToContainer($value, $className) {
-        if (!$className) {
-            throw new FilterException("Parameter className is required for rule toContainer");
-        }
-
-        if ($value === null) return $value;
-
-        if ($value instanceof Container) {
-            if (!($value instanceof $className)) {
-                throw new \InvalidArgumentException("Invalid type of value. It's Container, but isn't {$className}");
-            }
-            return $value;
-        }
-
-        if (!is_array($value)) {
-            throw new \InvalidArgumentException("Invalid type of value, array is expected");
-        }
-
-        return new $className($value);
-    }
-
-    public function filterToContainerCollection($value, $className) {
-        if (!$className) {
-            throw new FilterException("Parameter className is required for rule toContainerCollection");
-        }
-
-        if ($value === null) return $value;
-        if ($value instanceof ContainerCollection) return $value;
-
-        if (!is_array($value)) {
-            throw new \InvalidArgumentException("Invalid type of value, array is expected");
-        }
-
-        $coll = new ContainerCollection();
-        foreach ($value as $item) {
-            $coll->add(new $className($item));
-        }
-
-        return $coll;
-    }
-    */
 }

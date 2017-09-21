@@ -29,6 +29,7 @@ trait Calculation
             $request = $doc->addChild('Request', null, '');
             $request->addAttribute('ClientSystemName', $this->clientSystemName);
             $request->addAttribute('partnerUid', $this->partnerUid);
+            $params->validateThrow();
             $params->toXml($request);
             $xmlStr = Utils::sxmlToStr($xml);
         } catch (ValidatorMultiException $exc) {
@@ -55,8 +56,6 @@ trait Calculation
             ]);
             throw $exc;
         }
-
-        print_r($res);
 
         return $res;
     }

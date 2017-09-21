@@ -39,15 +39,15 @@ class CalcResults extends Container
         'b2b_id' => ['toInteger'],
         'AccountNumber' => ['toString'],
 
-        'Messages' => ['containerCollection'],
-        'Risks' => ['container'],
-        'Total' => ['container'],
-        'Currency' => ['container'],
-        'User' => ['container'],
-        'InsuranceObjects' => ['containerCollection'],
-        'Options' => ['container'],
-        'StoaTypes' => ['container'],
-        'Deductible' => ['container'],
+        'Messages' => ['containerCollection:' . Message::class],
+        'Risks' => ['container:' . Risks::class],
+        'Total' => ['container:' . Total::class],
+        'Currency' => ['container:' . Currency::class],
+        'User' => ['container:' . User::class],
+        'InsuranceObjects' => ['containerCollection:' . InsuranceObject::class],
+        'Options' => ['container:' . Options::class],
+        'StoaTypes' => ['container:' . StoaTypes::class],
+        'Deductible' => ['container:' . Deductible::class],
         'KeysDocsDeductible' => ['toString'], //unknown type
         'DriversDeductible' => ['toString'], //unknown type
         'FourLossDeductible' => ['toString'], //unknown type

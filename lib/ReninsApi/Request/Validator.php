@@ -46,9 +46,13 @@ class Validator
                     throw new ValidatorException("Rule {$propRule} isn't supported");
                 }
 
-                $res = $this::{$method}($value, $params);
-                if ($res !== true) {
-                    $this->errors[$property][] = $res;
+                try {
+                    $res = $this::{$method}($value, $params);
+                    if ($res !== true) {
+                        $this->errors[$property][] = $res;
+                    }
+                } catch (ValidatorException $exc) {
+                    throw new ValidatorException($property . ': ' . $exc->getMessage(), 0, $exc);
                 }
             }
         }
@@ -175,7 +179,7 @@ class Validator
     public static function checkContainer($value, $className = null)
     {
         if (!$className) {
-            throw new FilterException("Parameter className is required for rule container");
+            throw new ValidatorException("Parameter className is required for rule container");
         }
 
         if ($value === null) return true;
@@ -190,7 +194,7 @@ class Validator
     public static function checkContainerCollection($value, $className = null)
     {
         if (!$className) {
-            throw new FilterException("Parameter className is required for rule containerCollection");
+            throw new ValidatorException("Parameter className is required for rule containerCollection");
         }
 
         if ($value === null) return true;

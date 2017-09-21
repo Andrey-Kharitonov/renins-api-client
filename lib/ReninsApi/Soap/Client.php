@@ -106,6 +106,9 @@ class Client
             throw new ClientException("Unexpected type of answer. Expected {MakeCalculationResult: any: \"...\"}");
         }
 
-        return MakeCalculationResult::createFromXml($res->MakeCalculationResult->any);
+        $ret = MakeCalculationResult::createFromXml($res->MakeCalculationResult->any);
+        $ret->validateThrow();
+
+        return $ret;
     }
 }
