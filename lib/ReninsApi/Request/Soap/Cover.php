@@ -19,8 +19,6 @@ class Cover extends Container
 
     public function toXml(\SimpleXMLElement $xml)
     {
-        $this->validateThrow();
-
         $xml->addAttribute('code', $this->code);
         $xml[0] = $this->sum;
 

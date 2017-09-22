@@ -26,18 +26,16 @@ class Driver extends Container
         'FirstName' => ['toString', 'notEmpty'],
         'MiddleName' => ['toString', 'notEmpty'],
         'LastName' => ['toString', 'notEmpty'],
-        'BirthDate' => ['toDate'],
+        'BirthDate' => ['toString', 'date'],
         'Gender' => ['toString', 'in:M|F'],
         'MaritalStatus' => ['toInteger', 'between:1|4'],
         'HasChildren' => ['toLogical'],
-        'DriveExperience' => ['toDate'],
+        'DriveExperience' => ['toString', 'date'],
         'Documents' => ['containerCollection:' . Document::class],
     ];
 
     public function toXml(\SimpleXMLElement $xml)
     {
-        $this->validateThrow();
-
         $this->toXmlAttributes($xml, ['IsIP']);
         $this->toXmlTags($xml, ['FirstName', 'MiddleName', 'LastName', 'BirthDate', 'Gender', 'MaritalStatus', 'HasChildren', 'DriveExperience', 'Documents']);
 

@@ -20,8 +20,6 @@ class Insurant extends Container
 
     public function toXml(\SimpleXMLElement $xml)
     {
-        $this->validateThrow();
-
         $this->toXmlAttributes($xml, ['type']);
         $this->toXmlTags($xml, ['INN']);
 

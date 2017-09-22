@@ -308,10 +308,21 @@ class Validator
         return self::checkIn($value, 'Легковое ТС|Грузовое ТС|Автобус|Микроавтобус|Спецтехника|Малотоннажное ТС|Троллейбус|Трамвай|Мотоцикл');
     }
 
+    /**
+     * Тип документа для импорта
+     * @param $value
+     * @param $params - "import" - для импорта иначе для расчета
+     * @return bool|string
+     */
     public static function checkDocType($value, $params = null)
     {
-        return self::checkIn($value, 'Паспорт РФ|PASSPORT|DRIVING_LICENCE|ZAGRAN_PASSPORT|FOREIGN_PASSPORT|MILITARY_CARD'
-            . '|REGISTRATION_CERTIFICATE|RESIDENTIAL_PERMIT|SOLDIER_IDENTIFY_CARD|PTS|DIAGNOSTIC_CARD|TALON_TECHOSMOTR|STS');
+        if ($params == 'import') {
+            return self::checkIn($value, 'PASSPORT|DRIVING_LICENCE|ZAGRAN_PASSPORT|FOREIGN_PASSPORT|MILITARY_CARD'
+                . '|REGISTRATION_CERTIFICATE|RESIDENTIAL_PERMIT|SOLDIER_IDENTIFY_CARD|PTS|STS|PSM|DIAGNOSTIC_CARD|TALON_TECHOSMOTR');
+        } else {
+            return self::checkIn($value, 'Паспорт РФ|PASSPORT|DRIVING_LICENCE|ZAGRAN_PASSPORT|FOREIGN_PASSPORT|MILITARY_CARD'
+                . '|REGISTRATION_CERTIFICATE|RESIDENTIAL_PERMIT|SOLDIER_IDENTIFY_CARD|PTS|DIAGNOSTIC_CARD|TALON_TECHOSMOTR|STS');
+        }
     }
 
     /**
@@ -411,6 +422,45 @@ class Validator
         }
 
         return true;
+    }
+
+    /**
+     * enumPersonType
+     * Тип персоны/лица/участника договора.
+     * Физическое лицо / Юридическое лицо.
+     * @param $value
+     * @param $params
+     * @return bool|string
+     */
+    public static function checkPersonType($value, $params = null)
+    {
+        return self::checkIn($value, 'CONTACT|ACCOUNT');
+    }
+
+    /**
+     * Value should de valid time (H:i:s)
+     * @param $value
+     * @param $params
+     * @return bool|string
+     */
+    public static function checkTime($value, $params = null) {
+        if ($value === null) return true;
+
+        $matches = [];
+        if (!preg_match("/^([0-9]{2}):([0-9]{2}):([0-9]{2})$/", $value, $matches)) {
+            return "Isn't valid time";
+        }
+
+        if ($matches[1] > 23 || $matches[2] > 59 || $matches[3] > 59) {
+            return "Isn't valid time";
+        }
+
+        return true;
+    }
+
+    public static function checkCurrency($value, $params = null)
+    {
+        return self::checkIn($value, 'RUR|USD|EUR|GBP');
     }
 
 }

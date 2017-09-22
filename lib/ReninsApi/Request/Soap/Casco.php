@@ -62,8 +62,6 @@ class Casco extends Container
 
     public function toXml(\SimpleXMLElement $xml)
     {
-        $this->validateThrow();
-
         //Stoa with custom children name
         $added = $xml->addChild('Stoa');
         $this->Stoa->toXml($added, 'StoaType');

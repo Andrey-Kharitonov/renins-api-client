@@ -88,6 +88,18 @@ class Filter
         }
     }
 
+    public static function filterToYN($value, $params) {
+        if ($value === null) return $value;
+
+        if (strcasecmp($value, 'Y') == 0) {
+            return 'Y';
+        } elseif (strcasecmp($value, 'N') == 0) {
+            return 'N';
+        } else {
+            return ($value) ? 'Y' : 'N';
+        }
+    }
+
     public static function filterToBoolean($value, $params) {
         if ($value === null) return $value;
         return (bool) $value;
@@ -114,18 +126,4 @@ class Filter
 
         return (double) $value;
     }
-
-    public function filterToDate($value, $params) {
-        if ($value === null) return $value;
-
-        if (is_string($value)) {
-            $dt = \DateTime::createFromFormat('Y-m-d', $value);
-            return ($dt) ? $dt->format('Y-m-d') : null;
-        } elseif ($value instanceof \DateTime) {
-            return $value->format('Y-m-d');
-        } else {
-            return null;
-        }
-    }
-
 }

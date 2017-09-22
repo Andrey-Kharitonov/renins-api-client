@@ -27,8 +27,6 @@ class CalculationCasco extends Container
 
     public function toXml(\SimpleXMLElement $xml)
     {
-        $this->validateThrow();
-
         $this->toXmlAttributes($xml, ['type', 'uid']);
         $this->toXmlTags($xml, ['Policy']);
 

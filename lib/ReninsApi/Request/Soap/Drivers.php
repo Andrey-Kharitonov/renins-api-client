@@ -26,8 +26,6 @@ class Drivers extends Container
 
     public function toXml(\SimpleXMLElement $xml)
     {
-        $this->validateThrow();
-
         $this->toXmlAttributes($xml, ['type', 'Multidrive']);
         $this->toXmlTags($xml, ['MinAge', 'MinExperience']);
 

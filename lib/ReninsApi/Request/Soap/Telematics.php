@@ -21,8 +21,6 @@ class Telematics extends Container
 
     public function toXml(\SimpleXMLElement $xml)
     {
-        $this->validateThrow();
-
         $this->toXmlAttributes($xml, ['enabled']);
         $this->toXmlTags($xml, ['Points', 'LossCount']);
 

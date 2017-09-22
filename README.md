@@ -51,11 +51,11 @@ $rules представляет собой массив, ассоц. по име
         'FirstName' => ['toString', 'notEmpty'],
         'MiddleName' => ['toString', 'notEmpty'],
         'LastName' => ['toString', 'notEmpty'],
-        'BirthDate' => ['toDate'],
+        'BirthDate' => ['toString', 'date'],
         'Gender' => ['toString', 'in:M|F'],
         'MaritalStatus' => ['toInteger', 'between:1|4'],
         'HasChildren' => ['toLogical'],
-        'DriveExperience' => ['toDate'],
+        'DriveExperience' => ['toString', 'date'],
         'Documents' => ['containerCollection:' . Document::class],
     ];
 ```

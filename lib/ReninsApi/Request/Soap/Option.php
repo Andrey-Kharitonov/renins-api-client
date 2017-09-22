@@ -19,8 +19,6 @@ class Option extends Container
 
     public function toXml(\SimpleXMLElement $xml)
     {
-        $this->validateThrow();
-
         $xml->addAttribute('type', $this->type);
         $xml[0] = $this->enabled;
 
