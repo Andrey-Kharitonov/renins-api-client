@@ -3,7 +3,7 @@ namespace ReninsApi\Response\Soap;
 
 use ReninsApi\Request\Container;
 use ReninsApi\Request\ContainerCollection;
-use ReninsApi\Request\Soap\Deductible;
+use ReninsApi\Request\Soap\Calc\Deductible;
 
 /**
  * Calc results

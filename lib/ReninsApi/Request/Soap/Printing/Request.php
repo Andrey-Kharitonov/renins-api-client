@@ -1,6 +1,6 @@
 <?php
 
-namespace ReninsApi\Request\Soap;
+namespace ReninsApi\Request\Soap\Printing;
 
 use ReninsApi\Request\Container;
 use ReninsApi\Request\ContainerCollection;
@@ -15,7 +15,7 @@ use ReninsApi\Request\ContainerCollection;
  * @property ContainerCollection $printingParamsItems
  * @property boolean $isPrintAsOneDocument
  */
-class PrintRequest extends Container
+class Request extends Container
 {
     protected $rules = [
         'PartnerName' => ['toString'], //will be replaced

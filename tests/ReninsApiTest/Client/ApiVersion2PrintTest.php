@@ -6,9 +6,9 @@ use PHPUnit\Framework\TestCase;
 use ReninsApi\Client\ApiVersion2;
 use ReninsApi\Helpers\LogEvent;
 use ReninsApi\Request\ContainerCollection;
-use ReninsApi\Request\Soap\GetAvailablePolicyDocumentTypes;
-use ReninsApi\Request\Soap\PrintingParams;
-use ReninsApi\Request\Soap\PrintRequest;
+use ReninsApi\Request\Soap\Printing\GetAvailablePolicyDocumentTypes;
+use ReninsApi\Request\Soap\Printing\PrintingParams;
+use ReninsApi\Request\Soap\Printing\Request;
 
 class ApiVersion2PrintTest extends TestCase
 {
@@ -32,7 +32,7 @@ class ApiVersion2PrintTest extends TestCase
         ]);
 
         $param = new GetAvailablePolicyDocumentTypes();
-        $param->request = new PrintRequest();
+        $param->request = new Request();
         $param->request->AccountNumber = 1;
         $param->request->PrintToken = 2;
         $param->request->isPrintAsOneDocument = true;

@@ -1,6 +1,6 @@
 <?php
 
-namespace ReninsApi\Request\Soap;
+namespace ReninsApi\Request\Soap\Calc;
 
 use ReninsApi\Request\Container;
 

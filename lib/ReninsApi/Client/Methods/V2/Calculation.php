@@ -3,7 +3,7 @@
 namespace ReninsApi\Client\Methods\V2;
 
 use ReninsApi\Helpers\Utils;
-use ReninsApi\Request\Soap\CalculationCasco;
+use ReninsApi\Request\Soap\Calc\CalculationCasco;
 use ReninsApi\Request\ValidatorMultiException;
 use ReninsApi\Response\Soap\MakeCalculationResult;
 use ReninsApi\Soap\ClientCalc;

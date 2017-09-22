@@ -2,7 +2,7 @@
 
 namespace ReninsApi\Client\Methods\V2;
 
-use ReninsApi\Request\Soap\GetAvailablePolicyDocumentTypes;
+use ReninsApi\Request\Soap\Printing\GetAvailablePolicyDocumentTypes;
 use ReninsApi\Request\ValidatorMultiException;
 use ReninsApi\Soap\ClientPrint;
 

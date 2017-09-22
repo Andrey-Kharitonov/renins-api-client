@@ -15,7 +15,7 @@ class ApiVersion2CascoTest extends TestCase
     }
 
     private function getCascoRequest() {
-        $ContractTerm = new \ReninsApi\Request\Soap\ContractTerm();
+        $ContractTerm = new \ReninsApi\Request\Soap\Calc\ContractTerm();
         $ContractTerm->Product = 1;
         $ContractTerm->ProgramType = 'KASKO';
         $ContractTerm->DurationMonth = 12;
@@ -24,10 +24,10 @@ class ApiVersion2CascoTest extends TestCase
         $ContractTerm->Purpose = 'личная';
 
         $Covers = new ContainerCollection();
-        $Covers->add(new \ReninsApi\Request\Soap\Cover(['code' => 'UGON', 'sum' => 100000]));
-        $Covers->add(new \ReninsApi\Request\Soap\Cover(['code' => 'USHERB', 'sum' => 100000]));
+        $Covers->add(new \ReninsApi\Request\Soap\Calc\Cover(['code' => 'UGON', 'sum' => 100000]));
+        $Covers->add(new \ReninsApi\Request\Soap\Calc\Cover(['code' => 'USHERB', 'sum' => 100000]));
 
-        $Vehicle = new \ReninsApi\Request\Soap\Vehicle();
+        $Vehicle = new \ReninsApi\Request\Soap\Calc\Vehicle();
         $Vehicle->Manufacturer = 'ВАЗ';
         $Vehicle->Model = '1117 Kalina';
         $Vehicle->Year = date('Y');
@@ -38,38 +38,38 @@ class ApiVersion2CascoTest extends TestCase
         $Vehicle->Power = 98;
         $Vehicle->CarBodyType = 'Седан';
 
-        $Drivers = new \ReninsApi\Request\Soap\Drivers();
+        $Drivers = new \ReninsApi\Request\Soap\Calc\Drivers();
         $Drivers->Multidrive = true;
         $Drivers->MinAge = 31;
         $Drivers->MinExperience = 5;
 
-        $Insurant = new \ReninsApi\Request\Soap\Insurant();
+        $Insurant = new \ReninsApi\Request\Soap\Calc\Insurant();
         $Insurant->type = 1;
 
-        $Participants = new \ReninsApi\Request\Soap\Participants();
+        $Participants = new \ReninsApi\Request\Soap\Calc\Participants();
         $Participants->Drivers = $Drivers;
         $Participants->Insurant = $Insurant;
         $Participants->BeneficiaryType = 1;
 
         //Product section
         $Stoa = new ContainerCollection([
-            new \ReninsApi\Request\Soap\StoaType(['type' => 3, 'enabled' => false]),
-            new \ReninsApi\Request\Soap\StoaType(['type' => 2, 'enabled' => true]),
-            //new \ReninsApi\Request\Soap\StoaType(['type' => 5, 'enabled' => true]),
+            new \ReninsApi\Request\Soap\Calc\StoaType(['type' => 3, 'enabled' => false]),
+            new \ReninsApi\Request\Soap\Calc\StoaType(['type' => 2, 'enabled' => true]),
+            //new \ReninsApi\Request\Soap\Calc\StoaType(['type' => 5, 'enabled' => true]),
         ]);
 
-        $Casco = new \ReninsApi\Request\Soap\Casco();
+        $Casco = new \ReninsApi\Request\Soap\Calc\Casco();
         $Casco->Stoa = $Stoa;
         //---
 
-        $Policy = new \ReninsApi\Request\Soap\Policy();
+        $Policy = new \ReninsApi\Request\Soap\Calc\Policy();
         $Policy->ContractTerm = $ContractTerm;
         $Policy->Covers = $Covers;
         $Policy->Vehicle = $Vehicle;
         $Policy->Participants = $Participants;
         $Policy->Casco = $Casco;
 
-        $request = new \ReninsApi\Request\Soap\CalculationCasco();
+        $request = new \ReninsApi\Request\Soap\Calc\CalculationCasco();
         $request->genUuid();
         $request->Policy = $Policy;
 

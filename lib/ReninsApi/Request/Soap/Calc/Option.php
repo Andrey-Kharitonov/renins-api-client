@@ -1,19 +1,19 @@
 <?php
 
-namespace ReninsApi\Request\Soap;
+namespace ReninsApi\Request\Soap\Calc;
 
 use ReninsApi\Request\Container;
 
 /**
- * Stoa type
+ * Option
  *
  * @property int $type
  * @property string $enabled
  */
-class StoaType extends Container
+class Option extends Container
 {
     protected $rules = [
-        'type' => ['toInteger', 'required', 'notEmpty'], //1-8
+        'type' => ['toInteger', 'required', 'min:0'], //0-15
         'enabled' => ['toLogical', 'required'],
     ];
 

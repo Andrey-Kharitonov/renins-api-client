@@ -1,17 +1,17 @@
 <?php
 
-namespace ReninsApi\Request\Soap;
+namespace ReninsApi\Request\Soap\Printing;
 
 use ReninsApi\Request\Container;
 
 /**
  * Request for GetAvailablePolicyDocumentTypes
  *
- * @property PrintRequest $request
+ * @property Request $request
  */
 class GetAvailablePolicyDocumentTypes extends Container
 {
     protected $rules = [
-        'request' => ['container:' . PrintRequest::class, 'required'],
+        'request' => ['container:' . Request::class, 'required'],
     ];
 }
