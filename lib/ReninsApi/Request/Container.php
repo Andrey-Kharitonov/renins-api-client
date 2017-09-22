@@ -191,16 +191,14 @@ abstract class Container
                 $xml->addChild($property, $value);
             }
         }
-
         return $this;
     }
 
     /**
      * Helper for typical adding of properties like xml attributes.
-     * Use into inheritances of toXml() after validation.
+     * Use into inheritances of toXml()
      * @param \SimpleXMLElement $xml
      * @param array $properties
-     * @return $this
      */
     protected function toXmlAttributes(\SimpleXMLElement $xml, array $properties) {
         foreach ($properties as $property) {
@@ -208,17 +206,36 @@ abstract class Container
             if ($value === null) continue;
 
             if ($value instanceof Container || $value instanceof ContainerCollection) {
-                throw new ContainerException('Property "' . get_class($this) . '.' . $property . '" can not be used in Container::toXmlAttributes()');
+                throw new ContainerException('Property "' . get_class($this) . '.' . $property . '" can not be used in ' . __METHOD__);
             } else {
                 $xml->addAttribute($property, $value);
             }
         }
-        return $this;
+    }
+
+    /**
+     * Helper for typical adding of properties like xml attributes, except $except
+     * Use into inheritances of toXml()
+     * @param \SimpleXMLElement $xml
+     * @param array $except
+     */
+    protected function toXmlAttributesExcept(\SimpleXMLElement $xml, array $except) {
+        $data = $this->getData();
+        foreach($data as $property => $value) {
+            if ($value === null) continue;
+            if (in_array($property, $except)) continue;
+
+            if ($value instanceof Container || $value instanceof ContainerCollection) {
+                throw new ContainerException('Property "' . get_class($this) . '.' . $property . '" can not be used in ' . __METHOD__);
+            } else {
+                $xml->addAttribute($property, $value);
+            }
+        }
     }
 
     /**
      * Helper for typical adding of properties like xml tags.
-     * Use into inheritances of toXml() after validate().
+     * Use into inheritances of toXml()
      * @param \SimpleXMLElement $xml
      * @param array $properties
      */
@@ -226,6 +243,31 @@ abstract class Container
         foreach ($properties as $property) {
             $value = $this->get($property);
             if ($value === null) continue;
+
+            if ($value instanceof Container) {
+                $added = $xml->addChild($property);
+                $value->toXml($added);
+            } elseif ($value instanceof ContainerCollection) {
+                $added = $xml->addChild($property);
+                $tagName = (substr($property, -1) == 's') ? substr($property, 0, strlen($property) - 1) : $property . 'Item';
+                $value->toXml($added, $tagName);
+            } else {
+                $xml->addChild($property, $value);
+            }
+        }
+    }
+
+    /**
+     * Helper for typical adding of properties like xml tags, except $except
+     * Use into inheritances of toXml().
+     * @param \SimpleXMLElement $xml
+     * @param array $except
+     */
+    protected function toXmlTagsExcept(\SimpleXMLElement $xml, array $except) {
+        $data = $this->getData();
+        foreach($data as $property => $value) {
+            if ($value === null) continue;
+            if (in_array($property, $except)) continue;
 
             if ($value instanceof Container) {
                 $added = $xml->addChild($property);

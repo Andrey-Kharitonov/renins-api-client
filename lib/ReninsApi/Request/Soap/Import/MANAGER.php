@@ -17,7 +17,7 @@ class MANAGER extends Container
 
     public function toXml(\SimpleXMLElement $xml)
     {
-        $xml[0] = $this->sum;
+        $xml[0] = $this->name;
         return $this;
     }
 }

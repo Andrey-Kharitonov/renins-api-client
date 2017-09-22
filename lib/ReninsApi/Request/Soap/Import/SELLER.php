@@ -3,6 +3,7 @@
 namespace ReninsApi\Request\Soap\Import;
 
 use ReninsApi\Request\Container;
+use ReninsApi\Request\ContainerCollection;
 
 /**
  * Создатель  (Создатель-сотрудник / Создатель-партнер)
@@ -23,4 +24,12 @@ class SELLER extends Container
         'PARTNER' => ['container:' . PARTNER::class],
         'MANAGERS' => ['containerCollection:' . MANAGER::class],
     ];
+
+    public function toXml(\SimpleXMLElement $xml)
+    {
+        $this->toXmlAttributes($xml, ['TYPE', 'IPFLAG']);
+        $this->toXmlTags($xml, ['EMPLOYEE', 'PARTNER', 'MANAGERS']);
+
+        return $this;
+    }
 }

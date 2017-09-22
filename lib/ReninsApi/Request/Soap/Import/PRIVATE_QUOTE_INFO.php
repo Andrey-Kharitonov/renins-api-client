@@ -16,6 +16,11 @@ use ReninsApi\Request\ContainerCollection;
  * @property string $INS_TIME_FROM - Время страхования с ...
  * @property string $INS_DATE_TO - Период страхования по ...
  * @property string $INS_TIME_TO - Время страхования по ...
+ * @property string $INSURANCE_SUM - Сумма расчета
+ * @property DOCUMENT_OF_PAYMENT $DOCUMENT_OF_PAYMENT - Платежный документ.
+ * @property string $TOTALLY - На условиях Полная гибель.
+ * @property PRE_INSURANCE_INSPECTION $PRE_INSURANCE_INSPECTION - Предстраховой осмотр
+ * @property RISKS $RISKS - Риски/покрытия
  */
 class PRIVATE_QUOTE_INFO extends Container
 {
@@ -30,13 +35,24 @@ class PRIVATE_QUOTE_INFO extends Container
         'INSURANCE_SUM' => ['toString'],
         'CURRENCY' => ['toString', 'currency'],
         'INS_DURATION' => ['toInteger', 'min:1'],
-        'DOCUMENT_OF_PAYMENT' => ['container:' . DOCUMENT_OF_PAYMENT::class, 'min:1'],
+        'DOCUMENT_OF_PAYMENT' => ['container:' . DOCUMENT_OF_PAYMENT::class],
         'TOTALLY' => ['toYM'],
+        'PRE_INSURANCE_INSPECTION' => ['container:' . PRE_INSURANCE_INSPECTION::class], //PRE-INSURANCE_INSPECTION!!!
+        'RISKS' => ['container:' . RISKS::class],
     ];
 
-    /*
-<TOTALLY>N</TOTALLY>
-<PRE-INSURANCE_INSPECTION>...</PRE-INSURANCE_INSPECTION>
-<RISKS BONUS="154704">...</RISKS>
-     */
+    public function toXml(\SimpleXMLElement $xml)
+    {
+        //Все, кроме PRE_INSURANCE_INSPECTION
+        $this->toXmlTagsExcept($xml, ['PRE_INSURANCE_INSPECTION']);
+
+        //PRE_INSURANCE_INSPECTION
+        $value = $this->PRE_INSURANCE_INSPECTION;
+        if ($value !== null) {
+            $added = $xml->addChild('PRE-INSURANCE_INSPECTION');
+            $value->toXml($added);
+        }
+
+        return $this;
+    }
 }

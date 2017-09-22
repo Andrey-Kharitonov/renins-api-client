@@ -7,7 +7,7 @@ use ReninsApi\Request\ContainerCollection;
 
 /**
  * Адрес
- * todo: доделать по xsd
+ * todo: не все поля сделаны
  *
  * @property string $TYPE - тип адреса
  * @property string $COUNTRY - Страна
@@ -20,10 +20,18 @@ class ADDRESS extends Container
 {
     protected $rules = [
         'TYPE' => ['toString', 'required', 'in:ADDR_ACNT_JUR|ADDR_ACNT_POST|ADDR_CON_REG|ADDR_CON_FACT|ADDR_CON_POST'],
+
         'COUNTRY' => ['toString'],
         'CITY' => ['toString'],
         'STREET' => ['toString'],
         'HOUSE' => ['toString'],
         'APPARTMENT' => ['toString'],
     ];
+
+    public function toXml(\SimpleXMLElement $xml)
+    {
+        $this->toXmlAttributes($xml, ['TYPE']);
+        $this->toXmlTagsExcept($xml, ['TYPE']);
+        return $this;
+    }
 }

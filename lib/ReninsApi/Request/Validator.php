@@ -305,7 +305,11 @@ class Validator
 
     public static function checkVehicleType($value, $params = null)
     {
-        return self::checkIn($value, 'Легковое ТС|Грузовое ТС|Автобус|Микроавтобус|Спецтехника|Малотоннажное ТС|Троллейбус|Трамвай|Мотоцикл');
+        if ($params == 'import') {
+            return self::checkIn($value, 'Легковое ТС|Грузовое ТС|Автобус|Микроавтобус|Спецтехника|Малотоннажное ТС|Троллейбус|Трамвай|Мотоцикл|Прицепы к легковым автомобилям|Прицепы к грузовым автомобилям|Прицепы к тракторам и спецтехнике');
+        } else {
+            return self::checkIn($value, 'Легковое ТС|Грузовое ТС|Автобус|Микроавтобус|Спецтехника|Малотоннажное ТС|Троллейбус|Трамвай|Мотоцикл');
+        }
     }
 
     /**
@@ -438,7 +442,7 @@ class Validator
     }
 
     /**
-     * Value should de valid time (H:i:s)
+     * Value should be valid time (H:i:s)
      * @param $value
      * @param $params
      * @return bool|string
@@ -458,9 +462,48 @@ class Validator
         return true;
     }
 
+    /**
+     * Value should be valid currency code
+     * @param $value
+     * @param $params
+     * @return bool|string
+     */
     public static function checkCurrency($value, $params = null)
     {
         return self::checkIn($value, 'RUR|USD|EUR|GBP');
+    }
+
+    /**
+     * Enumerator. Transmission type.
+     * @param $value
+     * @param $params
+     * @return bool|string
+     */
+    public static function checkTransmissionType($value, $params = null)
+    {
+        return self::checkIn($value, 'Автоматическая|Механическая|АКПП|МКПП|Вариатор|Роботизированная КП');
+    }
+
+    /**
+     * Enumerator. Engine type.
+     * @param $value
+     * @param $params
+     * @return bool|string
+     */
+    public static function checkEngineType($value, $params = null)
+    {
+        return self::checkIn($value, 'Бензиновый|Дизельный|Гибрид');
+    }
+
+    /**
+     * Enumerator. Vehicle body type.
+     * @param $value
+     * @param $params
+     * @return bool|string
+     */
+    public static function checkVehicleBodyType($value, $params = null)
+    {
+        return self::checkIn($value, 'Седан|Хэтчбек|Универсал|Минивэн|Кабриолет|Пикап|Фургон|Купе|Лимузин|Внедорожник|Иное');
     }
 
 }

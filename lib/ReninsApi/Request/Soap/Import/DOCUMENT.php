@@ -19,9 +19,18 @@ class DOCUMENT extends Container
 {
     protected $rules = [
         'TYPE' => ['toString', 'required', 'docType:import'],
+
         'SERIES' => ['toString'],
         'NUMBER' => ['toString'],
         'ISSUED_WHERE' => ['toString'],
         'ISSUED_DATE' => ['toString', 'date'],
     ];
+
+    public function toXml(\SimpleXMLElement $xml)
+    {
+        $this->toXmlAttributes($xml, ['TYPE']);
+        $this->toXmlTagsExcept($xml, ['TYPE']);
+        return $this;
+    }
+
 }
