@@ -3,9 +3,9 @@
 namespace ReninsApi\Client\Methods\V2;
 
 use ReninsApi\Helpers\Utils;
-use ReninsApi\Request\Soap\Calc\CalculationCasco;
+use ReninsApi\Request\Soap\Calculation\CalculationCasco;
 use ReninsApi\Request\ValidatorMultiException;
-use ReninsApi\Response\Soap\MakeCalculationResult;
+use ReninsApi\Response\Soap\Calculation\MakeCalculationResult;
 use ReninsApi\Soap\ClientCalc;
 
 /**
@@ -14,23 +14,21 @@ use ReninsApi\Soap\ClientCalc;
 trait Calculation
 {
     /**
-     * @param CalculationCasco $params
+     * @param CalculationCasco $param
      * @return MakeCalculationResult
      * @throws \Exception
      */
-    public function calcCasco(CalculationCasco $params) {
+    public function calcCasco(CalculationCasco $param) {
         /* @var $client ClientCalc */
         $client = $this->getSoapCalcClient();
 
         try {
             $this->logMessage(__METHOD__, 'Preparing xml');
-            $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8" ?><MakeCalculation xmlns="http://renins.com/"></MakeCalculation>');
-            $doc = $xml->addChild('doc');
-            $request = $doc->addChild('Request', null, '');
-            $request->addAttribute('ClientSystemName', $this->clientSystemName);
-            $request->addAttribute('partnerUid', $this->partnerUid);
-            $params->validateThrow();
-            $params->toXml($request);
+            $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8" ?><Request></Request>');
+            $xml->addAttribute('ClientSystemName', $this->clientSystemName);
+            $xml->addAttribute('partnerUid', $this->partnerUid);
+            $param->validateThrow();
+            $param->toXml($xml);
             $xmlStr = Utils::sxmlToStr($xml);
         } catch (ValidatorMultiException $exc) {
             $this->logMessage(__METHOD__, $exc->getMessage(), ['errors' => $exc->getErrors()]);
@@ -41,11 +39,19 @@ trait Calculation
         }
 
         try {
-            $this->logMessage(__METHOD__, 'Making request', [$xmlStr]);
-            $args = [new \SoapVar($xmlStr, XSD_ANYXML)];
+            $args = [
+                'MakeCalculation' => [
+                    'doc' => [
+                        'any' => new \SoapVar($xmlStr, XSD_ANYXML)
+                    ],
+                ]
+            ];
+            $this->logMessage(__METHOD__, 'Making request', $args);
             $res = $client->makeRequest('MakeCalculation', $args);
+
             $res = MakeCalculationResult::createFromXml($res);
             $res->validateThrow();
+
             $this->logMessage(__METHOD__, 'Successful', [
                 'request' => $client->getLastRequest(),
                 'response' => $client->getLastResponse(),

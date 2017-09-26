@@ -339,4 +339,20 @@ abstract class Container
         }
     }
 
+    /**
+     * Set properties by $obj properties
+     * @param object $obj
+     * @return $this
+     */
+    protected function fromObject(object $obj) {
+        $properties = get_object_vars($obj);
+        foreach($properties as $name => $value) {
+            if ($this->has($name)) {
+                $value = (string) $value;
+                $this->set($name, $value);
+            }
+        }
+        return $this;
+    }
+
 }

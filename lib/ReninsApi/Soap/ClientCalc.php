@@ -18,7 +18,7 @@ class ClientCalc extends Client
             || empty($res->MakeCalculationResult)
             || !is_object($res->MakeCalculationResult)
             || empty($res->MakeCalculationResult->any)) {
-            throw new ClientException("Unexpected type of answer. Expected {MakeCalculationResult: any: \"...\"}");
+            throw new ClientException("Invalid response. Expected {MakeCalculationResult: any: \"...\"}");
         }
 
         return $res->MakeCalculationResult->any;

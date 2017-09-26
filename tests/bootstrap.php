@@ -5,6 +5,7 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
 define('DATA_DIR', __DIR__ . '/data'); //Some data for testing
+define('TEMP_DIR', DATA_DIR . '/temp'); //Temp data
 
 define('CLIENT_SYSTEM_NAME', ''); //Soap auth
 define('PARTNER_UID', ''); //Soap auth

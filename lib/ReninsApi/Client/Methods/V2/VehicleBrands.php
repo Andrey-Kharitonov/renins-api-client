@@ -16,7 +16,7 @@ trait VehicleBrands
      * @return ArrayOfBrand
      * @throws \Exception
      */
-    public function vehicleBrandsAll($VehicleType = null) {
+    public function vehicleBrandsAll($VehicleType = null): ArrayOfBrand {
         /* @var $client RestClient */
         $client = $this->getRestClient();
         $parameters = ['VehicleType' => $VehicleType];
@@ -39,7 +39,7 @@ trait VehicleBrands
      * @return ArrayOfBrand
      * @throws \Exception
      */
-    public function vehicleBrandsAllWithModels($VehicleType = null) {
+    public function vehicleBrandsAllWithModels($VehicleType = null): ArrayOfBrand {
         /* @var $client RestClient */
         $client = $this->getRestClient();
         $parameters = ['VehicleType' => $VehicleType];

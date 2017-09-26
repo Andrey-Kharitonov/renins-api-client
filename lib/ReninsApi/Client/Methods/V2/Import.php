@@ -36,16 +36,13 @@ trait Import
                     'partnerName' => $this->getClientSystemName(),
                     'partnerUId' => $this->getPartnerUid(),
                     'doc' => [
-                        'any' => new \SoapVar($xmlStr, XSD_ANYXML) //А вот догадайся сам
+                        'any' => new \SoapVar($xmlStr, XSD_ANYXML)
                     ],
                 ]
             ];
-            $args['partnerName'] = $this->getClientSystemName();
-            $args['partnerUId'] = $this->getPartnerUid();
-            $args['doc'] = new \SoapVar($xmlStr, XSD_ANYXML);
-
             $this->logMessage(__METHOD__, 'Making request', $args);
             $res = $client->makeRequest('ImportPolicy', $args);
+
             $this->logMessage(__METHOD__, 'Successful', [
                 'request' => $client->getLastRequest(),
                 'response' => $client->getLastResponse(),

@@ -95,6 +95,14 @@ class Client
             $this->lastResponse = $soap->__getLastResponseHeaders() . $soap->__getLastResponse();
         }
 
+        //XsdValidation
+        if ($this->lastHeader && !empty($this->lastHeader['XsdValidation'])) {
+            $xsdValidation = $this->lastHeader['XsdValidation'];
+            if (!empty($xsdValidation->In)) {
+                throw new ClientException("Xsd validation failed: " . str_replace("\n", ' ', $xsdValidation->In));
+            }
+        }
+
         return $res;
     }
 }
