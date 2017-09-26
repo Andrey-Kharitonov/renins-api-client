@@ -15,6 +15,7 @@ use ReninsApi\Request\ContainerCollection;
  * @property string $MIDDLE_NAME - Отчество
  * @property string $BIRTH_DATE - Дата рождения
  * @property string $HOME_PHONE - Домашний телефон.
+ * @property string $CELL_PHONE - Мобильный телефон.
  * @property string $RESIDENT - Резидент.
  * @property string $DRIVE_EXPERIENCE - Дата начала стажа
  * @property ContainerCollection $CONTACT_ADDRESSES
@@ -30,6 +31,7 @@ class Contact extends Container
         'MIDDLE_NAME' => ['toString'],
         'BIRTH_DATE' => ['toString', 'date'],
         'HOME_PHONE' => ['toString'],
+        'CELL_PHONE' => ['toString'],
         'RESIDENT' => ['toYN'],
         'DRIVE_EXPERIENCE' => ['toString', 'date'],
         'CONTACT_ADDRESSES' => ['containerCollection:' . Address::class],

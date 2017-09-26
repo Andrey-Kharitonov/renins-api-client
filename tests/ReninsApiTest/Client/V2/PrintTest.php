@@ -13,7 +13,8 @@ class PrintTest extends TestCase
     use Log;
 
     /**
-     * @group print
+     * @group printing
+     * @group casco
      */
     public function testGetAvailablePolicyDocumentTypes()
     {
@@ -29,6 +30,7 @@ class PrintTest extends TestCase
         $param->isPrintAsOneDocument = true;
 
         $response = $client->getAvailablePolicyDocumentTypes($param);
+        print_r($response);
         $this->assertObjectHasAttribute('Success', $response);
         $this->assertObjectHasAttribute('PolicyDocumentTypes', $response);
         $this->assertObjectHasAttribute('Errors', $response);
@@ -38,7 +40,8 @@ class PrintTest extends TestCase
     }
 
     /**
-     * @group print
+     * @group printing
+     * @group casco
      */
     public function testGetAvailablePolicyDocumentTypesFail()
     {
@@ -56,7 +59,8 @@ class PrintTest extends TestCase
     }
 
     /**
-     * @group print
+     * @group printing
+     * @group casco
      */
     public function testPrintDocuments()
     {
@@ -87,7 +91,8 @@ class PrintTest extends TestCase
     }
 
     /**
-     * @group print
+     * @group printing
+     * @group casco
      */
     public function testPrintDocumentsFail()
     {
@@ -108,7 +113,9 @@ class PrintTest extends TestCase
     }
 
     /**
-     * @group print
+     * @group printing
+     * @group casco
+     * @group current
      */
     public function testPrintDocumentsToBinary()
     {
@@ -123,7 +130,8 @@ class PrintTest extends TestCase
         $param->AccountNumber = $accountNumber;
         $param->isPrintAsOneDocument = true;
         $param->printingParamsItems = new ContainerCollection([
-            new PrintingParams(['DocumentTypeId' => 1]),
+            new PrintingParams(['DocumentTypeId' => 8]),
+            new PrintingParams(['DocumentTypeId' => 10]),
         ]);
 
         $response = $client->printDocumentsToBinary($param);
@@ -145,7 +153,8 @@ class PrintTest extends TestCase
     }
 
     /**
-     * @group print
+     * @group printing
+     * @group casco
      */
     public function testGetDocumentInUrl()
     {
@@ -161,7 +170,8 @@ class PrintTest extends TestCase
     }
 
     /**
-     * @group print
+     * @group printing
+     * @group casco
      */
     public function testGetDocumentToBytes()
     {

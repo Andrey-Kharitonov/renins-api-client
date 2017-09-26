@@ -3,9 +3,9 @@
 namespace ReninsApiTest\Client\V2;
 
 use PHPUnit\Framework\TestCase;
-use ReninsApi\Client\ApiVersion2;
 use ReninsApi\Request\ContainerCollection;
 use ReninsApi\Request\Soap\Import\InputMessage;
+use ReninsApi\Request\Soap\Import\Request;
 use ReninsApiTest\Client\Log;
 
 class ImportTest extends TestCase
@@ -17,10 +17,13 @@ class ImportTest extends TestCase
      * @return InputMessage
      */
     private function getRequest() {
+        $dt = new \DateTime();
+        $dtMinusDay = (clone $dt)->sub(new \DateInterval('P1D'));
+        $dtPlusYear = (clone $dt)->add(new \DateInterval('P1Y'))->sub(new \DateInterval('P1D'));
+
         $generalQuoteInfo = new \ReninsApi\Request\Soap\Import\GeneralQuoteInfo();
-        $generalQuoteInfo->ACCOUNT_NUMBER_CALCBASED_ON = 'AAA-101015-000';
-        $generalQuoteInfo->SALE_DATE = '2015-11-11T11:42:58';
-        $generalQuoteInfo->INSURANCE_SUM = '1280000';
+        $generalQuoteInfo->SALE_DATE = $dt->format('Y-m-d') . 'T12:00:00';
+        $generalQuoteInfo->INSURANCE_SUM = '400000';
         $generalQuoteInfo->CURRENCY = 'RUR';
         $generalQuoteInfo->PACKET_CALCBASED_ON = '1';
 
@@ -40,6 +43,7 @@ class ImportTest extends TestCase
         $contact = new \ReninsApi\Request\Soap\Import\Contact();
         $contact->IPFLAG = false;
         $contact->HOME_PHONE = '+74957654321';
+        $contact->CELL_PHONE = '+74957654321';
         $contact->LAST_NAME = 'Иванов';
         $contact->FIRST_NAME = 'Иван';
         $contact->MIDDLE_NAME = 'Иванович';
@@ -49,10 +53,10 @@ class ImportTest extends TestCase
             new \ReninsApi\Request\Soap\Import\Address([
                 'TYPE' => 'ADDR_CON_REG',
                 'COUNTRY' => 'Российская Федерация',
-                'CITY' => 'нас.пункт',
-                'STREET' => 'улица',
-                'HOUSE' => 'номер дома',
-                'APPARTMENT' => 'номер квартиры',
+                'CITY' => 'Тольятти',
+                'STREET' => 'Автостроителей',
+                'HOUSE' => '11',
+                'APPARTMENT' => '1',
             ]),
         ]);
         $contact->CONTACT_DOCUMENTS = new ContainerCollection([
@@ -73,17 +77,17 @@ class ImportTest extends TestCase
         $privateQuoteInfo->DOCUMENT_OF_PAYMENT = new \ReninsApi\Request\Soap\Import\DocumentOfPayment([
             'TYPE' => 'по квитанции СБЕРБАНКА',
             'PAY_DOC_NUMBER' => '0123456789',
-            'PAY_DOC_ISSUE_DATE' => '2013-11-11',
+            'PAY_DOC_ISSUE_DATE' => $dtMinusDay->format('Y-m-d'),
         ]);
-        $privateQuoteInfo->POLICY_NUMBER = '001AT-13/67757';
-        $privateQuoteInfo->BSO_NUMBER = '3350773';
+        $privateQuoteInfo->POLICY_NUMBER = '001AT-17/36253-S';
+        //$privateQuoteInfo->BSO_NUMBER = '0000000';
         //$PRIVATE_QUOTE_INFO->PRODUCT = 'КАСКО 2015.11.15'; deprecated
-        $privateQuoteInfo->CREATION_DATE = '2013-11-11';
-        $privateQuoteInfo->INS_DATE_FROM = '2013-11-11';
+        $privateQuoteInfo->CREATION_DATE = $dtMinusDay->format('Y-m-d');
+        $privateQuoteInfo->INS_DATE_FROM = $dt->format('Y-m-d');
         $privateQuoteInfo->INS_TIME_FROM = '12:00:00';
-        $privateQuoteInfo->INS_DATE_TO = '2014-09-27';
+        $privateQuoteInfo->INS_DATE_TO = $dtPlusYear->format('Y-m-d');
         $privateQuoteInfo->INS_TIME_TO = '23:59:00';
-        $privateQuoteInfo->INSURANCE_SUM = '1280000';
+        $privateQuoteInfo->INSURANCE_SUM = '400000';
         $privateQuoteInfo->CURRENCY = 'RUR';
         $privateQuoteInfo->INS_DURATION = 12;
         $privateQuoteInfo->TOTALLY = false;
@@ -93,21 +97,23 @@ class ImportTest extends TestCase
             'INSPECTION_NOT_NEEDED_OLD_OBJECT' => false,
         ]);
         $privateQuoteInfo->RISKS = new \ReninsApi\Request\Soap\Import\Risks([
-            'BONUS' => '154704',
+            'BONUS' => '41553',
             'RISK' => new ContainerCollection([
-                new \ReninsApi\Request\Soap\Import\Risk(['NAME' => 'Угон', 'BONUS' => '13196', 'INSURANCE_SUM' => '1280000']),
-                new \ReninsApi\Request\Soap\Import\Risk(['NAME' => 'Ущерб', 'BONUS' => '141308', 'INSURANCE_SUM' => '1280000']),
-                new \ReninsApi\Request\Soap\Import\Risk(['NAME' => 'ДР', 'BONUS' => '200', 'INSURANCE_SUM' => '10000']),
+                new \ReninsApi\Request\Soap\Import\Risk(['NAME' => 'Угон', 'BONUS' => '3387', 'INSURANCE_SUM' => '400000']),
+                new \ReninsApi\Request\Soap\Import\Risk(['NAME' => 'ДО', 'BONUS' => '15000', 'INSURANCE_SUM' => '100000']),
+                new \ReninsApi\Request\Soap\Import\Risk(['NAME' => 'ДР', 'BONUS' => '185', 'INSURANCE_SUM' => '10000']),
+                new \ReninsApi\Request\Soap\Import\Risk(['NAME' => 'НС', 'BONUS' => '350', 'INSURANCE_SUM' => '100000']),
+                new \ReninsApi\Request\Soap\Import\Risk(['NAME' => 'Ущерб', 'BONUS' => '22631', 'INSURANCE_SUM' => '400000']),
             ]),
         ]);
 
         $vehicle = new \ReninsApi\Request\Soap\Import\Vehicle();
         $vehicle->TYPE = 'Легковое ТС';
-        $vehicle->BRAND = 'Mazda';
-        $vehicle->MODEL = '6';
-        $vehicle->PRICE = '1280000';
-        $vehicle->POWER = '150';
-        $vehicle->YEAR = '2013';
+        $vehicle->BRAND = 'ВАЗ';
+        $vehicle->MODEL = '1117 Kalina';
+        $vehicle->PRICE = '400000';
+        $vehicle->POWER = '98';
+        $vehicle->YEAR = date('Y');
         $vehicle->VIN = 'AB1CDE23FGH456789';
         $vehicle->REG_SIGN = 'У123ЕО12';
         $vehicle->COLOR = 'Серебристый';
@@ -131,7 +137,7 @@ class ImportTest extends TestCase
                 'MARK' => 'Марка',
                 'MODEL' => 'Модель',
                 'AMOUNT' => 1,
-                'COST' => 1000,
+                'COST' => 100000,
             ]),
         ]);
 
@@ -167,16 +173,18 @@ class ImportTest extends TestCase
             ]),
         ]);
         $context->DRIVERS = new \ReninsApi\Request\Soap\Import\Drivers([
-            'MIN_AGE' => 28,
-            'MIN_EXPERIENCE' => 10,
-            'MULTI_DRIVE' => false,
+            'MIN_AGE' => 31,
+            'MIN_EXPERIENCE' => 5,
+            'MULTI_DRIVE' => true,
             'STAFF' => false,
 
+            /*
             'DRIVER' => new ContainerCollection([
                 new \ReninsApi\Request\Soap\Import\Driver([
                     'CONTACT' => $contact2,
                 ]),
             ]),
+            */
         ]);
 
 
@@ -192,18 +200,50 @@ class ImportTest extends TestCase
     }
 
     /**
-     * @group soap
+     * @group import
+     * @group casco
      */
     public function testCasco()
     {
         $client = $this->createApi2();
 
+        $accountNumber = @file_get_contents(TEMP_DIR . '/CascoAccountNumber1.txt');
+        if (!$accountNumber) {
+            throw new \Exception("AccountNumber isn't calculated. Run calculation tests before.");
+        }
+
         $request = $this->getRequest();
+        $request->GENERAL_QUOTE_INFO->ACCOUNT_NUMBER_CALCBASED_ON = $accountNumber;
 
         $response = $client->ImportPolicy($request);
         print_r($response);
         //$this->assertInstanceOf(\ReninsApi\Response\Soap\Calculation\MakeCalculationResult::class, $response);
         //$this->assertEquals($response->isSuccessful(), true);
+    }
+
+    /**
+     * @group import
+     * @group casco
+     */
+    public function testGetPolicyNumber()
+    {
+        $client = $this->createApi2();
+
+        $accountNumber = @file_get_contents(TEMP_DIR . '/CascoAccountNumber1.txt');
+        if (!$accountNumber) {
+            throw new \Exception("AccountNumber isn't calculated. Run calculation tests before.");
+        }
+
+        $request = new Request();
+        $request->AccountNumber = $accountNumber;
+        $response = $client->GetPolicyNumber($request);
+
+        print_r($response);
+
+        $this->assertObjectHasAttribute('Success', $response);
+        $this->assertObjectHasAttribute('Number', $response);
+        $this->assertEquals(true, $response->Success);
+        $this->assertGreaterThan(0, strlen($response->Number));
     }
 
 }

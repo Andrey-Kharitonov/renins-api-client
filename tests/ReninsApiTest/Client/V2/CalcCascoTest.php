@@ -22,8 +22,10 @@ class CalcCascoTest extends TestCase
         $ContractTerm->Purpose = 'личная';
 
         $Covers = new ContainerCollection();
-        $Covers->add(new \ReninsApi\Request\Soap\Calculation\Cover(['code' => 'UGON', 'sum' => 100000]));
-        $Covers->add(new \ReninsApi\Request\Soap\Calculation\Cover(['code' => 'USHERB', 'sum' => 100000]));
+        $Covers->add(new \ReninsApi\Request\Soap\Calculation\Cover(['code' => 'UGON', 'sum' => 300000]));
+        $Covers->add(new \ReninsApi\Request\Soap\Calculation\Cover(['code' => 'USHERB', 'sum' => 300000]));
+        $Covers->add(new \ReninsApi\Request\Soap\Calculation\Cover(['code' => 'DO', 'sum' => 100000]));
+        $Covers->add(new \ReninsApi\Request\Soap\Calculation\Cover(['code' => 'NS', 'sum' => 100000]));
 
         $Vehicle = new \ReninsApi\Request\Soap\Calculation\Vehicle();
         $Vehicle->Manufacturer = 'ВАЗ';
@@ -85,6 +87,13 @@ class CalcCascoTest extends TestCase
         $request = $this->getRequest();
 
         $response = $client->calcCasco($request);
+        //print_r($response->toArray());
+
+        ob_start();
+        print_r($response->toArray());
+        $data = ob_get_clean();
+        @file_put_contents(TEMP_DIR . '/CascoCalcResponse.txt', $data);
+
         $this->assertInstanceOf(\ReninsApi\Response\Soap\Calculation\MakeCalculationResult::class, $response);
         $this->assertEquals($response->isSuccessful(), true);
         $this->assertInstanceOf(ContainerCollection::class, $response->CalcResults);

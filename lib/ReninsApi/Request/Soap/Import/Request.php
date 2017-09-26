@@ -1,6 +1,6 @@
 <?php
 
-namespace ReninsApi\Request\Soap\Printing;
+namespace ReninsApi\Request\Soap\Import;
 
 use ReninsApi\Request\Container;
 use ReninsApi\Request\ContainerCollection;
@@ -12,9 +12,6 @@ use ReninsApi\Request\ContainerCollection;
  * @property string $PartnerName
  * @property string $PartnerUId
  * @property string $AccountNumber
- * @property string $PrintToken
- * @property ContainerCollection $printingParamsItems
- * @property boolean $isPrintAsOneDocument
  */
 class Request extends Container
 {
@@ -22,8 +19,5 @@ class Request extends Container
         'PartnerName' => ['toString'],
         'PartnerUId' => ['toString'],
         'AccountNumber' => ['toString'],
-        'PrintToken' => ['toString'],
-        'printingParamsItems' => ['containerCollection:' . PrintingParams::class],
-        'isPrintAsOneDocument' => ['toBoolean'],
     ];
 }
