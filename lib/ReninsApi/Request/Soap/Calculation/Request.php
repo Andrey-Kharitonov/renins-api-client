@@ -6,13 +6,13 @@ use ReninsApi\Helpers\Utils;
 use ReninsApi\Request\Container;
 
 /**
- * Some calculation
+ * Основной запрос для получения расчета
  *
- * @property int $type - default 0
- * @property string $uid
+ * @property int $type - default 0. Тип запроса. 1 - с котировкой
+ * @property string $uid - GUID сообщения, используется техподдержкой для поиска информации о запросах и анализа ситуаций.
  * @property Policy $Policy
  */
-class CalculationCasco extends Container
+class Request extends Container
 {
     protected $rules = [
         'type' => ['toInteger', 'required', 'in:0|1'],

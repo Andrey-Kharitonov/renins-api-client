@@ -6,31 +6,33 @@ use ReninsApi\Request\Container;
 use ReninsApi\Request\ContainerCollection;
 
 /**
- * Main block for CASCO
+ * Блок для КАСКО
  *
- * @property ContainerCollection $Stoa
- * @property Deductible $Deductible
- * @property string $KeysDocsDeductible
- * @property string $Uts
- * @property PersonalDeductible $PersonalDeductible
- * @property string $Packet
- * @property string $TotalDestruction
- * @property string $BankName
- * @property string $LeasingID
- * @property string $LeasingEnabled
- * @property string $BankEnabled
- * @property ContainerCollection $CustomOptions
- * @property string $NewClient
- * @property string $GAPEnabled
- * @property string $B2BDiscount
- * @property double $Rebate
- * @property int $Division
- * @property string $DivisionForCalc
- * @property string $DivisionForDelivery
- * @property string $TradeINEnabled
- * @property string $LosslessInsurer
- * @property double $HomingCoef
- * @property Telematics $Telematics
+ * @property ContainerCollection $Stoa - Порядок выплаты
+ * @property Deductible $Deductible - Взаимоисключающие франшизы
+ * @property string $KeysDocsDeductible - Франшиза по угону с ключами/документами. По умолчанию уже включена. (отключение данной франшизы значительно повлияет на премию).
+ * @property string $Uts - Опция "Утрата товарной стоимости"
+ * @property PersonalDeductible $PersonalDeductible - персональная франшиза
+ * @property string $Packet - Итоговый, выбранный пакет котировки
+ * @property string $TotalDestruction - Условие "Полная гибель" - специальное условие, которое обозначает, что возмещение возможно получить, только при полной гибели автомобиля и больше ни при каких условиях.
+ *   При страховании только полной гибели нельзя не отмечать страхование риска "Ущерб", так как непосредственно риска "тоталь" в наших правилах нет.
+ *   Тоталь - это одна из составляющих риска "Ущерб" и страхование от полной гибели по умолчанию подразумевается при страховании риска "Ущерб".
+ *   Когда в договоре мы отмечаем обе галочки (ущерб на условиях полной гибели), получаем, что застрахован риск "Ущерб", но только при условии полной гибели, т.к. условия договора первичны по отношению к условиям Правил.
+ * @property string $BankName - Идентификатор банка (код банка в Ренессанс)
+ * @property string $LeasingID - Идентификатор лизинговой компании (код компании в Ренессанс)
+ * @property string $LeasingEnabled - Лизинг
+ * @property string $BankEnabled - Кредитный договор
+ * @property ContainerCollection $CustomOptions - Дополнительные опции, если не используются пакеты
+ * @property string $NewClient - Новый клиент, если страхователь юр. лицо
+ * @property string $GAPEnabled - Включить страхование GAP (полная стоимость).
+ * @property string $B2BDiscount - скидка при оформлении через В2В
+ * @property double $Rebate - размер скидки за счёт КВ (в %)
+ * @property string $DivisionForCalc - Регион расчёта (используется при отличии от Division)
+ * @property string $DivisionForDelivery - Город доставки полиса
+ * @property string $TradeINEnabled - признак, что машина из Trade IN
+ * @property string $LosslessInsurer - Безубыточный страхователь
+ * @property double $HomingCoef - Коэффициент самонаведения
+ * @property Telematics $Telematics - Данные по телематике.
  */
 class Casco extends Container
 {
@@ -51,7 +53,6 @@ class Casco extends Container
         'GAPEnabled' => ['toLogical'],
         'B2BDiscount' => ['toLogical'],
         'Rebate' => ['toDouble'],
-        'Division' => ['toInteger'],
         'DivisionForCalc' => ['toString'],
         'DivisionForDelivery' => ['toString'],
         'TradeINEnabled' => ['toLogical'],

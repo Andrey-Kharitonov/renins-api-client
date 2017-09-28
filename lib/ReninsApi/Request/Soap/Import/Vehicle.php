@@ -47,7 +47,7 @@ class Vehicle extends Container
         'KEY_COUNT' => ['toInteger', 'min:0'],
         'ENGINE_VOLUME' => ['toString'],
         'ENGINE_TYPE' => ['toString', 'engineType'],
-        'TRANSMISSION_TYPE' => ['toString', 'transmissionType'],
+        'TRANSMISSION_TYPE' => ['toString', 'transmissionType:import'],
         'VEHICLE_BODY_TYPE' => ['toString', 'vehicleBodyType'],
         'VEHICLE_DOCUMENTS' => ['containerCollection:' . Document::class],
         'EXTRAS' => ['containerCollection:' . Equipment::class],

@@ -500,7 +500,11 @@ class Validator
      */
     public static function checkTransmissionType($value, $params = null)
     {
-        return self::checkIn($value, 'Автоматическая|Механическая|АКПП|МКПП|Вариатор|Роботизированная КП');
+        if ($params == 'import') {
+            return self::checkIn($value, 'Автоматическая|Механическая|АКПП|МКПП|Вариатор|Роботизированная КП');
+        } else {
+            return self::checkIn($value, 'Автоматическая|Механическая');
+        }
     }
 
     /**
@@ -524,5 +528,17 @@ class Validator
     {
         return self::checkIn($value, 'Седан|Хэтчбек|Универсал|Минивэн|Кабриолет|Пикап|Фургон|Купе|Лимузин|Внедорожник|Иное');
     }
+
+    /**
+     * Enumerator. Vehicle category.
+     * @param $value
+     * @param $params
+     * @return bool|string
+     */
+    public static function checkVehicleCategory($value, $params = null)
+    {
+        return self::checkIn($value, 'A|B|C|D|E');
+    }
+
 
 }

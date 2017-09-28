@@ -5,10 +5,10 @@ namespace ReninsApi\Request\Soap\Calculation;
 use ReninsApi\Request\Container;
 
 /**
- * Personal deductible
+ * персональная франшиза
  *
- * @property int $Age
- * @property int $Experience
+ * @property int $Age - возраст
+ * @property int $Experience - стаж
  */
 class PersonalDeductible extends Container
 {

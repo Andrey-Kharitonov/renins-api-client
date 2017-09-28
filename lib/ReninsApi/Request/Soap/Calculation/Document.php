@@ -6,11 +6,11 @@ use ReninsApi\Request\Container;
 use ReninsApi\Request\ContainerCollection;
 
 /**
- * Document
+ * Данные о документе
  *
- * @property int $type
- * @property string $Serial
- * @property string $Number
+ * @property int $type - тип
+ * @property string $Serial - серия
+ * @property string $Number - номер
  */
 class Document extends Container
 {

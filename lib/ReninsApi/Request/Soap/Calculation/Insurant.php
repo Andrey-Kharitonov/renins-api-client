@@ -6,10 +6,10 @@ use ReninsApi\Request\Container;
 use ReninsApi\Request\ContainerCollection;
 
 /**
- * Document
+ * Данные по страхователю.
  *
- * @property int $type
- * @property string $INN
+ * @property int $type - физическое или  юридическое лицо
+ * @property string $INN - ИНН страхователя.
  */
 class Insurant extends Container
 {

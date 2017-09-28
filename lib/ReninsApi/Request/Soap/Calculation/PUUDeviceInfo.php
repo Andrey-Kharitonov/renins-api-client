@@ -5,10 +5,10 @@ namespace ReninsApi\Request\Soap\Calculation;
 use ReninsApi\Request\Container;
 
 /**
- * Anti theft device info
+ * Противоугонная система
  *
- * @property string $PUUDeviceModel
- * @property string $AutoStart
+ * @property string $PUUDeviceModel - Модель противоугонной системы
+ * @property string $AutoStart - Наличие Авто запуска
  */
 class PUUDeviceInfo extends Container
 {

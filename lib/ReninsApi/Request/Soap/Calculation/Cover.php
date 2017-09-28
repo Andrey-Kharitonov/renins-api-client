@@ -5,10 +5,15 @@ namespace ReninsApi\Request\Soap\Calculation;
 use ReninsApi\Request\Container;
 
 /**
- * Cover
+ * Риск/покрытие.
+ *   UGON (Угон), значения > 0.
+ *   USHERB (Ущерб), значения > 0.
+ *   DO (ДО, Дополнительное Оборудование), интервал [0, 600000].
+ *   NS (Несчастный Случай), интервал [0, 2500000].
+ *   DAGO (ДАГО), фиксированные значения {0, 250000, 375000, 500000, 750000, 1000000, 1250000, 2500000}.
  *
- * @property string $code
- * @property string $sum
+ * @property string $code - Код риска/покрытия.
+ * @property string $sum - Сумма страхования
  */
 class Cover extends Container
 {

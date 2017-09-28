@@ -5,12 +5,12 @@ namespace ReninsApi\Request\Soap\Calculation;
 use ReninsApi\Request\Container;
 
 /**
- * Anti theft device info
+ * Поисковая система
  *
- * @property string $AntiTheftDeviceBrand
- * @property string $AntiTheftDeviceModel
- * @property string $AntiTheftTrackerBrand
- * @property string $AntiTheftTrackerModel
+ * @property string $AntiTheftDeviceBrand - Марка
+ * @property string $AntiTheftDeviceModel - Модель
+ * @property string $AntiTheftTrackerBrand - Марка закладки
+ * @property string $AntiTheftTrackerModel - Модель закладки
  */
 class AntiTheftDeviceInfo extends Container
 {

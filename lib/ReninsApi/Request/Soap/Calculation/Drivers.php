@@ -6,22 +6,26 @@ use ReninsApi\Request\Container;
 use ReninsApi\Request\ContainerCollection;
 
 /**
- * Drivers
+ * Водители
  *
- * @property int $type
- * @property string $Multidrive
- * @property int $MinAge
- * @property int $MinExperience
- * @property ContainerCollection $Driver
+ * @property string $type - тип лиц, допущенных к управлению
+ *   ""
+ *   1 - сотрудники Страхователя, а также юридических лиц, указанных в Особых условиях страхования
+ *   2 - любые лица
+ * @property string $Multidrive - мультидрайв?
+ * @property int $MinAge - минимальный возраст
+ * @property int $MinExperience - минимальный стаж
+ * @property ContainerCollection $Driver - Список водителей
  */
 class Drivers extends Container
 {
     protected $rules = [
-        'type' => ['toInteger', 'in:1|2'],
+        'type' => ['toString', 'in:|1|2'],
         'Multidrive' => ['toLogical', 'required'],
+
         'MinAge' => ['toInteger', 'min:0'],
         'MinExperience' => ['toInteger', 'min:0'],
-        'Driver' => ['containerCollection:' . Driver::class],
+        'Driver' => ['containerCollection:' . Contact::class, 'length:|4'],
     ];
 
     public function toXml(\SimpleXMLElement $xml)

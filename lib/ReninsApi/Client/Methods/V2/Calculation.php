@@ -3,7 +3,7 @@
 namespace ReninsApi\Client\Methods\V2;
 
 use ReninsApi\Helpers\Utils;
-use ReninsApi\Request\Soap\Calculation\CalculationCasco;
+use ReninsApi\Request\Soap\Calculation\Request;
 use ReninsApi\Request\ValidatorMultiException;
 use ReninsApi\Response\Soap\Calculation\MakeCalculationResult;
 use ReninsApi\Soap\ClientCalc;
@@ -14,11 +14,11 @@ use ReninsApi\Soap\ClientCalc;
 trait Calculation
 {
     /**
-     * @param CalculationCasco $param
+     * @param Request $param
      * @return MakeCalculationResult
      * @throws \Exception
      */
-    public function calcCasco(CalculationCasco $param) {
+    public function calcCasco(Request $param) {
         /* @var $client ClientCalc */
         $client = $this->getSoapCalcClient();
 

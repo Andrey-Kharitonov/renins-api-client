@@ -69,7 +69,7 @@ class CalcCascoTest extends TestCase
         $Policy->Participants = $Participants;
         $Policy->Casco = $Casco;
 
-        $request = new \ReninsApi\Request\Soap\Calculation\CalculationCasco();
+        $request = new \ReninsApi\Request\Soap\Calculation\Request();
         $request->type = 1;
         $request->genUuid();
         $request->Policy = $Policy;
