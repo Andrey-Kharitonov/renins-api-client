@@ -43,12 +43,12 @@ class Validator
                     $propRule = mb_substr($propRule, 0, $pos);
                 }
 
-                $method = 'check' . ucfirst($propRule);
-                if (!method_exists($this, $method)) {
-                    throw new ValidatorException("Rule {$propRule} isn't supported");
-                }
-
                 try {
+                    $method = 'check' . ucfirst($propRule);
+                    if (!method_exists($this, $method)) {
+                        throw new ValidatorException("Rule {$propRule} isn't supported");
+                    }
+
                     $res = $this::{$method}($value, $params);
                     if ($res !== true) {
                         $this->errors[$property][] = $res;

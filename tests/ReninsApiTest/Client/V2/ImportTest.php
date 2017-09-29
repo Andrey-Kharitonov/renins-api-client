@@ -4,6 +4,7 @@ namespace ReninsApiTest\Client\V2;
 
 use PHPUnit\Framework\TestCase;
 use ReninsApi\Request\ContainerCollection;
+use ReninsApi\Request\Soap\Import\Context;
 use ReninsApi\Request\Soap\Import\InputMessage;
 use ReninsApi\Request\Soap\Import\Request;
 use ReninsApiTest\Client\Log;
@@ -79,7 +80,7 @@ class ImportTest extends TestCase
             'PAY_DOC_NUMBER' => '0123456789',
             'PAY_DOC_ISSUE_DATE' => $dtMinusDay->format('Y-m-d'),
         ]);
-        $privateQuoteInfo->POLICY_NUMBER = '001AT-17/36253-S';
+        $privateQuoteInfo->POLICY_NUMBER = ''; //get by GetPolicyNumber()
         //$privateQuoteInfo->BSO_NUMBER = '0000000';
         //$PRIVATE_QUOTE_INFO->PRODUCT = 'КАСКО 2015.11.15'; deprecated
         $privateQuoteInfo->CREATION_DATE = $dtMinusDay->format('Y-m-d');
@@ -203,28 +204,6 @@ class ImportTest extends TestCase
      * @group import
      * @group casco
      */
-    public function testCasco()
-    {
-        $client = $this->createApi2();
-
-        $accountNumber = @file_get_contents(TEMP_DIR . '/CascoAccountNumber1.txt');
-        if (!$accountNumber) {
-            throw new \Exception("AccountNumber isn't calculated. Run calculation tests before.");
-        }
-
-        $request = $this->getRequest();
-        $request->GENERAL_QUOTE_INFO->ACCOUNT_NUMBER_CALCBASED_ON = $accountNumber;
-
-        $response = $client->ImportPolicy($request);
-        print_r($response);
-        //$this->assertInstanceOf(\ReninsApi\Response\Soap\Calculation\MakeCalculationResult::class, $response);
-        //$this->assertEquals($response->isSuccessful(), true);
-    }
-
-    /**
-     * @group import
-     * @group casco
-     */
     public function testGetPolicyNumber()
     {
         $client = $this->createApi2();
@@ -244,6 +223,49 @@ class ImportTest extends TestCase
         $this->assertObjectHasAttribute('Number', $response);
         $this->assertEquals(true, $response->Success);
         $this->assertGreaterThan(0, strlen($response->Number));
+
+        @file_put_contents(TEMP_DIR . '/CascoPolicyNumber1.txt', $response->Number); //Номер, который нужен при импорте
+    }
+
+    /**
+     * @group import
+     * @group casco
+     */
+    public function testCasco()
+    {
+        $client = $this->createApi2();
+
+        $accountNumber = @file_get_contents(TEMP_DIR . '/CascoAccountNumber1.txt');
+        if (!$accountNumber) {
+            throw new \Exception("AccountNumber isn't calculated. Run calculation tests before.");
+        }
+        $policyNumber = @file_get_contents(TEMP_DIR . '/CascoPolicyNumber1.txt');
+        if (!$policyNumber) {
+            throw new \Exception("PolicyNumber isn't calculated. Run testGetPolicyNumber() before.");
+        }
+
+        $request = $this->getRequest();
+        $request->GENERAL_QUOTE_INFO->ACCOUNT_NUMBER_CALCBASED_ON = $accountNumber;
+
+        /* @var Context $context */
+        $context = $request->LIST_OF_CONTEXTS->get(0);
+        $context->PRIVATE_QUOTE_INFO->POLICY_NUMBER = $policyNumber;
+
+        $response = $client->ImportPolicy($request);
+        print_r($response);
+
+        $this->assertObjectHasAttribute('ErrorCode', $response);
+        $this->assertObjectHasAttribute('PolicyId', $response);
+        $this->assertObjectHasAttribute('AccountNumber', $response);
+        $this->assertObjectHasAttribute('AvailableDocumentTypes', $response);
+        $this->assertObjectHasAttribute('PolicyDocumentType', $response->AvailableDocumentTypes);
+        $this->assertObjectHasAttribute('PrintToken', $response);
+        $this->assertEquals(0, $response->ErrorCode);
+        $this->assertGreaterThan(0, strlen($response->AccountNumber));
+        $this->assertGreaterThan(0, count($response->AvailableDocumentTypes->PolicyDocumentType));
+        $this->assertGreaterThan(0, strlen($response->PrintToken));
+
+        @file_put_contents(TEMP_DIR . '/CascoPrintToken1.txt', $response->PrintToken); //Номер, который нужен для окончательной печати полиса
     }
 
 }

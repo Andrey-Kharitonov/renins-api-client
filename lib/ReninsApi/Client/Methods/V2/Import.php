@@ -60,52 +60,62 @@ trait Import
         return $res;
 
         /*
-        stdClass Object
-        (
-            [ErrorCode] => 0
-            [PolicyId] => 48238630
-            [ProlongatedPolicyId] => 0
-            [Messages] => stdClass Object
-                (
-                )
+        Success example:
+            stdClass Object
+            (
+                [ErrorCode] => 0
+                [PolicyId] => 48238630
+                [ProlongatedPolicyId] => 0
+                [Messages] => stdClass Object
+                    (
+                    )
 
-            [AccountNumber] => RNN-260917-616
-            [AvailableDocumentTypes] => stdClass Object
-                (
-                    [PolicyDocumentType] => Array
-                        (
-                            [0] => stdClass Object
-                                (
-                                    [Id] => 1
-                                    [Name] => Результаты расчета
-                                )
+                [AccountNumber] => RNN-260917-616
+                [AvailableDocumentTypes] => stdClass Object
+                    (
+                        [PolicyDocumentType] => Array
+                            (
+                                [0] => stdClass Object
+                                    (
+                                        [Id] => 1
+                                        [Name] => Результаты расчета
+                                    )
 
-                            [1] => stdClass Object
-                                (
-                                    [Id] => 7
-                                    [Name] => Оригинал полиса
-                                    [Labels] => [NewCasco, HasStamp, HaveStamp], [NoHasStamp, NewCasco, NoStamp]
-                                )
+                                [1] => stdClass Object
+                                    (
+                                        [Id] => 7
+                                        [Name] => Оригинал полиса
+                                        [Labels] => [NewCasco, HasStamp, HaveStamp], [NoHasStamp, NewCasco, NoStamp]
+                                    )
 
-                            [2] => stdClass Object
-                                (
-                                    [Id] => 8
-                                    [Name] => Копия полиса
-                                    [Labels] => [HasStamp, NewCasco, HaveStamp], [NewCasco, NoHasStamp, NoStamp]
-                                )
+                                [2] => stdClass Object
+                                    (
+                                        [Id] => 8
+                                        [Name] => Копия полиса
+                                        [Labels] => [HasStamp, NewCasco, HaveStamp], [NewCasco, NoHasStamp, NoStamp]
+                                    )
 
-                            [3] => stdClass Object
-                                (
-                                    [Id] => 10
-                                    [Name] => Доп.информация
-                                )
+                                [3] => stdClass Object
+                                    (
+                                        [Id] => 10
+                                        [Name] => Доп.информация
+                                    )
 
-                        )
+                            )
 
-                )
+                    )
 
-            [PrintToken] => PRI_60E62F72B0FC47CEA3C5AA6C7760736F_001096
-        )
+                [PrintToken] => PRI_60E62F72B0FC47CEA3C5AA6C7760736F_001096
+            )
+
+        Error example:
+            stdClass Object
+            (
+                [Error] => Сервис Импорта: Полис '001AT-17/36253-S' есть в B2B
+                [ErrorCode] => 0
+                [PolicyId] => 0
+                [ProlongatedPolicyId] => 0
+            )
          */
     }
 

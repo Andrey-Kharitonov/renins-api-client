@@ -16,7 +16,7 @@ class DocumentOfPayment extends Container
     protected $rules = [
         'TYPE' => ['toString', 'required', 'in:по квитанции А7|по квитанции А7 3|по квитанции СБЕРБАНКА|по счету на оплату ОСАГО|по счету на оплату КАСКО|по счету на оплату ДАГО|другое'],
 
-        'PAY_DOC_NUMBER' => ['toStrings', 'required', 'notEmpty'],
+        'PAY_DOC_NUMBER' => ['toString', 'required', 'notEmpty'],
         'PAY_DOC_ISSUE_DATE' => ['toString', 'date'],
     ];
 
