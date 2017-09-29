@@ -3,24 +3,24 @@
 namespace ReninsApi\Request\Soap\Import;
 
 /**
- * Владелец ТС.
+ * Лизингополучатель
  *
- * @property double $KBM - Коэффициент бонус-малус
+ * @property LeasingAgreement $LEASING_AGREEMENT - Лизинговый договор.
  */
-class Owner extends ContactInfo
+class Lessee extends ContactInfo
 {
     protected function init()
     {
         parent::init();
         $this->rules = array_merge($this->rules, [
-            'KBM' => ['toDouble', 'kbm'],
+            'LEASING_AGREEMENT' => ['container:' . LeasingAgreement::class],
         ]);
     }
 
     public function toXml(\SimpleXMLElement $xml)
     {
         parent::toXml($xml);
-        $this->toXmlAttributes($xml, ['KBM']);
+        $this->toXmlTags($xml, ['LEASING_AGREEMENT']);
         return $this;
     }
 }

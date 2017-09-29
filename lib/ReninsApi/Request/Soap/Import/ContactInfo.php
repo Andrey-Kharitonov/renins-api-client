@@ -23,7 +23,7 @@ class ContactInfo extends Container
     public function toXml(\SimpleXMLElement $xml)
     {
         $this->toXmlAttributes($xml, ['TYPE']);
-        $this->toXmlTagsExcept($xml, ['TYPE']);
+        $this->toXmlTags($xml, ['CONTACT', 'ACCOUNT']);
         return $this;
     }
 

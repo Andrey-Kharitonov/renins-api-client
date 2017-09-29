@@ -14,7 +14,7 @@ use ReninsApi\Request\ContainerCollection;
 class Driver extends Container
 {
     protected $rules = [
-        'KBM' => ['toDouble', 'min:0'],
+        'KBM' => ['toDouble', 'kbm'],
 
         'CONTACT' => ['container:' . Contact::class],
     ];

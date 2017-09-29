@@ -592,4 +592,16 @@ class Validator
         return true;
     }
 
+    /**
+     * Gender.
+     * @param $value
+     * @param $params
+     * @return bool|string
+     */
+    public static function checkGender($value, $params = null)
+    {
+        return self::checkIn($value, 'М|Ж|1|2');
+    }
+
+
 }

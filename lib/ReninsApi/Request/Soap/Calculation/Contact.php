@@ -27,7 +27,7 @@ class Contact extends Container
         'MiddleName' => ['toString', 'notEmpty'],
         'LastName' => ['toString', 'notEmpty'],
         'BirthDate' => ['toString', 'date'],
-        'Gender' => ['toString', 'in:М|Ж|1|2'],
+        'Gender' => ['toString', 'gender'],
         'MaritalStatus' => ['toInteger', 'between:1|4'],
         'HasChildren' => ['toLogical'],
         'DriveExperience' => ['toString', 'date'],

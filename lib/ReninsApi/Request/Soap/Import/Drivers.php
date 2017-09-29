@@ -7,9 +7,9 @@ use ReninsApi\Request\ContainerCollection;
 
 /**
  * Список водителей
- * todo: доделать по xsd
  *
  * @property string $MULTI_DRIVE - Неограниченное количество водителей
+ * @property string $LAST_DRIVER_ID
  * @property int $MIN_AGE - Минимальный возраст водителей, используется для Мультидрайв.
  * @property int $MIN_EXPERIENCE - Минимальный стаж водителей, используется для Мультидрайв.
  * @property string $STAFF - Штатные водители страхователя, используется для Мультидрайв.
@@ -19,6 +19,7 @@ class Drivers extends Container
 {
     protected $rules = [
         'MULTI_DRIVE' => ['toYN'],
+        'LAST_DRIVER_ID' => ['toString'],
         'MIN_AGE' => ['toInteger', 'min:0'],
         'MIN_EXPERIENCE' => ['toInteger', 'min:0'],
         'STAFF' => ['toYN'],

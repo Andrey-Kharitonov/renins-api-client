@@ -2,30 +2,27 @@
 
 namespace ReninsApi\Request\Soap\Import;
 
-use ReninsApi\Request\Container;
-
 /**
  * Выгодоприобретатель (физлицо / юрлицо)
  *
- * @property string $TYPE - физлицо / юрлицо
  * @property string $BENEF_ID
  * @property string $ADDITIONAL_TERMS_STATUS - Выгобоприобретатель указывается в особых условиях
- * @property Contact $CONTACT
  */
-class Beneficiary extends Container
+class Beneficiary extends ContactInfo
 {
-    protected $rules = [
-        'TYPE' => ['toString', 'required', 'personType'],
-        'BENEF_ID' => ['toString'],
-        'ADDITIONAL_TERMS_STATUS' => ['toYN'],
-
-        'CONTACT' => ['container:' . Contact::class],
-    ];
+    protected function init()
+    {
+        parent::init();
+        $this->rules = array_merge($this->rules, [
+            'BENEF_ID' => ['toString'],
+            'ADDITIONAL_TERMS_STATUS' => ['toYN'],
+        ]);
+    }
 
     public function toXml(\SimpleXMLElement $xml)
     {
-        $this->toXmlAttributes($xml, ['TYPE', 'BENEF_ID', 'ADDITIONAL_TERMS_STATUS']);
-        $this->toXmlTags($xml, ['CONTACT']);
+        parent::toXml($xml);
+        $this->toXmlAttributes($xml, ['BENEF_ID', 'ADDITIONAL_TERMS_STATUS']);
         return $this;
     }
 }
