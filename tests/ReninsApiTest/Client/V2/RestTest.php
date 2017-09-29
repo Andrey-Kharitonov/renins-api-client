@@ -64,6 +64,9 @@ class RestTest extends TestCase
         $client = $this->createApi2();
 
         $response = $client->vehicleModelsBrandName('ВАЗ', true);
+
+        //print_r($response->toArray());
+
         $this->assertInstanceOf(ContainerCollection::class, $response->Model);
         $this->assertGreaterThan(10, $response->Model->count());
     }
@@ -120,4 +123,47 @@ class RestTest extends TestCase
         $this->assertGreaterThan(10, $response->Leasing->count());
     }
 
+    /**
+     * @group rest
+     */
+    public function testPriceCalculated()
+    {
+        $client = $this->createApi2();
+
+        $response = $client->priceCalculated('Honda', 'Accord', '2015', '190');
+
+        //print_r($response->toArray());
+
+        $this->assertEquals('true', $response->Success);
+        $this->assertInstanceOf(\ReninsApi\Response\Rest\DiapasonPrice::class, $response->Price);
+        $this->assertGreaterThan(0, $response->Price->MinValue);
+        $this->assertGreaterThan(0, $response->Price->MaxValue);
+    }
+
+    /**
+     * @group rest
+     */
+    public function testPriceCalculatedFail()
+    {
+        $client = $this->createApi2();
+
+        $response = $client->priceCalculated('', '', '', '');
+
+        $this->assertEquals('false', $response->Success);
+        $this->assertGreaterThan(0, strlen($response->Error));
+    }
+
+    /**
+     * @group rest
+     * @group current
+     */
+    public function testStoaListFail()
+    {
+        $client = $this->createApi2();
+
+        $response = $client->stoaList('Error here', '2017', 'Error here');
+
+        $this->assertEquals('false', $response->Success);
+        $this->assertGreaterThan(0, strlen($response->ErrorMessage));
+    }
 }
