@@ -9,7 +9,7 @@ use ReninsApi\Request\ContainerCollection;
  * Контекст
  * todo: доделать по xsd
  *
- * @property PrivateQuoteInfo $PRIVATE_QUOTE_INFO
+ * @property PrivateQuoteInfo $PRIVATE_QUOTE_INFO - Дополнительная информация по котировке (уникальная для каждого объекта страхования)
  * @property Vehicle $VEHICLE
  * @property Owner $OWNER
  * @property Drivers $DRIVERS

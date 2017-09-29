@@ -69,7 +69,7 @@ class ImportTest extends TestCase
             ]),
         ]);
 
-        $insurant = new \ReninsApi\Request\Soap\Import\Insurant();
+        $insurant = new \ReninsApi\Request\Soap\Import\ContactInfo();
         $insurant->TYPE = 'CONTACT';
         $insurant->CONTACT = $contact;
 

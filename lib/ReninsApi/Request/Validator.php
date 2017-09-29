@@ -540,5 +540,56 @@ class Validator
         return self::checkIn($value, 'A|B|C|D|E');
     }
 
+    /**
+     * Email
+     * @param $value
+     * @param $params
+     * @return bool|string
+     */
+    public static function checkEmail($value, $params = null)
+    {
+        if ($value === null) return true;
+
+        if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
+            return "Isn't valid email";
+        }
+
+        return true;
+    }
+
+    /**
+     * Validate kbm value
+     * @param $value
+     * @param $params
+     * @return bool|string
+     */
+    public function checkKbm($value, $params = null) {
+        if ($value === null) return true;
+
+        $allow = [
+            '2.45' => 'М',
+            '2.30' => '0',
+            '1.55' => '1',
+            '1.40' => '2',
+            '1.00' => '3',
+            '1.95' => '4',
+            '0.90' => '5',
+            '0.85' => '6',
+            '0.80' => '7',
+            '0.75' => '8',
+            '0.70' => '9',
+            '0.65' => '10',
+            '0.60' => '11',
+            '0.55' => '12',
+            '0.50' => '13',
+        ];
+        $valueStr = sprintf('%.2f', $value);
+
+        if (empty($allow[$valueStr])) {
+            return "Isn't valid kbm coefficient. Allow 2.45, 2.30, ..., 0.50.";
+        }
+
+        return true;
+    }
 
 }

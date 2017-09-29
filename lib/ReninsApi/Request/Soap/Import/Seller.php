@@ -6,12 +6,12 @@ use ReninsApi\Request\Container;
 use ReninsApi\Request\ContainerCollection;
 
 /**
- * Создатель  (Создатель-сотрудник / Создатель-партнер)
+ * Создатель (Создатель-сотрудник / Создатель-партнер)
  *
- * @property string $TYPE
+ * @property string $TYPE - тип
  * @property string $IPFLAG
- * @property Employee $EMPLOYEE
- * @property Partner $PARTNER
+ * @property Employee $EMPLOYEE - Создатель-сотрудник (штатный сотрудник / агент).
+ * @property Partner $PARTNER - Создатель-партнер.
  * @property ContainerCollection $MANAGERS - Список ФИО оформляющих сотрудников
  */
 class Seller extends Container
@@ -31,5 +31,20 @@ class Seller extends Container
         $this->toXmlTags($xml, ['EMPLOYEE', 'PARTNER', 'MANAGERS']);
 
         return $this;
+    }
+
+    public function validate()
+    {
+        $errors = parent::validate();
+
+        if ($this->TYPE == 'EMPLOYEE'
+            && !$this->EMPLOYEE) {
+            $errors['EMPLOYEE'][] = "EMPLOYEE is required for TYPE == EMPLOYEE";
+        } elseif ($this->TYPE == 'PARTNER'
+            && !$this->PARTNER) {
+            $errors['PARTNER'][] = "PARTNER is required for TYPE == PARTNER";
+        }
+
+        return $errors;
     }
 }

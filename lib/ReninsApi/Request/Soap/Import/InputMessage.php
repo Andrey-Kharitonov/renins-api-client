@@ -6,12 +6,14 @@ use ReninsApi\Request\Container;
 use ReninsApi\Request\ContainerCollection;
 
 /**
- * Input message
- * todo: доделать по xsd
+ * Сообщение на входе интеграционного  процесса
  *
  * @property GeneralQuoteInfo $GENERAL_QUOTE_INFO
- * @property Seller $SELLER
- * @property Insurant $INSURANT
+ * @property Seller $SELLER - Создатель (Создатель-сотрудник / Создатель-партнер)
+ * @property Applicant $APPLICANT - Заявитель
+ * @property ContactInfo $INSURANT
+ * @property Prospect $PROSPECT
+ *
  * @property ContainerCollection $LIST_OF_CONTEXTS
  */
 class InputMessage extends Container
@@ -19,7 +21,10 @@ class InputMessage extends Container
     protected $rules = [
         'GENERAL_QUOTE_INFO' => ['container:' . GeneralQuoteInfo::class],
         'SELLER' => ['container:' . Seller::class],
-        'INSURANT' => ['container:' . Insurant::class],
+        'APPLICANT' => ['container:' . Applicant::class],
+        'INSURANT' => ['container:' . ContactInfo::class],
+        'PROSPECT' => ['container:' . Prospect::class],
+        'UNDERWRITER' => ['container:' . Underwriter::class],
         'LIST_OF_CONTEXTS' => ['containerCollection:' . Context::class],
     ];
 
