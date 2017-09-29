@@ -115,7 +115,6 @@ class PrintTest extends TestCase
     /**
      * @group printing
      * @group casco
-     * @group current
      */
     public function testPrintDocumentsToBinary()
     {

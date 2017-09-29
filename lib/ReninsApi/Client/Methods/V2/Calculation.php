@@ -57,6 +57,9 @@ trait Calculation
                 'response' => $client->getLastResponse(),
                 'header' => $client->getLastHeader(),
             ]);
+        } catch (ValidatorMultiException $exc) {
+            $this->logMessage(__METHOD__, $exc->getMessage(), ['errors' => $exc->getErrors()]);
+            throw $exc;
         } catch(\Exception $exc) {
             $this->logMessage(__METHOD__, $exc->getMessage(), [
                 'request' => $client->getLastRequest(),

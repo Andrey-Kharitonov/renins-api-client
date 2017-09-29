@@ -3,30 +3,34 @@
 namespace ReninsApi\Client\Methods\V2;
 
 use ReninsApi\Request\ValidatorMultiException;
-use ReninsApi\Response\Rest\ArrayOfBrand;
+use ReninsApi\Response\Rest\AntitheftDevicesDictionary;
 use ReninsApi\Rest\Client as RestClient;
 
 /**
- * Methods /Vehicle/Brands/*
+ * Methods /Vehicle/AntitheftDevices/*
  */
-trait VehicleBrands
+trait VehicleAntitheftDevices
 {
     /**
-     * Method: /Vehicle/Brands/All
-     * @param null|string $VehicleType
-     * @return ArrayOfBrand
+     * Method: /Vehicle/AntitheftDevices/Xml
+     * @param integer $type - тип системы:
+     *   0 – ПСС (Поисковая система);
+     *   1 – ПУУ (Противоугонная система);
+     *   2 – Закладка
+     * @param string $uid - уникальный ID системы
+     * @return AntitheftDevicesDictionary
      * @throws \Exception
      */
-    public function vehicleBrandsAll($VehicleType = null): ArrayOfBrand {
+    public function vehicleAntitheftDevicesXml(int $type = null, string $uid = null): AntitheftDevicesDictionary {
         /* @var $client RestClient */
         $client = $this->getRestClient();
-        $parameters = ['VehicleType' => $VehicleType];
+        $parameters = ['Uid' => $uid, 'Type' => $type];
 
         $this->logMessage(__METHOD__, 'Making request', $parameters);
         try {
-            $xml = $client->get('Vehicle/Brands/All', $parameters);
+            $xml = $client->get('Vehicle/AntitheftDevices/Xml', $parameters);
 
-            $res = ArrayOfBrand::createFromXml($xml);
+            $res = AntitheftDevicesDictionary::createFromXml($xml);
             $res->validateThrow();
 
             $this->logMessage(__METHOD__, 'Successful', [
@@ -48,21 +52,19 @@ trait VehicleBrands
     }
 
     /**
-     * Method: /Vehicle/Brands/AllWithModels
-     * @param null|string $VehicleType
-     * @return ArrayOfBrand
+     * Method: /Vehicle/AntitheftDevices/Xml/All
+     * @return AntitheftDevicesDictionary
      * @throws \Exception
      */
-    public function vehicleBrandsAllWithModels($VehicleType = null): ArrayOfBrand {
+    public function vehicleAntitheftDevicesXmlAll(): AntitheftDevicesDictionary {
         /* @var $client RestClient */
         $client = $this->getRestClient();
-        $parameters = ['VehicleType' => $VehicleType];
 
-        $this->logMessage(__METHOD__, 'Making request', $parameters);
+        $this->logMessage(__METHOD__, 'Making request');
         try {
-            $xml = $client->get('Vehicle/Brands/AllWithModels', $parameters);
+            $xml = $client->get('Vehicle/AntitheftDevices/Xml/All');
 
-            $res = ArrayOfBrand::createFromXml($xml);
+            $res = AntitheftDevicesDictionary::createFromXml($xml);
             $res->validateThrow();
 
             $this->logMessage(__METHOD__, 'Successful', [
@@ -80,6 +82,7 @@ trait VehicleBrands
             throw $exc;
         }
 
-        return ArrayOfBrand::createFromXml($xml);
+        return $res;
     }
+
 }

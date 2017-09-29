@@ -1,5 +1,7 @@
 <?php
-namespace ReninsApi\Request;
+namespace ReninsApi\Response\Rest;
+
+use ReninsApi\Request\Container;
 
 /**
  * Has one tag name

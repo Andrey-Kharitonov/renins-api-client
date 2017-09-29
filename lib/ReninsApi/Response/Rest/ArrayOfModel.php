@@ -5,19 +5,19 @@ use ReninsApi\Request\Container;
 use ReninsApi\Request\ContainerCollection;
 
 /**
- * Array of brand
+ * Array of model
  *
- * @property ContainerCollection $Brand
+ * @property ContainerCollection $Model
  */
-class ArrayOfBrand extends Container
+class ArrayOfModel extends Container
 {
     protected $rules = [
-        'Brand' => ['containerCollection:' . Brand::class],
+        'Model' => ['containerCollection:' . ModelExt::class],
     ];
 
     public function fromXml(\SimpleXMLElement $xml)
     {
-        $this->Brand = ContainerCollection::createFromXml($xml, Brand::class);
+        $this->Model = ContainerCollection::createFromXml($xml, ModelExt::class);
         return $this;
     }
 }

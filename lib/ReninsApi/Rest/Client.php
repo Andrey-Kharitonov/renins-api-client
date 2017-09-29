@@ -15,9 +15,37 @@ class Client
 
     protected $url = false;
 
+    /**
+     * Last request with headers
+     * @var string
+     */
+    protected $lastRequest;
+
+    /**
+     * Last response with headers
+     * @var string
+     */
+    protected $lastResponse;
+
     public function __construct(string $url)
     {
         $this->url = $url;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastRequest(): string
+    {
+        return $this->lastRequest;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastResponse(): string
+    {
+        return $this->lastResponse;
     }
 
     /**
@@ -94,6 +122,8 @@ class Client
         curl_setopt($curlHandler, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($curlHandler, CURLOPT_TIMEOUT, 30);
         curl_setopt($curlHandler, CURLOPT_CONNECTTIMEOUT, 30);
+        curl_setopt($curlHandler, CURLOPT_HEADER, true);
+        curl_setopt($curlHandler, CURLINFO_HEADER_OUT, true);
 
         if (self::METHOD_POST === $method) {
             curl_setopt($curlHandler, CURLOPT_POST, true);
@@ -102,16 +132,25 @@ class Client
             }
         }
 
-        $responseBody = curl_exec($curlHandler);
+        $response = curl_exec($curlHandler);
+        $this->lastResponse = $response;
         $errno = curl_errno($curlHandler);
         $error = curl_error($curlHandler);
+        $this->lastRequest = curl_getinfo($curlHandler, CURLINFO_HEADER_OUT);
         curl_close($curlHandler);
 
         if ($errno) {
             throw new CurlException($error, $errno);
         }
 
-        //print_r($responseBody);
+        $pos = strpos($response, "\r\n\r\n");
+        if ($pos === false) {
+            throw new CurlException("Response body is empty");
+        }
+        $responseBody = substr($response, $pos + 4);
+        if (strlen($responseBody) <= 0) {
+            throw new CurlException("Response body is empty");
+        }
 
         return $responseBody;
     }

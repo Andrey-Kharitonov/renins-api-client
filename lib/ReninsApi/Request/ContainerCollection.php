@@ -37,9 +37,9 @@ class ContainerCollection implements \Iterator
             $xml = new \SimpleXMLElement($xml);
         }
 
-        $cont = new static();
-        $cont->fromXml($xml, $containerClass);
-        return $cont;
+        $coll = new static();
+        $coll->fromXml($xml, $containerClass);
+        return $coll;
     }
 
     /**
