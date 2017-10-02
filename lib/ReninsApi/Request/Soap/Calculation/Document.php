@@ -8,7 +8,7 @@ use ReninsApi\Request\ContainerCollection;
 /**
  * Данные о документе
  *
- * @property int $type - тип
+ * @property string $type - тип
  * @property string $Serial - серия
  * @property string $Number - номер
  */
