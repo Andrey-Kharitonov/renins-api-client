@@ -28,7 +28,7 @@ class Risks extends Container
     public function fromXml(\SimpleXMLElement $xml) {
         $this->fromXmlAttributes($xml, ['PacketName', 'PacketCaption', 'CanBeChoosen', 'Visible', 'Enabled']);
 
-        $this->Risk = ContainerCollection::createFromXml($xml, Risk::class);
+        $this->Risk = ContainerCollection::createFromXml($xml->Risk, Risk::class);
 
         return $this;
     }

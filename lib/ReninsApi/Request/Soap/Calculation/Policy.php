@@ -14,6 +14,7 @@ use ReninsApi\Request\ContainerCollection;
  * @property Vehicle $Vehicle - ТС
  * @property Participants $Participants - Участники договора
  * @property Casco $Casco - Блок для КАСКО
+ * @property Osago $Osago - Блок для ОСАГО
  */
 class Policy extends Container
 {
@@ -25,6 +26,7 @@ class Policy extends Container
         'Vehicle' => ['container:' . Vehicle::class, 'required'],
         'Participants' => ['container:' . Participants::class, 'required'],
         'Casco' => ['container:' . Casco::class],
+        'Osago' => ['container:' . Osago::class],
     ];
 
     public function toXml(\SimpleXMLElement $xml)

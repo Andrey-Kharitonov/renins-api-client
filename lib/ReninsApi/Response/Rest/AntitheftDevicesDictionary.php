@@ -17,7 +17,7 @@ class AntitheftDevicesDictionary extends Container
 
     public function fromXml(\SimpleXMLElement $xml)
     {
-        $this->AlarmSystem = ContainerCollection::createFromXml($xml, AlarmSystem::class);
+        $this->AlarmSystem = ContainerCollection::createFromXml($xml->AlarmSystem, AlarmSystem::class);
         return $this;
     }
 }

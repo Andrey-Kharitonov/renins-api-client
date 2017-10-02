@@ -86,7 +86,7 @@ class CalcCascoTest extends TestCase
         $client = $this->createApi2();
         $request = $this->getRequest();
 
-        $response = $client->calcCasco($request);
+        $response = $client->calc($request);
         //print_r($response->toArray());
 
         ob_start();
@@ -115,7 +115,7 @@ class CalcCascoTest extends TestCase
 
         $request->Policy->Vehicle->Manufacturer = 'Here is error';
         $request->Policy->Vehicle->Model = 'Here is error';
-        $response = $client->calcCasco($request);
+        $response = $client->calc($request);
         $this->assertInstanceOf(\ReninsApi\Response\Soap\Calculation\MakeCalculationResult::class, $response);
         $this->assertEquals($response->isSuccessful(), false);
     }

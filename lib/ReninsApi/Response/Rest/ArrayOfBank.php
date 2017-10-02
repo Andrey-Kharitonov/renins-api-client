@@ -17,7 +17,7 @@ class ArrayOfBank extends Container
 
     public function fromXml(\SimpleXMLElement $xml)
     {
-        $this->Bank = ContainerCollection::createFromXml($xml, Bank::class);
+        $this->Bank = ContainerCollection::createFromXml($xml->Bank, Bank::class);
         return $this;
     }
 }

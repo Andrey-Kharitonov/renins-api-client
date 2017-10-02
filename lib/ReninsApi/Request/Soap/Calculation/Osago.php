@@ -16,7 +16,7 @@ use ReninsApi\Request\Container;
  * @property string $Transit - Следует к месту регистрации. Default: NO.
  * @property string $RegistrationPlace - Регион регистрации ТС для ЮЛ, либо, регион регистрации собственника ТС для ФЛ, определяет тарифную зону для ОСАГО.
  * @property string $RegistrationCountry - страна регистрации (для ОСАГО). Варианты: "Россия", "Иные государства".
- * @property double $KBM - Коэффициент бонус-малус
+ * @property double $Kbm - Коэффициент бонус-малус
  * @property CalcKBMRequest $CalcKBMRequest
  */
 class Osago extends Container
@@ -28,9 +28,9 @@ class Osago extends Container
         'KNEnable' => ['toLogical'],
         'SeasonUse' => ['toLogical'],
         'Transit' => ['toLogical'],
-        'RegistrationPlace' => ['toLogical', 'required', 'notEmpty'],
-        'RegistrationCountry' => ['toLogical', 'required', 'notEmpty', 'in:Россия|Иные государства'],
-        'KBM' => ['toDouble', 'required', 'kbm'],
+        'RegistrationPlace' => ['toString', 'required', 'notEmpty'],
+        'RegistrationCountry' => ['toString', 'required', 'in:Россия|Иные государства'],
+        'Kbm' => ['toDouble', 'required', 'kbm'],
         'CalcKBMRequest' => ['container:' . CalcKBMRequest::class, 'required'],
     ];
 

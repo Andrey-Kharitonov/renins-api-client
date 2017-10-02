@@ -10,8 +10,8 @@ use ReninsApi\Request\ContainerCollection;
  *
  * @property string $IsIP - Флаг, является ли физ.лицо Индивидуальным Предпринимателем (ИП).
  * @property string $FirstName - Имя
- * @property string $MiddleName - Фамилия
- * @property string $LastName - Отчество
+ * @property string $MiddleName - Отчество
+ * @property string $LastName - Фамилия
  * @property string $BirthDate - Дата рождения
  * @property string $Gender - Пол (М, Ж)
  * @property integer $MaritalStatus - Семейное положение (1 - Женат, 2 Не женат, 3 - Замужем, 4 - Не замужем)

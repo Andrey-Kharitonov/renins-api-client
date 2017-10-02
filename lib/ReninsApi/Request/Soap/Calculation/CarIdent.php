@@ -16,10 +16,10 @@ use ReninsApi\Request\Container;
 class CarIdent extends Container
 {
     protected $rules = [
-        'LicensePlate' => ['toString', 'length:30'],
-        'VIN' => ['toString', 'length:17'],
-        'BodyNumber' => ['toString', 'length:24'],
-        'ChassisNumber' => ['toString', 'length:24'],
+        'LicensePlate' => ['toString', 'length:|30'],
+        'VIN' => ['toString', 'length:|17'],
+        'BodyNumber' => ['toString', 'length:|24'],
+        'ChassisNumber' => ['toString', 'length:|24'],
     ];
 
     public function validate()

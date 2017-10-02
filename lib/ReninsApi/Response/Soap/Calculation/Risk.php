@@ -26,8 +26,8 @@ class Risk extends Container
     public function fromXml(\SimpleXMLElement $xml) {
         $this->fromXmlAttributes($xml, ['Name', 'Bonus', 'Sum', 'TakeIntoRate']);
 
-        if ($xml->Coefs) {
-            $this->Coefs = ContainerCollection::createFromXml($xml->Coefs[0], Coef::class);
+        if ($xml->Coefs[0]) {
+            $this->Coefs = ContainerCollection::createFromXml($xml->Coefs[0]->Coef, Coef::class);
         }
 
         return $this;

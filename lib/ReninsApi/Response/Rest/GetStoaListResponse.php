@@ -23,8 +23,8 @@ class GetStoaListResponse extends Container
     {
         $this->Success = (string) $xml->Success;
         $this->ErrorMessage = (string) $xml->ErrorMessage;
-        if ($xml->Stoa) {
-            $this->Stoa = ContainerCollection::createFromXml($xml->Stoa, StoaItem::class);
+        if ($xml->Stoa[0]) {
+            $this->Stoa = ContainerCollection::createFromXml($xml->Stoa[0]->StoaItem, StoaItem::class);
         }
         return $this;
     }

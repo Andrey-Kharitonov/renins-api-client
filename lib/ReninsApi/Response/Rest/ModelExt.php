@@ -20,8 +20,8 @@ class ModelExt extends Container
     public function fromXml(\SimpleXMLElement $xml)
     {
         $this->Name = (string) $xml->Name;
-        if ($xml->VehicleTypes) {
-            $this->VehicleTypes = ContainerCollection::createFromXml($xml->VehicleTypes, VehicleType::class);
+        if ($xml->VehicleTypes[0]) {
+            $this->VehicleTypes = ContainerCollection::createFromXml($xml->VehicleTypes[0]->Classifier, VehicleType::class);
         }
 
         return $this;

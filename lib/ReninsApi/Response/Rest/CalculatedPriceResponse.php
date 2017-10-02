@@ -22,8 +22,8 @@ class CalculatedPriceResponse extends Container
     {
         $this->Success = (string) $xml->Success;
         $this->Error = (string) $xml->Error;
-        if ($xml->Price) {
-            $this->Price = DiapasonPrice::createFromXml($xml->Price);
+        if ($xml->Price[0]) {
+            $this->Price = DiapasonPrice::createFromXml($xml->Price[0]);
         }
         return $this;
     }

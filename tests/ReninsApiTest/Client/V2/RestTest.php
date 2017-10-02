@@ -36,12 +36,12 @@ class RestTest extends TestCase
     /**
      * @group rest
      */
-    public function testVehicleBrandsAll2()
+    public function testVehicleBrandsAllFail()
     {
         $client = $this->createApi2();
 
         $response = $client->vehicleBrandsAll('Invalid value');
-        $this->assertEquals(0, $response->Brand->count());
+        $this->assertEquals(null, $response->Brand);
     }
 
     /**
@@ -155,7 +155,6 @@ class RestTest extends TestCase
 
     /**
      * @group rest
-     * @group current
      */
     public function testStoaListFail()
     {

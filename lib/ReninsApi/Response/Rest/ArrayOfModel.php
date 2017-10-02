@@ -17,7 +17,7 @@ class ArrayOfModel extends Container
 
     public function fromXml(\SimpleXMLElement $xml)
     {
-        $this->Model = ContainerCollection::createFromXml($xml, ModelExt::class);
+        $this->Model = ContainerCollection::createFromXml($xml->Model, ModelExt::class);
         return $this;
     }
 }

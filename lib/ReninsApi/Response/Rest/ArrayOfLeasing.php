@@ -17,7 +17,7 @@ class ArrayOfLeasing extends Container
 
     public function fromXml(\SimpleXMLElement $xml)
     {
-        $this->Leasing = ContainerCollection::createFromXml($xml, Leasing::class);
+        $this->Leasing = ContainerCollection::createFromXml($xml->Leasing, Leasing::class);
         return $this;
     }
 }

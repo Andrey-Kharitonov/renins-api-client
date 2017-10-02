@@ -60,31 +60,31 @@ class CalcResults extends Container
     public function fromXml(\SimpleXMLElement $xml) {
         $this->fromXmlAttributes($xml, ['SuppressPercentage', 'PercentageAccuracy', 'Success', 'b2b_id', 'AccountNumber']);
 
-        if ($xml->Messages) {
-            $this->Messages = ContainerCollection::createFromXml($xml->Messages[0], Message::class);
+        if ($xml->Messages[0]) {
+            $this->Messages = ContainerCollection::createFromXml($xml->Messages[0]->Message, Message::class);
         }
-        if ($xml->Risks) {
+        if ($xml->Risks[0]) {
             $this->Risks = Risks::createFromXml($xml->Risks[0]);
         }
-        if ($xml->Total) {
+        if ($xml->Total[0]) {
             $this->Total = Total::createFromXml($xml->Total[0]);
         }
-        if ($xml->Currency) {
+        if ($xml->Currency[0]) {
             $this->Currency = Currency::createFromXml($xml->Currency[0]);
         }
-        if ($xml->User) {
+        if ($xml->User[0]) {
             $this->User = User::createFromXml($xml->User[0]);
         }
-        if ($xml->InsuranceObjects) {
-            $this->InsuranceObjects = ContainerCollection::createFromXml($xml->InsuranceObjects[0], InsuranceObject::class);
+        if ($xml->InsuranceObjects[0]) {
+            $this->InsuranceObjects = ContainerCollection::createFromXml($xml->InsuranceObjects[0]->InsuranceObject, InsuranceObject::class);
         }
-        if ($xml->Options) {
+        if ($xml->Options[0]) {
             $this->Options = Options::createFromXml($xml->Options[0]);
         }
-        if ($xml->StoaTypes) {
+        if ($xml->StoaTypes[0]) {
             $this->StoaTypes = StoaTypes::createFromXml($xml->StoaTypes[0]);
         }
-        if ($xml->Deductible) {
+        if ($xml->Deductible[0]) {
             $this->Deductible = Deductible::createFromXml($xml->Deductible[0]);
         }
 

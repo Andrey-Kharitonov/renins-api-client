@@ -12,8 +12,8 @@ use ReninsApi\Request\ContainerCollection;
  * @property Insurant $Insurant - Страхователь
  * @property int $BeneficiaryType - выгодоприобретатель физическое или юридическое лицо
  * @property Prospect $Prospect - Данные по проспекту, потенциальному клиенту, т.е. страхователю.
- * @property ContactInfo $Owner - Данные по владельцу ТС.
- * @property ContactInfo $Lessee - Данные по лизингополучателю, в настоящее время используется только для передачи признака ИП ФЛ либо ИНН ЮЛ.
+ * @property Owner $Owner - Данные по владельцу ТС.
+ * @property Lessee $Lessee - Данные по лизингополучателю, в настоящее время используется только для передачи признака ИП ФЛ либо ИНН ЮЛ.
  */
 class Participants extends Container
 {
@@ -22,7 +22,7 @@ class Participants extends Container
         'Insurant' => ['container:' . Insurant::class, 'required'],
         'BeneficiaryType' => ['toInteger', 'participantType'],
         'Prospect' => ['container:' . Prospect::class],
-        'Owner' => ['container:' . ContactInfo::class],
-        'Lessee' => ['container:' . ContactInfo::class],
+        'Owner' => ['container:' . Owner::class],
+        'Lessee' => ['container:' . Lessee::class],
     ];
 }

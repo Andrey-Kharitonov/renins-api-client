@@ -17,7 +17,7 @@ class ArrayOfBrand extends Container
 
     public function fromXml(\SimpleXMLElement $xml)
     {
-        $this->Brand = ContainerCollection::createFromXml($xml, Brand::class);
+        $this->Brand = ContainerCollection::createFromXml($xml->Brand, Brand::class);
         return $this;
     }
 }

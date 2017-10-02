@@ -18,7 +18,7 @@ trait Calculation
      * @return MakeCalculationResult
      * @throws \Exception
      */
-    public function calcCasco(Request $param) {
+    public function calc(Request $param) {
         /* @var $client ClientCalc */
         $client = $this->getSoapCalcClient();
 

@@ -28,18 +28,17 @@ class ContainerCollection implements \Iterator
 
     /**
      * Create instance from xml
-     * @param $xml
+     * @param \SimpleXMLElement $children
      * @param string $containerClass
-     * @return static
+     * @return static|null
      */
-    public static function createFromXml($xml, string $containerClass) {
-        if (!($xml instanceof \SimpleXMLElement)) {
-            $xml = new \SimpleXMLElement($xml);
+    public static function createFromXml(\SimpleXMLElement $children, string $containerClass) {
+        if ($children && $children->count()) {
+            $coll = new static();
+            $coll->fromXml($children, $containerClass);
+            return $coll;
         }
-
-        $coll = new static();
-        $coll->fromXml($xml, $containerClass);
-        return $coll;
+        return null;
     }
 
     /**
@@ -159,16 +158,18 @@ class ContainerCollection implements \Iterator
 
     /**
      * Fill collection from xml children tags
-     * @param \SimpleXMLElement $xml
+     * @param \SimpleXMLElement $children - children tags
      * @param string $containerClass
      * @return $this
      */
-    public function fromXml(\SimpleXMLElement $xml, string $containerClass) {
-        foreach ($xml->children() as $child) {
-            /* @var Container $cont */
-            $cont = new $containerClass();
-            $cont->fromXml($child);
-            $this->add($cont);
+    public function fromXml(\SimpleXMLElement $children, string $containerClass) {
+        if ($children && $children->count()) {
+            foreach ($children as $child) {
+                /* @var Container $cont */
+                $cont = new $containerClass();
+                $cont->fromXml($child);
+                $this->add($cont);
+            }
         }
         return $this;
     }
