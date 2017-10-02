@@ -9,7 +9,7 @@ use ReninsApi\Request\Soap\Import\InputMessage;
 use ReninsApi\Request\Soap\Import\Request;
 use ReninsApiTest\Client\Log;
 
-class ImportTest extends TestCase
+class ImportCascoTest extends TestCase
 {
     use Log;
 
@@ -201,8 +201,7 @@ class ImportTest extends TestCase
     }
 
     /**
-     * @group import
-     * @group casco
+     * @group import-casco
      */
     public function testGetPolicyNumber()
     {
@@ -228,8 +227,7 @@ class ImportTest extends TestCase
     }
 
     /**
-     * @group import
-     * @group casco
+     * @group import-casco
      */
     public function testCasco()
     {

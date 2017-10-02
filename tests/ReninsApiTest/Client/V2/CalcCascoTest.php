@@ -3,8 +3,6 @@
 namespace ReninsApiTest\Client\V2;
 
 use PHPUnit\Framework\TestCase;
-use ReninsApi\Client\ApiVersion2;
-use ReninsApi\Helpers\LogEvent;
 use ReninsApi\Request\ContainerCollection;
 use ReninsApiTest\Client\Log;
 
@@ -78,8 +76,7 @@ class CalcCascoTest extends TestCase
     }
 
     /**
-     * @group calculation
-     * @group casco
+     * @group calculation-casco
      */
     public function testSuccessful()
     {
@@ -105,8 +102,7 @@ class CalcCascoTest extends TestCase
     }
 
     /**
-     * @group calculation
-     * @group casco
+     * @group calculation-casco
      */
     public function testCalcCascoInvalid()
     {

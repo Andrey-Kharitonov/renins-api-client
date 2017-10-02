@@ -112,9 +112,7 @@ class CalcOsagoTest extends TestCase
 
     /**
      * ОСАГО ВИ (на ЛДУ), ФЛ, ЛДУ (расчет, запрос).xml
-     * @group calculation
-     * @group osago
-     * @group current
+     * @group calculation-osago
      */
     public function testSuccessful()
     {
@@ -136,22 +134,6 @@ class CalcOsagoTest extends TestCase
         $this->assertInstanceOf(\ReninsApi\Response\Soap\Calculation\CalcResults::class, $calcResults);
 
         @file_put_contents(TEMP_DIR . '/OsagoAccountNumber1.txt', $calcResults->AccountNumber); //Просто расчет
-    }
-
-    /**
-     * @group calculation
-     * @group osago
-     */
-    public function testCalcCascoInvalid()
-    {
-        $client = $this->createApi2();
-        $request = $this->getRequest();
-
-        $request->Policy->Vehicle->Manufacturer = 'Here is error';
-        $request->Policy->Vehicle->Model = 'Here is error';
-        $response = $client->calc($request);
-        $this->assertInstanceOf(\ReninsApi\Response\Soap\Calculation\MakeCalculationResult::class, $response);
-        $this->assertEquals($response->isSuccessful(), false);
     }
 
 }

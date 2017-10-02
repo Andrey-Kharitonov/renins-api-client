@@ -13,8 +13,7 @@ class PrintTest extends TestCase
     use Log;
 
     /**
-     * @group printing
-     * @group casco
+     * @group printing-casco
      */
     public function testGetAvailablePolicyDocumentTypes()
     {
@@ -40,8 +39,7 @@ class PrintTest extends TestCase
     }
 
     /**
-     * @group printing
-     * @group casco
+     * @group printing-casco
      */
     public function testGetAvailablePolicyDocumentTypesFail()
     {
@@ -59,8 +57,7 @@ class PrintTest extends TestCase
     }
 
     /**
-     * @group printing
-     * @group casco
+     * @group printing-casco
      */
     public function testPrintDocuments()
     {
@@ -91,8 +88,7 @@ class PrintTest extends TestCase
     }
 
     /**
-     * @group printing
-     * @group casco
+     * @group printing-casco
      */
     public function testPrintDocumentsFail()
     {
@@ -113,8 +109,7 @@ class PrintTest extends TestCase
     }
 
     /**
-     * @group printing
-     * @group casco
+     * @group printing-casco
      */
     public function testPrintDocumentsToBinary()
     {
@@ -152,8 +147,7 @@ class PrintTest extends TestCase
     }
 
     /**
-     * @group printing
-     * @group casco
+     * @group printing-casco
      */
     public function testGetDocumentInUrl()
     {
@@ -169,8 +163,7 @@ class PrintTest extends TestCase
     }
 
     /**
-     * @group printing
-     * @group casco
+     * @group printing-casco
      */
     public function testGetDocumentToBytes()
     {
