@@ -7,7 +7,7 @@
 * Клонируйте репозиторий
 
 ```bash
-git clone git@git.epam.com:reni-ddc/RENI-DDC.git
+git clone git@github.com:Andrey-Kharitonov/renins-api-client.git
 ```
 
 * Выполните в папке проекта:
