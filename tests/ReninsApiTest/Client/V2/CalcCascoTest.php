@@ -89,16 +89,24 @@ class CalcCascoTest extends TestCase
         ob_start();
         print_r($response->toArray());
         $data = ob_get_clean();
-        @file_put_contents(TEMP_DIR . '/CascoCalcResponse.txt', $data);
+        @file_put_contents(TEMP_DIR . '/CascoCalcResponse1.txt', $data);
 
-        $this->assertInstanceOf(\ReninsApi\Response\Soap\Calculation\MakeCalculationResult::class, $response);
         $this->assertEquals($response->isSuccessful(), true);
-        $this->assertInstanceOf(ContainerCollection::class, $response->CalcResults);
         $this->assertGreaterThan(0, $response->CalcResults->count());
-        $calcResults = $response->CalcResults->get(0);
-        $this->assertInstanceOf(\ReninsApi\Response\Soap\Calculation\CalcResults::class, $calcResults);
 
-        @file_put_contents(TEMP_DIR . '/CascoAccountNumber1.txt', $calcResults->AccountNumber); //Просто расчет
+        //Получим первый успешный
+        $calcResults = $response->getFirstSuccessfulResults();
+        $this->assertNotNull($calcResults);
+        $this->assertGreaterThan(0, strlen($calcResults->AccountNumber));
+        $this->assertEquals('true', $calcResults->Risks->Visible);
+        $this->assertEquals('true', $calcResults->Risks->Enabled);
+        $this->assertGreaterThan(0, strlen($calcResults->Risks->PacketName));
+        $this->assertNotNull($calcResults->Risks->Risk);
+        $this->assertGreaterThan(0, $calcResults->Risks->Risk->count());
+
+        @file_put_contents(TEMP_DIR . '/CascoCalcResults1.txt', serialize($calcResults->toArray())); //Результаты расчета для импорта
+
+        @file_put_contents(TEMP_DIR . '/CascoAccountNumber1.txt', $calcResults->AccountNumber); //Номер котировки
     }
 
     /**
@@ -112,7 +120,6 @@ class CalcCascoTest extends TestCase
         $request->Policy->Vehicle->Manufacturer = 'Here is error';
         $request->Policy->Vehicle->Model = 'Here is error';
         $response = $client->calc($request);
-        $this->assertInstanceOf(\ReninsApi\Response\Soap\Calculation\MakeCalculationResult::class, $response);
         $this->assertEquals($response->isSuccessful(), false);
     }
 

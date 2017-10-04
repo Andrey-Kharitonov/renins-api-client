@@ -23,9 +23,9 @@ class ImportCascoTest extends TestCase
 
         $generalQuoteInfo = new \ReninsApi\Request\Soap\Import\GeneralQuoteInfo();
         $generalQuoteInfo->SALE_DATE = $dt->format('Y-m-d') . 'T12:00:00';
-        $generalQuoteInfo->INSURANCE_SUM = '400000';
+        //$generalQuoteInfo->INSURANCE_SUM = '400000';
         $generalQuoteInfo->CURRENCY = 'RUR';
-        $generalQuoteInfo->PACKET_CALCBASED_ON = '1';
+        //$generalQuoteInfo->PACKET_CALCBASED_ON = '1';
 
         $partner = new \ReninsApi\Request\Soap\Import\Partner();
         $partner->NAME = 'Link_Auto';
@@ -79,7 +79,7 @@ class ImportCascoTest extends TestCase
             'PAY_DOC_NUMBER' => '0123456789',
             'PAY_DOC_ISSUE_DATE' => $dtMinusDay->format('Y-m-d'),
         ]);
-        $privateQuoteInfo->POLICY_NUMBER = ''; //get by GetPolicyNumber()
+        //$privateQuoteInfo->POLICY_NUMBER = ''; //get by GetPolicyNumber()
         //$privateQuoteInfo->BSO_NUMBER = '0000000';
         //$PRIVATE_QUOTE_INFO->PRODUCT = 'КАСКО 2015.11.15'; deprecated
         $privateQuoteInfo->CREATION_DATE = $dtMinusDay->format('Y-m-d');
@@ -87,7 +87,7 @@ class ImportCascoTest extends TestCase
         $privateQuoteInfo->INS_TIME_FROM = '12:00:00';
         $privateQuoteInfo->INS_DATE_TO = $dtPlusYear->format('Y-m-d');
         $privateQuoteInfo->INS_TIME_TO = '23:59:00';
-        $privateQuoteInfo->INSURANCE_SUM = '400000';
+        //$privateQuoteInfo->INSURANCE_SUM = '400000';
         $privateQuoteInfo->CURRENCY = 'RUR';
         $privateQuoteInfo->INS_DURATION = 12;
         $privateQuoteInfo->TOTALLY = false;
@@ -97,13 +97,15 @@ class ImportCascoTest extends TestCase
             'INSPECTION_NOT_NEEDED_OLD_OBJECT' => false,
         ]);
         $privateQuoteInfo->RISKS = new \ReninsApi\Request\Soap\Import\Risks([
-            'BONUS' => '41553',
+            //'BONUS' => '41553',
             'RISK' => new ContainerCollection([
+                /*
                 new \ReninsApi\Request\Soap\Import\Risk(['NAME' => 'Угон', 'BONUS' => '3387', 'INSURANCE_SUM' => '400000']),
                 new \ReninsApi\Request\Soap\Import\Risk(['NAME' => 'ДО', 'BONUS' => '15000', 'INSURANCE_SUM' => '100000']),
                 new \ReninsApi\Request\Soap\Import\Risk(['NAME' => 'ДР', 'BONUS' => '185', 'INSURANCE_SUM' => '10000']),
                 new \ReninsApi\Request\Soap\Import\Risk(['NAME' => 'НС', 'BONUS' => '350', 'INSURANCE_SUM' => '100000']),
                 new \ReninsApi\Request\Soap\Import\Risk(['NAME' => 'Ущерб', 'BONUS' => '22631', 'INSURANCE_SUM' => '400000']),
+                */
             ]),
         ]);
 
@@ -177,14 +179,6 @@ class ImportCascoTest extends TestCase
             'MIN_EXPERIENCE' => 5,
             'MULTI_DRIVE' => true,
             'STAFF' => false,
-
-            /*
-            'DRIVER' => new ContainerCollection([
-                new \ReninsApi\Request\Soap\Import\Driver([
-                    'CONTACT' => $contact2,
-                ]),
-            ]),
-            */
         ]);
 
 
@@ -215,12 +209,9 @@ class ImportCascoTest extends TestCase
         $request->AccountNumber = $accountNumber;
         $response = $client->GetPolicyNumber($request);
 
-        print_r($response);
+        //print_r($response->toArray());
 
-        $this->assertObjectHasAttribute('Success', $response);
-        $this->assertObjectHasAttribute('Number', $response);
         $this->assertEquals(true, $response->Success);
-        $this->assertGreaterThan(0, strlen($response->Number));
 
         @file_put_contents(TEMP_DIR . '/CascoPolicyNumber1.txt', $response->Number); //Номер, который нужен при импорте
     }
@@ -228,7 +219,7 @@ class ImportCascoTest extends TestCase
     /**
      * @group import-casco
      */
-    public function testCasco()
+    public function testGetPolicyNumberFail()
     {
         $client = $this->createApi2();
 
@@ -236,31 +227,69 @@ class ImportCascoTest extends TestCase
         if (!$accountNumber) {
             throw new \Exception("AccountNumber isn't calculated. Run calculation tests before.");
         }
+
+        $request = new Request();
+        $request->AccountNumber = 'Error here';
+        $response = $client->GetPolicyNumber($request);
+
+        //print_r($response->toArray());
+
+        $this->assertEquals(false, $response->Success);
+    }
+
+    /**
+     * @group import-casco
+     * @group current
+     */
+    public function testCasco()
+    {
+        $client = $this->createApi2();
+
+        $calcResults = @file_get_contents(TEMP_DIR . '/CascoCalcResults1.txt');
+        if (!$calcResults) {
+            throw new \Exception("CalcResults aren't calculated.");
+        }
+        $calcResults = @unserialize($calcResults);
+        if (!is_array($calcResults)) {
+            throw new \Exception("CalcResults has invalid format");
+        }
+
+        $accountNumber = @file_get_contents(TEMP_DIR . '/CascoAccountNumber1.txt');
+        if (!$accountNumber) {
+            throw new \Exception("AccountNumber isn't calculated.");
+        }
+
         $policyNumber = @file_get_contents(TEMP_DIR . '/CascoPolicyNumber1.txt');
         if (!$policyNumber) {
-            throw new \Exception("PolicyNumber isn't calculated. Run testGetPolicyNumber() before.");
+            throw new \Exception("PolicyNumber isn't calculated.");
         }
 
         $request = $this->getRequest();
         $request->GENERAL_QUOTE_INFO->ACCOUNT_NUMBER_CALCBASED_ON = $accountNumber;
+        $request->GENERAL_QUOTE_INFO->PACKET_CALCBASED_ON = $calcResults['Risks']['PacketName'];
+        $request->GENERAL_QUOTE_INFO->INSURANCE_SUM = $calcResults['Total']['Sum'];
 
-        /* @var Context $context */
+        /* @var \ReninsApi\Request\Soap\Import\Context $context */
         $context = $request->LIST_OF_CONTEXTS->get(0);
         $context->PRIVATE_QUOTE_INFO->POLICY_NUMBER = $policyNumber;
+        $context->PRIVATE_QUOTE_INFO->INSURANCE_SUM = $calcResults['Total']['Sum'];
+
+        $context->PRIVATE_QUOTE_INFO->RISKS->BONUS = $calcResults['Total']['Bonus'];
+        foreach ($calcResults['Risks']['Risk'] as $risk) {
+            $riskObj = new \ReninsApi\Request\Soap\Import\Risk();
+            $riskObj->NAME = $risk['Name'];
+            $riskObj->BONUS = $risk['Bonus'];
+            $riskObj->INSURANCE_SUM = $risk['Sum'];
+            $context->PRIVATE_QUOTE_INFO->RISKS->RISK->add($riskObj);
+        }
 
         $response = $client->ImportPolicy($request);
         print_r($response);
 
-        $this->assertObjectHasAttribute('ErrorCode', $response);
-        $this->assertObjectHasAttribute('PolicyId', $response);
-        $this->assertObjectHasAttribute('AccountNumber', $response);
-        $this->assertObjectHasAttribute('AvailableDocumentTypes', $response);
-        $this->assertObjectHasAttribute('PolicyDocumentType', $response->AvailableDocumentTypes);
-        $this->assertObjectHasAttribute('PrintToken', $response);
-        $this->assertEquals(0, $response->ErrorCode);
+        $this->assertGreaterThan(0, strlen($response->PolicyId));
         $this->assertGreaterThan(0, strlen($response->AccountNumber));
-        $this->assertGreaterThan(0, count($response->AvailableDocumentTypes->PolicyDocumentType));
         $this->assertGreaterThan(0, strlen($response->PrintToken));
+        $this->assertGreaterThan(0, $response->AvailableDocumentTypes->count());
 
         @file_put_contents(TEMP_DIR . '/CascoPrintToken1.txt', $response->PrintToken); //Номер, который нужен для окончательной печати полиса
     }

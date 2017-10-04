@@ -17,7 +17,6 @@ class ClientImport extends Client
             throw new ClientException("Invalid response. Expected object.");
         }
 
-        $firstPropertyValue = reset($res);
-        return $firstPropertyValue;
+        return reset($res);
     }
 }

@@ -6,6 +6,8 @@ use ReninsApi\Helpers\Utils;
 use ReninsApi\Request\Soap\Import\InputMessage;
 use ReninsApi\Request\Soap\Import\Request;
 use ReninsApi\Request\ValidatorMultiException;
+use ReninsApi\Response\Soap\Import\GetPolicyNumberResult;
+use ReninsApi\Response\Soap\Import\ImportPolicyResult;
 use ReninsApi\Soap\ClientImport;
 
 /**
@@ -13,7 +15,14 @@ use ReninsApi\Soap\ClientImport;
  */
 trait Import
 {
-    public function ImportPolicy(InputMessage $param) {
+    /**
+     * Import policy to B2B
+     *
+     * @param InputMessage $param
+     * @return ImportPolicyResult
+     * @throws \Exception
+     */
+    public function ImportPolicy(InputMessage $param): ImportPolicyResult {
         /* @var $client ClientImport */
         $client = $this->getSoapImportClient();
 
@@ -42,13 +51,19 @@ trait Import
                 ]
             ];
             $this->logMessage(__METHOD__, 'Making request');
-            $res = $client->makeRequest('ImportPolicy', $args);
+            $obj = $client->makeRequest('ImportPolicy', $args);
+
+            $res = ImportPolicyResult::createFromObject($obj);
+            $res->validateThrow();
 
             $this->logMessage(__METHOD__, 'Successful', [
                 'request' => $client->getLastRequest(),
                 'response' => $client->getLastResponse(),
                 'header' => $client->getLastHeader(),
             ]);
+        } catch (ValidatorMultiException $exc) {
+            $this->logMessage(__METHOD__, $exc->getMessage(), ['errors' => $exc->getErrors()]);
+            throw $exc;
         } catch(\Exception $exc) {
             $this->logMessage(__METHOD__, $exc->getMessage(), [
                 'request' => $client->getLastRequest(),
@@ -153,7 +168,13 @@ trait Import
          */
     }
 
-    public function GetPolicyNumber(Request $param) {
+    /**
+     * Get number of policy by account number
+     * @param Request $param
+     * @return GetPolicyNumberResult
+     * @throws \Exception
+     */
+    public function GetPolicyNumber(Request $param): GetPolicyNumberResult {
         /* @var $client ClientImport */
         $client = $this->getSoapImportClient();
 
@@ -177,12 +198,19 @@ trait Import
                 ]
             ];
             $this->logMessage(__METHOD__, 'Making request', $args);
-            $res = $client->makeRequest('GetPolicyNumber', $args);
+            $obj = $client->makeRequest('GetPolicyNumber', $args);
+
+            $res = GetPolicyNumberResult::createFromObject($obj);
+            $res->validateThrow();
+
             $this->logMessage(__METHOD__, 'Successful', [
                 'request' => $client->getLastRequest(),
                 'response' => $client->getLastResponse(),
                 'header' => $client->getLastHeader(),
             ]);
+        } catch (ValidatorMultiException $exc) {
+            $this->logMessage(__METHOD__, $exc->getMessage(), ['errors' => $exc->getErrors()]);
+            throw $exc;
         } catch(\Exception $exc) {
             $this->logMessage(__METHOD__, $exc->getMessage(), [
                 'request' => $client->getLastRequest(),

@@ -1,5 +1,5 @@
 <?php
-namespace ReninsApi\Response\Soap\Printing;
+namespace ReninsApi\Response\Soap;
 
 use ReninsApi\Request\Container;
 use ReninsApi\Request\ContainerCollection;

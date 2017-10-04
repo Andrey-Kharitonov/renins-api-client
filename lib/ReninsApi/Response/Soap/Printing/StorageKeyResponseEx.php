@@ -3,7 +3,8 @@ namespace ReninsApi\Response\Soap\Printing;
 
 use ReninsApi\Request\Container;
 use ReninsApi\Request\ContainerCollection;
-use ReninsApi\Request\Soap\Calculation\Deductible;
+use ReninsApi\Response\Soap\Message;
+use ReninsApi\Response\Soap\Error;
 
 /**
  * Storage key info for PrintDocuments
