@@ -4,6 +4,7 @@ namespace ReninsApiTest\Client\V2;
 
 use PHPUnit\Framework\TestCase;
 use ReninsApi\Request\ContainerCollection;
+use ReninsApi\Response\Soap\Printing\DocBytesResponseEx;
 use ReninsApiTest\Client\Log;
 
 class FullCascoTest extends TestCase
@@ -11,7 +12,7 @@ class FullCascoTest extends TestCase
     use Log;
 
     private function getDateBegin() {
-        return (new \DateTime())->add(new \DateInterval('P1D'))
+        return (new \DateTime())->add(new \DateInterval('P2D'))
             ->setTime(12, 0, 0);
     }
 
@@ -263,7 +264,7 @@ class FullCascoTest extends TestCase
             'PAY_DOC_ISSUE_DATE' => $dtMinusDay->format('Y-m-d'),
         ]);
         $privateQuoteInfo->POLICY_NUMBER = ''; //get by GetPolicyNumber()
-        //$privateQuoteInfo->BSO_NUMBER = '0000000';
+        $privateQuoteInfo->BSO_NUMBER = '1234567';
         //$PRIVATE_QUOTE_INFO->PRODUCT = 'КАСКО 2015.11.15'; deprecated
         $privateQuoteInfo->CREATION_DATE = $dtMinusDay->format('Y-m-d');
         $privateQuoteInfo->INS_DATE_FROM = $this->getDateBegin()->format('Y-m-d');
@@ -413,19 +414,17 @@ class FullCascoTest extends TestCase
         $data = ob_get_clean();
         @file_put_contents(TEMP_DIR . '/CascoCalcResponse2.txt', $data);
 
-        $this->assertInstanceOf(\ReninsApi\Response\Soap\Calculation\MakeCalculationResult::class, $response);
         $this->assertEquals($response->isSuccessful(), true);
-        $this->assertInstanceOf(ContainerCollection::class, $response->CalcResults);
         $this->assertGreaterThan(0, $response->CalcResults->count());
 
         //Получим первый успешный
         $calcResults = $response->getFirstSuccessfulResults();
-        $this->assertInstanceOf(\ReninsApi\Response\Soap\Calculation\CalcResults::class, $calcResults);
+        $this->assertNotNull($calcResults);
         $this->assertGreaterThan(0, strlen($calcResults->AccountNumber));
         $this->assertEquals('true', $calcResults->Risks->Visible);
         $this->assertEquals('true', $calcResults->Risks->Enabled);
         $this->assertGreaterThan(0, strlen($calcResults->Risks->PacketName));
-        $this->assertInstanceOf(ContainerCollection::class, $calcResults->Risks->Risk);
+        $this->assertNotNull($calcResults->Risks->Risk);
         $this->assertGreaterThan(0, $calcResults->Risks->Risk->count());
 
         @file_put_contents(TEMP_DIR . '/CascoCalcResults2.txt', serialize($calcResults->toArray())); //Результаты расчета для импорта
@@ -454,14 +453,13 @@ class FullCascoTest extends TestCase
 
         $response = $client->printDocumentsToBinary($param);
 
-        $this->assertObjectHasAttribute('Success', $response);
-        $this->assertObjectHasAttribute('Result', $response);
-        $this->assertObjectHasAttribute('Errors', $response);
-        $this->assertEquals(true, $response->Success);
-        $this->assertObjectHasAttribute('DocBytes', $response->Result);
-        $this->assertGreaterThan(0, strlen($response->Result->DocBytes));
+        $this->assertGreaterThan(0, $response->DocBytesResponseEx->count());
+        /* @var DocBytesResponseEx $docBytesResponseEx */
+        $docBytesResponseEx = $response->DocBytesResponseEx->get(0);
+        $this->assertEquals(true, $docBytesResponseEx->Success);
+        $this->assertNotNull($docBytesResponseEx->Result);
 
-        @file_put_contents(TEMP_DIR . '/CascoCalcResults2-1.pdf', $response->Result->DocBytes);
+        @file_put_contents(TEMP_DIR . '/CascoCalcResults2-1.pdf', $docBytesResponseEx->Result->DocBytes); //печатная форма "Результаты расчета", pdf
     }
 
     /**
@@ -482,12 +480,9 @@ class FullCascoTest extends TestCase
 
         //print_r($response);
 
-        $this->assertObjectHasAttribute('Success', $response);
-        $this->assertObjectHasAttribute('Number', $response);
         $this->assertEquals(true, $response->Success);
-        $this->assertGreaterThan(0, strlen($response->Number));
 
-        @file_put_contents(TEMP_DIR . '/CascoPolicyNumber2.txt', $response->Number);
+        @file_put_contents(TEMP_DIR . '/CascoPolicyNumber2.txt', $response->Number); //Номер, который нужен при импорте
     }
 
     /**
@@ -538,24 +533,16 @@ class FullCascoTest extends TestCase
         $response = $client->ImportPolicy($request);
         //print_r($response);
 
-        $this->assertObjectHasAttribute('ErrorCode', $response);
-        $this->assertObjectHasAttribute('PolicyId', $response);
-        $this->assertObjectHasAttribute('AccountNumber', $response);
-        $this->assertObjectHasAttribute('AvailableDocumentTypes', $response);
-        $this->assertObjectHasAttribute('PolicyDocumentType', $response->AvailableDocumentTypes);
-        $this->assertObjectHasAttribute('PrintToken', $response);
-        $this->assertEquals(0, $response->ErrorCode);
+        $this->assertGreaterThan(0, strlen($response->PolicyId));
         $this->assertGreaterThan(0, strlen($response->AccountNumber));
-        $this->assertGreaterThan(0, count($response->AvailableDocumentTypes->PolicyDocumentType));
         $this->assertGreaterThan(0, strlen($response->PrintToken));
+        $this->assertGreaterThan(0, $response->AvailableDocumentTypes->count());
 
         @file_put_contents(TEMP_DIR . '/CascoPrintToken2.txt', $response->PrintToken); //Номер, который нужен для окончательной печати полиса
     }
 
     /**
      * Печать результатов расчета
-     * @group current
-     * todo: Почему-то сервис возвращает ошибку "Введите номер бланка строгой отчетности"
      */
     public function testFinishPrint()
     {
@@ -575,20 +562,18 @@ class FullCascoTest extends TestCase
         $param->isPrintAsOneDocument = true;
         $param->printingParamsItems = new ContainerCollection([
             new \ReninsApi\Request\Soap\Printing\PrintingParams(['DocumentTypeId' => 7]),
-            new \ReninsApi\Request\Soap\Printing\PrintingParams(['DocumentTypeId' => 10]),
         ]);
         $param->PrintToken = $printToken;
 
         $response = $client->printDocumentsToBinary($param);
 
-        $this->assertObjectHasAttribute('Success', $response);
-        $this->assertObjectHasAttribute('Result', $response);
-        $this->assertObjectHasAttribute('Errors', $response);
-        $this->assertEquals(true, $response->Success);
-        $this->assertObjectHasAttribute('DocBytes', $response->Result);
-        $this->assertGreaterThan(0, strlen($response->Result->DocBytes));
+        $this->assertGreaterThan(0, $response->DocBytesResponseEx->count());
+        /* @var DocBytesResponseEx $docBytesResponseEx */
+        $docBytesResponseEx = $response->DocBytesResponseEx->get(0);
+        $this->assertEquals(true, $docBytesResponseEx->Success);
+        $this->assertNotNull($docBytesResponseEx->Result);
 
-        @file_put_contents(TEMP_DIR . '/CascoCalcResults2-7.pdf', $response->Result->DocBytes);
+        @file_put_contents(TEMP_DIR . '/CascoCalcResults2-7.pdf', $docBytesResponseEx->Result->DocBytes); //печатная форма "Результаты расчета", pdf
     }
 
 

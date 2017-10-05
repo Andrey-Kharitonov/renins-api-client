@@ -195,6 +195,7 @@ class ImportCascoTest extends TestCase
 
     /**
      * @group import-casco
+     * @group current
      */
     public function testGetPolicyNumber()
     {
@@ -239,7 +240,6 @@ class ImportCascoTest extends TestCase
 
     /**
      * @group import-casco
-     * @group current
      */
     public function testCasco()
     {
@@ -284,7 +284,7 @@ class ImportCascoTest extends TestCase
         }
 
         $response = $client->ImportPolicy($request);
-        print_r($response);
+        //print_r($response->toArray());
 
         $this->assertGreaterThan(0, strlen($response->PolicyId));
         $this->assertGreaterThan(0, strlen($response->AccountNumber));
