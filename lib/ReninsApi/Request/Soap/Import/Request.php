@@ -7,11 +7,10 @@ use ReninsApi\Request\ContainerCollection;
 
 /**
  * Some request.
- * PartnerName and PartnerUId will be replaced! Don't specify it.
  *
- * @property string $PartnerName
- * @property string $PartnerUId
- * @property string $AccountNumber
+ * @property string $PartnerName - Код партнера (не указывать, будет заполнен автоматом)
+ * @property string $PartnerUId - Uid партнера (не указывать, будет заполнен автоматом)
+ * @property string $AccountNumber - Код котировки
  */
 class Request extends Container
 {

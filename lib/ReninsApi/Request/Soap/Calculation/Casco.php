@@ -64,12 +64,18 @@ class Casco extends Container
     public function toXml(\SimpleXMLElement $xml)
     {
         //All tags are typical, except Stoa
-        $this->toXmlTagsExcept($xml, ['Stoa']);
+        $this->toXmlTagsExcept($xml, ['Stoa', 'CustomOptions']);
 
         //Stoa with custom children name
         if ($this->Stoa) {
             $added = $xml->addChild('Stoa');
             $this->Stoa->toXml($added, 'StoaType');
+        }
+
+        //CustomOptions with custom children name
+        if ($this->CustomOptions) {
+            $added = $xml->addChild('CustomOptions');
+            $this->CustomOptions->toXml($added, 'Option');
         }
 
         return $this;

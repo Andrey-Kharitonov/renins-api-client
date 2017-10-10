@@ -56,4 +56,25 @@ class MakeCalculationResult extends Container
         return $ret;
     }
 
+    /**
+     * Get first successful CalcResults
+     * @return CalcResults|null
+     */
+    public function getFirstSuccessfulResults() {
+        if (!$this->CalcResults || !$this->CalcResults->count()) {
+            return null;
+        }
+
+        $ret = null;
+        foreach($this->CalcResults as $calcResults) {
+            /* @var CalcResults $calcResults */
+            if ($calcResults->Success == 'true') {
+                $ret = $calcResults;
+                break;
+            }
+        }
+
+        return $ret;
+    }
+
 }

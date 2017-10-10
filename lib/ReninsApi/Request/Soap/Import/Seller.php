@@ -22,7 +22,7 @@ class Seller extends Container
 
         'EMPLOYEE' => ['container:' . Employee::class],
         'PARTNER' => ['container:' . Partner::class],
-        'MANAGERS' => ['containerCollection:' . Manager::class],
+        'MANAGERS' => ['containerCollection:' . Manager::class, 'length:|1'],
     ];
 
     public function toXml(\SimpleXMLElement $xml)

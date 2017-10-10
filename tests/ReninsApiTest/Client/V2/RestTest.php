@@ -80,6 +80,8 @@ class RestTest extends TestCase
 
         $response = $client->vehicleAntitheftDevicesXml(1);
 
+        //print_r($response->toArray());
+
         $this->assertInstanceOf(ContainerCollection::class, $response->AlarmSystem);
         $this->assertGreaterThan(10, $response->AlarmSystem->count());
     }
@@ -105,6 +107,7 @@ class RestTest extends TestCase
         $client = $this->createApi2();
 
         $response = $client->creditBanksAll();
+        //print_r($response->toArray());
 
         $this->assertInstanceOf(ContainerCollection::class, $response->Bank);
         $this->assertGreaterThan(10, $response->Bank->count());
@@ -118,6 +121,7 @@ class RestTest extends TestCase
         $client = $this->createApi2();
 
         $response = $client->creditLeasingAll();
+        //print_r($response->toArray());
 
         $this->assertInstanceOf(ContainerCollection::class, $response->Leasing);
         $this->assertGreaterThan(10, $response->Leasing->count());

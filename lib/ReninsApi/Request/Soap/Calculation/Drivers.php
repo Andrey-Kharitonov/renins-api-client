@@ -13,8 +13,8 @@ use ReninsApi\Request\ContainerCollection;
  *   1 - сотрудники Страхователя, а также юридических лиц, указанных в Особых условиях страхования
  *   2 - любые лица
  * @property string $Multidrive - мультидрайв?
- * @property int $MinAge - минимальный возраст
- * @property int $MinExperience - минимальный стаж
+ * @property int $MinAge - минимальный возраст. Только для Multidrive = YES.
+ * @property int $MinExperience - минимальный стаж.  Только для Multidrive = YES.
  * @property ContainerCollection $Driver - Список водителей
  */
 class Drivers extends Container

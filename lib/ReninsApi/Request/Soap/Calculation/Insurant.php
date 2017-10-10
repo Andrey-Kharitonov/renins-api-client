@@ -8,7 +8,7 @@ use ReninsApi\Request\ContainerCollection;
 /**
  * Данные по страхователю.
  *
- * @property int $type - физическое или  юридическое лицо
+ * @property int $type - физическое (1) или  юридическое лицо (2)
  * @property string $INN - ИНН страхователя.
  */
 class Insurant extends Container

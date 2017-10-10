@@ -14,6 +14,6 @@ class Period extends Container
 {
     protected $rules = [
         'UseDateBegin' => ['toString', 'date', 'required', 'notEmpty'],
-        'UseDateEnd' => ['toDouble', 'date', 'required', 'notEmpty'],
+        'UseDateEnd' => ['toString', 'date', 'required', 'notEmpty'],
     ];
 }

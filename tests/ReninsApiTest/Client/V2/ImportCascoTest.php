@@ -14,7 +14,6 @@ class ImportCascoTest extends TestCase
     use Log;
 
     /**
-     * КАСКО, ФЛ, ЛДУ (импорт, запрос).xml
      * @return InputMessage
      */
     private function getRequest() {
