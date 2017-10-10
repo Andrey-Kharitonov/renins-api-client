@@ -16,17 +16,16 @@ class Factory
      * @param string $clientSystemName
      * @param string $partnerUid
      * @param string $version - api version
-     * @param bool $test
      * @return ApiVersion2
      */
-    public static function makeApiClient(string $clientSystemName, string $partnerUid, string $version = self::V2, $test = true)
+    public static function makeApiClient(string $clientSystemName, string $partnerUid, string $version = self::V2)
     {
         switch ($version) {
             case self::V2:
-                return new ApiVersion2($clientSystemName, $partnerUid, $test);
+                return new ApiVersion2($clientSystemName, $partnerUid);
                 break;
             default:
-                throw new \InvalidArgumentException("Version isn't supported");
+                throw new \InvalidArgumentException("Version not supported");
         }
     }
 }

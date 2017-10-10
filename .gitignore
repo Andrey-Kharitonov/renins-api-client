@@ -14,3 +14,4 @@ composer.lock
 /test.php
 tmp*.xsd
 /tests/logs/*
+/phpunit.xml

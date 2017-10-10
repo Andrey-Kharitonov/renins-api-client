@@ -10,21 +10,35 @@ use ReninsApi\Soap\ClientPrint;
 
 abstract class BaseApi
 {
-    protected static $wsdlCalc = '';
-    protected static $wsdlCalcTest = '';
+    /**
+     * Link to calculation service wsdl.
+     * Production and test links are different.
+     * @var string
+     */
+    protected $wsdlCalc = '';
 
-    protected static $wsdlImport = '';
-    protected static $wsdlImportTest = '';
+    /**
+     * Link to import service wsdl
+     * Production and test links are different.
+     * @var string
+     */
+    protected $wsdlImport = '';
 
-    protected static $wsdlPrint = '';
-    protected static $wsdlPrintTest = '';
+    /**
+     * Link to print service wsdl
+     * Production and test links are different.
+     * @var string
+     */
+    protected $wsdlPrint = '';
 
-    protected static $urlRest = '';
-    protected static $urlRestTest = '';
+    /**
+     * Link to rest service
+     * @var string
+     */
+    protected $urlRest = '';
 
     protected $clientSystemName;
     protected $partnerUid;
-    protected $test;
 
     /**
      * Rest client instance
@@ -61,13 +75,95 @@ abstract class BaseApi
      *
      * @param string $clientSystemName
      * @param string $partnerUid
-     * @param bool $test
      */
-    public function __construct(string $clientSystemName, string $partnerUid = '', $test = true)
+    public function __construct(string $clientSystemName, string $partnerUid = '')
     {
         $this->clientSystemName = $clientSystemName;
         $this->partnerUid = $partnerUid;
-        $this->test = (bool) $test;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWsdlCalc(): string
+    {
+        return $this->wsdlCalc;
+    }
+
+    /**
+     * @param string $wsdlCalc
+     * @return $this
+     */
+    public function setWsdlCalc(string $wsdlCalc)
+    {
+        if ($this->wsdlCalc !== $wsdlCalc) {
+            $this->wsdlCalc = $wsdlCalc;
+            $this->soapCalcClient = null;
+        }
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWsdlImport(): string
+    {
+        return $this->wsdlImport;
+    }
+
+    /**
+     * @param string $wsdlImport
+     * @return $this
+     */
+    public function setWsdlImport(string $wsdlImport)
+    {
+        if ($this->wsdlImport !== $wsdlImport) {
+            $this->wsdlImport = $wsdlImport;
+            $this->soapImportClient = null;
+        }
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWsdlPrint(): string
+    {
+        return $this->wsdlPrint;
+    }
+
+    /**
+     * @param string $wsdlPrint
+     * @return $this
+     */
+    public function setWsdlPrint(string $wsdlPrint)
+    {
+        if ($this->wsdlPrint !== $wsdlPrint) {
+            $this->wsdlPrint = $wsdlPrint;
+            $this->soapPrintClient = null;
+        }
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrlRest(): string
+    {
+        return $this->urlRest;
+    }
+
+    /**
+     * @param string $urlRest
+     * @return $this
+     */
+    public function setUrlRest(string $urlRest)
+    {
+        if ($this->urlRest !== $urlRest) {
+            $this->urlRest = $urlRest;
+            $this->restClient = null;
+        }
+        return $this;
     }
 
     /**
@@ -92,7 +188,7 @@ abstract class BaseApi
     public function getRestClient(): RestClient
     {
         if (!$this->restClient) {
-            $this->restClient = new RestClient(($this->test) ? static::$urlRestTest : static::$urlRest);
+            $this->restClient = new RestClient($this->urlRest);
         }
         return $this->restClient;
     }
@@ -103,7 +199,7 @@ abstract class BaseApi
     public function getSoapCalcClient(): ClientCalc
     {
         if (!$this->soapCalcClient) {
-            $this->soapCalcClient = new ClientCalc(($this->test) ? static::$wsdlCalcTest : static::$wsdlCalc);
+            $this->soapCalcClient = new ClientCalc($this->wsdlCalc);
         }
         return $this->soapCalcClient;
     }
@@ -114,7 +210,7 @@ abstract class BaseApi
     public function getSoapImportClient(): ClientImport
     {
         if (!$this->soapImportClient) {
-            $this->soapImportClient = new ClientImport(($this->test) ? static::$wsdlImportTest : static::$wsdlImport);
+            $this->soapImportClient = new ClientImport($this->wsdlImport);
         }
         return $this->soapImportClient;
     }
@@ -125,17 +221,9 @@ abstract class BaseApi
     public function getSoapPrintClient(): ClientPrint
     {
         if (!$this->soapPrintClient) {
-            $this->soapPrintClient = new ClientPrint(($this->test) ? static::$wsdlPrintTest : static::$wsdlPrint);
+            $this->soapPrintClient = new ClientPrint($this->wsdlPrint);
         }
         return $this->soapPrintClient;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isTest(): bool
-    {
-        return $this->test;
     }
 
     /**

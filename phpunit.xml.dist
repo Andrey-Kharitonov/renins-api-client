@@ -1,0 +1,30 @@
+<phpunit bootstrap="tests/bootstrap.php">
+  <php>
+    <includePath>.</includePath>
+    <const name="CLIENT_SYSTEM_NAME" value="..."/>
+    <const name="PARTNER_UID" value="..."/>
+    <const name="WSDL_CALC" value="..."/>
+    <const name="WSDL_IMPORT" value="..."/>
+    <const name="WSDL_PRINT" value="..."/>
+    <const name="URL_REST" value="..."/>
+  </php>
+  <testsuites>
+    <testsuite name="client">
+      <directory>tests/ReninsApiTest/Client</directory>
+      <exclude>tests/ReninsApiTest/Client/V2/FullCascoTest.php</exclude>
+      <exclude>tests/ReninsApiTest/Client/V2/FullOsagoTest.php</exclude>
+    </testsuite>
+    <testsuite name="request">
+      <directory>tests/ReninsApiTest/Request</directory>
+    </testsuite>
+    <testsuite name="response">
+      <directory>tests/ReninsApiTest/Response</directory>
+    </testsuite>
+    <testsuite name="casco-full">
+      <file>tests/ReninsApiTest/Client/V2/FullCascoTest.php</file>
+    </testsuite>
+    <testsuite name="osago-full">
+      <file>tests/ReninsApiTest/Client/V2/FullOsagoTest.php</file>
+    </testsuite>
+  </testsuites>
+</phpunit>

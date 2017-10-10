@@ -17,7 +17,12 @@ trait Log
      */
     protected function createApi2() {
         $client = new ApiVersion2(CLIENT_SYSTEM_NAME, PARTNER_UID);
-        $client->onLog = [$this, 'onLog'];
+        $client->setWsdlCalc(WSDL_CALC)
+            ->setWsdlImport(WSDL_IMPORT)
+            ->setWsdlPrint(WSDL_PRINT)
+            ->setUrlRest(URL_REST)
+            ->onLog = [$this, 'onLog'];
+
         return $client;
     }
 }
