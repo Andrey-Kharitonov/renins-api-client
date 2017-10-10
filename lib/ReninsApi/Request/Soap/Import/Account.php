@@ -43,7 +43,7 @@ class Account extends Container
         'NAME_ENU' => ['toString'],
         'BIK' => ['toString'],
         'RS' => ['toString'],
-        'ACCOUNT_ADDRESSES' => ['container:' . Address::class],
+        'ACCOUNT_ADDRESSES' => ['containerCollection:' . Address::class, 'length:|3'],
     ];
 
     public function toXml(\SimpleXMLElement $xml)
@@ -52,7 +52,7 @@ class Account extends Container
 
         if ($this->ACCOUNT_ADDRESSES) {
             $added = $xml->addChild('ACCOUNT_ADDRESSES');
-            $this->ACCOUNT_ADDRESSES->toXml($xml, 'ADDRESS');
+            $this->ACCOUNT_ADDRESSES->toXml($added, 'ADDRESS');
         }
 
         return $this;

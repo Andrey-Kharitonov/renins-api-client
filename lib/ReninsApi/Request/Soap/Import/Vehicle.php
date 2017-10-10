@@ -71,7 +71,7 @@ class Vehicle extends Container
         'IS_CREDIT' => ['toYN'],
         'CREDIT_BANK_NAME' => ['toString'],
         'LEASING_COMPANY_ID' => ['toString'],
-        'PURPOSE' => ['toString'],
+        'PURPOSE' => ['toString', 'purpose'],
         'GROSS_WEIGHT' => ['toInteger', 'min:0'],
         'PASSENGER_CAPACITY' => ['toInteger', 'min:0'],
         'STATUS' => ['toString'],

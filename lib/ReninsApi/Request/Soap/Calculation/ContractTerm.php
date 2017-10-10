@@ -48,7 +48,7 @@ class ContractTerm extends Container
         'Periods' => ['containerCollection:' . Period::class],
         'PaymentType' => ['toInteger', 'required', 'min:1'],
         'Currency' => ['toString', 'required', 'currency'],
-        'Purpose' => ['toString', 'required', 'notEmpty'],
+        'Purpose' => ['toString', 'required', 'purpose'],
         'DsasCoordinationId' => ['toString'],
         'CascoPolicyNumber' => ['toString'],
         'OsagoPolicyNumber' => ['toString'],
