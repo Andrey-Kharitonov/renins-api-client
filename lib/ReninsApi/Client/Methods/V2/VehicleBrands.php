@@ -2,7 +2,7 @@
 
 namespace ReninsApi\Client\Methods\V2;
 
-use ReninsApi\Request\Rest\VehicleBrandsAll;
+use ReninsApi\Response\Rest\ArrayOfBrand;
 use ReninsApi\Rest\Client as RestClient;
 
 /**
@@ -13,13 +13,14 @@ trait VehicleBrands
     /**
      * Method: /Vehicle/Brands/All
      * @param null|string $VehicleType
-     * @return \ReninsApi\Response\Rest\VehicleBrandsAll
+     * @return ArrayOfBrand
      * @throws \Exception
      */
     public function vehicleBrandsAll($VehicleType = null) {
         /* @var $client RestClient */
         $client = $this->getRestClient();
         $parameters = ['VehicleType' => $VehicleType];
+
         $this->logMessage(__METHOD__, 'Making request', $parameters);
         try {
             $xml = $client->get('Vehicle/Brands/All', $parameters);
@@ -29,19 +30,20 @@ trait VehicleBrands
             throw $exc;
         }
 
-        return new \ReninsApi\Response\Rest\VehicleBrandsAll($xml);
+        return ArrayOfBrand::createFromXml($xml);
     }
 
     /**
      * Method: /Vehicle/Brands/AllWithModels
      * @param null|string $VehicleType
-     * @return \ReninsApi\Response\Rest\VehicleBrandsAll
+     * @return ArrayOfBrand
      * @throws \Exception
      */
     public function vehicleBrandsAllWithModels($VehicleType = null) {
         /* @var $client RestClient */
         $client = $this->getRestClient();
         $parameters = ['VehicleType' => $VehicleType];
+
         $this->logMessage(__METHOD__, 'Making request', $parameters);
         try {
             $xml = $client->get('Vehicle/Brands/AllWithModels', $parameters);
@@ -51,6 +53,6 @@ trait VehicleBrands
             throw $exc;
         }
 
-        return new \ReninsApi\Response\Rest\VehicleBrandsAll($xml);
+        return ArrayOfBrand::createFromXml($xml);
     }
 }

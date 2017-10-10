@@ -13,7 +13,7 @@ use ReninsApi\Request\ContainerCollection;
  */
 class Currency extends Container
 {
-    protected static $rules = [
+    protected $rules = [
         'Code' => ['toString'], //unknown type
         'Rate' => ['toString'], //unknown type
         'Base' => ['toString'], //unknown type

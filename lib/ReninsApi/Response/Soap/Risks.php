@@ -16,7 +16,7 @@ use ReninsApi\Request\ContainerCollection;
  */
 class Risks extends Container
 {
-    protected static $rules = [
+    protected $rules = [
         'PacketName' => ['toString'], //unknown type
         'PacketCaption' => ['toString'], //unknown type
         'CanBeChoosen' => ['toString'], //unknown type

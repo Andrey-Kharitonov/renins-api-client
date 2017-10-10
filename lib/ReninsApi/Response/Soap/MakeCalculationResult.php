@@ -16,7 +16,7 @@ use ReninsApi\Request\ContainerCollection;
  */
 class MakeCalculationResult extends Container
 {
-    protected static $rules = [
+    protected $rules = [
         'program_name' => ['toString'], //unknown type
         'program_guid' => ['toString'], //unknown type
         'expired_date' => ['toString'], //unknown type

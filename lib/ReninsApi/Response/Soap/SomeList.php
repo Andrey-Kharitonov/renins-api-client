@@ -11,7 +11,7 @@ use ReninsApi\Request\ContainerCollection;
  */
 class SomeList extends Container
 {
-    protected static $rules = [
+    protected $rules = [
         'list' => ['toString'],
     ];
 }

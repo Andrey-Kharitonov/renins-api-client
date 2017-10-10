@@ -13,7 +13,7 @@ use ReninsApi\Request\ContainerCollection;
  */
 class User extends Container
 {
-    protected static $rules = [
+    protected $rules = [
         'cashbookID' => ['toString'], //long int
         'userID' => ['toString'], //long int
         'Name' => ['toString'], //unknown type

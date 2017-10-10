@@ -15,7 +15,7 @@ use ReninsApi\Request\ContainerCollection;
  */
 class Risk extends Container
 {
-    protected static $rules = [
+    protected $rules = [
         'Name' => ['toString'],
         'Bonus' => ['toString'], //unknown type
         'Sum' => ['toString'], //unknown type

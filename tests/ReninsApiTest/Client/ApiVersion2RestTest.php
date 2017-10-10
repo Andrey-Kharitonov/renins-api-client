@@ -58,7 +58,7 @@ class ApiVersion2RestTest extends TestCase
      */
     public function testVehicleBrandsAllWithModels()
     {
-        $client = new ApiVersion2(self::CLIENT_SYSTEM_NAME);
+        $client = new ApiVersion2(CLIENT_SYSTEM_NAME, PARTNER_UID);
         $client->onLog = [$this, 'onLog'];
 
         $response = $client->vehicleBrandsAllWithModels('Легковое ТС');

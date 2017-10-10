@@ -172,23 +172,36 @@ class Validator
         return true;
     }
 
-    public static function checkContainer($value, $params = null)
+    public static function checkContainer($value, $className = null)
     {
+        if (!$className) {
+            throw new FilterException("Parameter className is required for rule container");
+        }
+
         if ($value === null) return true;
 
-        if (!($value instanceof Container)) {
-            return "Isn't container";
+        if (!($value instanceof $className)) {
+            return "Isn't {$className}";
         }
+
         return true;
     }
 
-    public static function checkContainerCollection($value, $params = null)
+    public static function checkContainerCollection($value, $className = null)
     {
+        if (!$className) {
+            throw new FilterException("Parameter className is required for rule containerCollection");
+        }
+
         if ($value === null) return true;
 
         if (!($value instanceof ContainerCollection)) {
             return "Isn't container collection";
         }
+        if ($value->count() > 0 && !($value->get(0) instanceof $className)) {
+            return "Isn't collection of {$className}";
+        }
+
         return true;
     }
 

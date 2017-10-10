@@ -12,7 +12,7 @@ use ReninsApi\Request\ContainerCollection;
  */
 class Total extends Container
 {
-    protected static $rules = [
+    protected $rules = [
         'Sum' => ['toString'], //unknown type
         'Bonus' => ['toString'], //unknown type
     ];

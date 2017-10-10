@@ -13,7 +13,7 @@ use ReninsApi\Request\ContainerCollection;
  */
 class InsuranceObject extends Container
 {
-    protected static $rules = [
+    protected $rules = [
         'Bonus' => ['toString'], //unknown type
         'Sum' => ['toString'], //unknown type
         'Name' => ['toString'], //unknown type

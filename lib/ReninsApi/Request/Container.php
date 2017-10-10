@@ -4,7 +4,7 @@ namespace ReninsApi\Request;
 
 abstract class Container
 {
-    protected static $rules = [];
+    protected $rules = [];
 
     private $data = [];
 
@@ -16,8 +16,8 @@ abstract class Container
      */
     public function __construct(array $data = [])
     {
-        $this->_filter = new Filter(static::$rules);
-        $this->_validator = new Validator(static::$rules);
+        $this->_filter = new Filter($this->rules);
+        $this->_validator = new Validator($this->rules);
 
         $this->init();
 
@@ -25,6 +25,21 @@ abstract class Container
         foreach($data as $property => $value) {
             $this->set($property, $value);
         }
+    }
+
+    /**
+     * Create instance from xml
+     * @param $xml
+     * @return static
+     */
+    public static function createFromXml($xml) {
+        if (!($xml instanceof \SimpleXMLElement)) {
+            $xml = new \SimpleXMLElement($xml);
+        }
+
+        $cont = new static();
+        $cont->fromXml($xml);
+        return $cont;
     }
 
     /**
@@ -41,7 +56,7 @@ abstract class Container
      * @return $this
      */
     public function set($name, $value) {
-        if (!isset(static::$rules[$name])) {
+        if (!isset($this->rules[$name])) {
             throw new ContainerException("Property {$name} not found");
         }
 

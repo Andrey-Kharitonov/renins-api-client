@@ -163,6 +163,4 @@ class Filter
         return $coll;
     }
     */
-
-
 }

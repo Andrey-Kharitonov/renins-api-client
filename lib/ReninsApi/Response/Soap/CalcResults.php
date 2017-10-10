@@ -31,7 +31,7 @@ use ReninsApi\Request\ContainerCollection;
  */
 class CalcResults extends Container
 {
-    protected static $rules = [
+    protected $rules = [
         'SuppressPercentage' => ['toBoolean'],
         'PercentageAccuracy' => ['toString'],  //unknown type
         'Success' => ['toBoolean', 'required'],

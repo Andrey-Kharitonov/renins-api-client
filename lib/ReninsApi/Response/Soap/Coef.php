@@ -12,7 +12,7 @@ use ReninsApi\Request\ContainerCollection;
  */
 class Coef extends Container
 {
-    protected static $rules = [
+    protected $rules = [
         'Name' => ['toString'],
         'Value' => ['toDouble'],
     ];

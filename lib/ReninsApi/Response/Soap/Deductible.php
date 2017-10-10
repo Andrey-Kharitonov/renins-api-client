@@ -12,7 +12,7 @@ use ReninsApi\Request\ContainerCollection;
  */
 class Deductible extends Container
 {
-    protected static $rules = [
+    protected $rules = [
         'type' => ['toInteger'],
         'sum' => ['toDouble'],
     ];

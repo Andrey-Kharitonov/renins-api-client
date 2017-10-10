@@ -13,7 +13,7 @@ use ReninsApi\Request\ContainerCollection;
  */
 class Message extends Container
 {
-    protected static $rules = [
+    protected $rules = [
         'code' => ['toInteger'],
         'level' => ['toString'], //'', 'Critical', 'Warning' ...
         'text' => ['toString'],

@@ -2,9 +2,7 @@
 
 namespace ReninsApi\Request;
 
-use Iterator;
-
-class ContainerCollection implements Iterator
+class ContainerCollection implements \Iterator
 {
     /**
      * @var Container[]
@@ -16,17 +14,32 @@ class ContainerCollection implements Iterator
      */
     protected $position = 0;
 
+    protected $containerClass;
+
     /**
      * @param Container[] $data
      */
     public function __construct(array $data = [])
     {
         foreach($data as $item) {
-            if (!($item instanceof Container)) {
-                throw new \InvalidArgumentException("Data must be an array of Container");
-            }
             $this->add($item);
         }
+    }
+
+    /**
+     * Create instance from xml
+     * @param $xml
+     * @param string $containerClass
+     * @return static
+     */
+    public static function createFromXml($xml, string $containerClass) {
+        if (!($xml instanceof \SimpleXMLElement)) {
+            $xml = new \SimpleXMLElement($xml);
+        }
+
+        $cont = new static();
+        $cont->fromXml($xml, $containerClass);
+        return $cont;
     }
 
     /**
@@ -35,16 +48,30 @@ class ContainerCollection implements Iterator
      * @return $this
      */
     public function add(Container $container) {
+        $containerClass = get_class($container);
+
+        if ($this->containerClass) {
+            if ($containerClass != $this->containerClass) {
+                throw new ContainerCollectionException("Collection can't store items of different classes ({$containerClass} != {$this->containerClass})");
+            }
+        } else {
+            $this->containerClass = $containerClass;
+        }
+
         $this->items[] = $container;
         return $this;
     }
 
     /**
-     * Get container by index
-     * @return Container|null
+     * Get item by index
+     * @param int $index
+     * @return Container
      */
-    public function get($index) {
-        return ($index >= 0 && $index < count($this->items)) ? $this->items[$index] : null;
+    public function get($index): Container {
+        if ($index < 0 || $index >= count($this->items)) {
+            throw new ContainerCollectionException("Invalid index");
+        }
+        return $this->items[$index];
     }
 
     /**
@@ -54,6 +81,7 @@ class ContainerCollection implements Iterator
     public function clear() {
         $this->items = [];
         $this->position = 0;
+        $this->containerClass = null;
         return $this;
     }
 
@@ -80,6 +108,21 @@ class ContainerCollection implements Iterator
         }
 
         return $errors;
+    }
+
+    /**
+     * Find item by property
+     * @param $property
+     * @param $value
+     * @return Container
+     */
+    public function find($property, $value):Container {
+        foreach ($this->items as $item) {
+            if ($item->{$property} == $value) {
+                return $item;
+            }
+        }
+        return null;
     }
 
     /**
