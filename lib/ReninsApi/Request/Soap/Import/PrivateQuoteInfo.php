@@ -11,12 +11,17 @@ use ReninsApi\Request\ContainerCollection;
  * @property double $POLICY_KBM - Коэффициент бонус-малус (получен через сервис РСА), обязательно для ОСАГО.
  * @property string $POLICY_SERIES - Серия полиса, элемент используется для ОСАГО.
  * @property string $POLICY_NUMBER - Номер полиса, элемент используется для всех страховых продуктов.
+ *   Для КАСКО его необходимо получить методом GetPolicyNumber. Для ОСАГО это 10-значное число.
  * @property string $TICKET_NUMBER - Номер квитанции A7
  * @property string $BSO_NUMBER - Номер БСО.
+ *   КАСКО: Без БСО не удасться распечать полис. Для тестовой среды "1234567".
+ *   ОСАГО: Для тестовой среды указывать не нужно.
  * @property string $CREATION_DATE - Дата создания котировки.
  * @property string $INS_DATE_FROM - Период страхования с ...
  * @property string $INS_TIME_FROM - Время страхования с ...
  * @property string $INS_DATE_TO - Период страхования по ...
+ *   В ОСАГО датой начала страхования почему-то считается SALE_DATE и неважно что стоит в INS_DATE_FROM.
+ *   Соответственно тут должно быть SALE_DATE + 1 год - 1 день
  * @property string $INS_TIME_TO - Время страхования по ...
  * @property string $INSURANCE_SUM - Сумма расчета
  * @property string $CURRENCY - Валюта расчета.

@@ -195,7 +195,6 @@ class ImportCascoTest extends TestCase
 
     /**
      * @group import-casco
-     * @group current
      */
     public function testGetPolicyNumber()
     {

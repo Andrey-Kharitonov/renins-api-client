@@ -124,16 +124,34 @@ class CalcOsagoTest extends TestCase
         ob_start();
         print_r($response->toArray());
         $data = ob_get_clean();
-        @file_put_contents(TEMP_DIR . '/OsagoCalcResponse.txt', $data);
+        @file_put_contents(TEMP_DIR . '/OsagoCalcResponse1.txt', $data);
 
-        $this->assertInstanceOf(\ReninsApi\Response\Soap\Calculation\MakeCalculationResult::class, $response);
-        $this->assertEquals($response->isSuccessful(), true);
-        $this->assertInstanceOf(ContainerCollection::class, $response->CalcResults);
-        $this->assertGreaterThan(0, $response->CalcResults->count());
-        $calcResults = $response->CalcResults->get(0);
-        $this->assertInstanceOf(\ReninsApi\Response\Soap\Calculation\CalcResults::class, $calcResults);
+        //Получим первый успешный
+        $calcResults = $response->getFirstSuccessfulResults();
+        $this->assertNotNull($calcResults);
+        $this->assertGreaterThan(0, strlen($calcResults->AccountNumber));
+        $this->assertEquals('true', $calcResults->Risks->Visible);
+        $this->assertEquals('true', $calcResults->Risks->Enabled);
+        $this->assertGreaterThan(0, strlen($calcResults->Risks->PacketName));
+        $this->assertNotNull($calcResults->Risks->Risk);
+        $this->assertGreaterThan(0, $calcResults->Risks->Risk->count());
 
-        @file_put_contents(TEMP_DIR . '/OsagoAccountNumber1.txt', $calcResults->AccountNumber); //Просто расчет
+        @file_put_contents(TEMP_DIR . '/OsagoCalcResults1.txt', serialize($calcResults->toArray())); //Результаты расчета для импорта
+
+        @file_put_contents(TEMP_DIR . '/OsagoAccountNumber1.txt', $calcResults->AccountNumber); //Номер котировки
+    }
+
+    /**
+     * @group calculation-osago
+     */
+    public function testInvalid()
+    {
+        $client = $this->createApi2();
+        $request = $this->getRequest();
+
+        $request->Policy->Osago->CalcKBMRequest->DateKBM = '2040-01-01T12:00:00'; //Here is error
+        $response = $client->calc($request);
+        $this->assertEquals($response->isSuccessful(), false);
     }
 
 }

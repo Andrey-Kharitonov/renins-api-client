@@ -309,9 +309,14 @@ class Validator
     {
         if ($value === null) return true;
 
-        $dt = new \DateTime($value);
-        if ($dt->format('Y-m-d') . 'T' . $dt->format('H:i:s') !== $value
-            && $dt->format('Y-m-d H:i:s') != $value) {
+        try {
+            $dt = new \DateTime($value);
+        } catch (\Exception $exc) {
+            $dt = null;
+        }
+
+        if (!$dt || ($dt->format('Y-m-d') . 'T' . $dt->format('H:i:s') !== $value
+            && $dt->format('Y-m-d H:i:s') != $value)) {
             return "Isn't correct date time. Allow Y-m-dTH:i:s or Y-m-d H:i:s.";
         }
         return true;

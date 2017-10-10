@@ -112,7 +112,7 @@ class CalcCascoTest extends TestCase
     /**
      * @group calculation-casco
      */
-    public function testCalcCascoInvalid()
+    public function testInvalid()
     {
         $client = $this->createApi2();
         $request = $this->getRequest();
