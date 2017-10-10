@@ -5,7 +5,7 @@ namespace ReninsApi\Soap;
 class ClientPrint extends Client
 {
     /**
-     * Make request. Return first property of object.
+     * Make request. Return value of first property of object.
      *
      * @param string $method
      * @param array $arguments
@@ -16,14 +16,6 @@ class ClientPrint extends Client
         if (!is_object($res)) {
             throw new ClientException("Invalid response. Expected object.");
         }
-
-        $firstPropertyValue = reset($res);
-        if (!empty($firstPropertyValue->StorageKeyResponseEx)) {
-            return $firstPropertyValue->StorageKeyResponseEx;
-        }
-        if (!empty($firstPropertyValue->DocBytesResponseEx)) {
-            return $firstPropertyValue->DocBytesResponseEx;
-        }
-        return $firstPropertyValue;
+        return reset($res);
     }
 }

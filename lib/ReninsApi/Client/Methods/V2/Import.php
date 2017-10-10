@@ -41,7 +41,7 @@ trait Import
                     ],
                 ]
             ];
-            $this->logMessage(__METHOD__, 'Making request', $args);
+            $this->logMessage(__METHOD__, 'Making request');
             $res = $client->makeRequest('ImportPolicy', $args);
 
             $this->logMessage(__METHOD__, 'Successful', [

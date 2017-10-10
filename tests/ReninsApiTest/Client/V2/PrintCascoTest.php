@@ -6,6 +6,8 @@ use PHPUnit\Framework\TestCase;
 use ReninsApi\Request\ContainerCollection;
 use ReninsApi\Request\Soap\Printing\PrintingParams;
 use ReninsApi\Request\Soap\Printing\Request;
+use ReninsApi\Response\Soap\Printing\DocBytesResponseEx;
+use ReninsApi\Response\Soap\Printing\StorageKeyResponseEx;
 use ReninsApiTest\Client\Log;
 
 class PrintTest extends TestCase
@@ -29,13 +31,9 @@ class PrintTest extends TestCase
         $param->isPrintAsOneDocument = true;
 
         $response = $client->getAvailablePolicyDocumentTypes($param);
-        print_r($response);
-        $this->assertObjectHasAttribute('Success', $response);
-        $this->assertObjectHasAttribute('PolicyDocumentTypes', $response);
-        $this->assertObjectHasAttribute('Errors', $response);
+        //print_r($response->toArray());
         $this->assertEquals(true, $response->Success);
-        $this->assertObjectHasAttribute('PolicyDocumentType', $response->PolicyDocumentTypes);
-        $this->assertGreaterThan(0, count($response->PolicyDocumentTypes->PolicyDocumentType));
+        $this->assertGreaterThan(0, $response->PolicyDocumentTypes->count());
     }
 
     /**
@@ -50,10 +48,9 @@ class PrintTest extends TestCase
         $param->isPrintAsOneDocument = true;
 
         $response = $client->getAvailablePolicyDocumentTypes($param);
-        $this->assertObjectHasAttribute('Success', $response);
-        $this->assertObjectHasAttribute('Errors', $response);
+        //print_r($response->toArray());
         $this->assertEquals(false, $response->Success);
-        $this->assertObjectHasAttribute('Error', $response->Errors);
+        $this->assertGreaterThan(0, $response->Errors->count());
     }
 
     /**
@@ -76,15 +73,15 @@ class PrintTest extends TestCase
         ]);
 
         $response = $client->printDocuments($param);
-        $this->assertObjectHasAttribute('Success', $response);
-        $this->assertObjectHasAttribute('Result', $response);
-        $this->assertObjectHasAttribute('Errors', $response);
-        $this->assertEquals(true, $response->Success);
-        $this->assertObjectHasAttribute('PdfPageCount', $response->Result);
-        $this->assertObjectHasAttribute('PrintResultType', $response->Result);
-        $this->assertObjectHasAttribute('TemporaryKey', $response->Result);
+        //print_r($response->toArray());
 
-        @file_put_contents(TEMP_DIR . '/CascoTemporaryKey1.txt', $response->Result->TemporaryKey); //Результаты расчета, временный ключ
+        $this->assertGreaterThan(0, $response->StorageKeyResponseEx->count());
+        /* @var StorageKeyResponseEx $storageKeyResponseEx */
+        $storageKeyResponseEx = $response->StorageKeyResponseEx->get(0);
+        $this->assertEquals(true, $storageKeyResponseEx->Success);
+        $this->assertNotNull($storageKeyResponseEx->Result);
+
+        @file_put_contents(TEMP_DIR . '/CascoTemporaryKey1.txt', $storageKeyResponseEx->Result->TemporaryKey); //Результаты расчета, временный ключ
     }
 
     /**
@@ -102,10 +99,12 @@ class PrintTest extends TestCase
         ]);
 
         $response = $client->printDocuments($param);
-        $this->assertObjectHasAttribute('Success', $response);
-        $this->assertObjectHasAttribute('Errors', $response);
-        $this->assertEquals(false, $response->Success);
-        $this->assertObjectHasAttribute('Error', $response->Errors);
+        //print_r($response->toArray());
+
+        $this->assertGreaterThan(0, $response->StorageKeyResponseEx->count());
+        /* @var StorageKeyResponseEx $storageKeyResponseEx */
+        $storageKeyResponseEx = $response->StorageKeyResponseEx->get(0);
+        $this->assertEquals(false, $storageKeyResponseEx->Success);
     }
 
     /**
@@ -124,26 +123,52 @@ class PrintTest extends TestCase
         $param->AccountNumber = $accountNumber;
         $param->isPrintAsOneDocument = true;
         $param->printingParamsItems = new ContainerCollection([
-            new PrintingParams(['DocumentTypeId' => 8]),
-            new PrintingParams(['DocumentTypeId' => 10]),
+            new PrintingParams(['DocumentTypeId' => 1]),
         ]);
 
         $response = $client->printDocumentsToBinary($param);
 
         /*
         ob_start();
-        var_dump($response);
+        var_dump($response->toArray());
         $data = ob_get_clean();
         @file_put_contents(TEMP_DIR . '/var_dump.txt', $data);
         */
 
-        $this->assertObjectHasAttribute('Success', $response);
-        $this->assertObjectHasAttribute('Result', $response);
-        $this->assertObjectHasAttribute('Errors', $response);
-        $this->assertEquals(true, $response->Success);
-        $this->assertObjectHasAttribute('DocBytes', $response->Result);
+        $this->assertGreaterThan(0, $response->DocBytesResponseEx->count());
+        /* @var DocBytesResponseEx $docBytesResponseEx */
+        $docBytesResponseEx = $response->DocBytesResponseEx->get(0);
+        $this->assertEquals(true, $docBytesResponseEx->Success);
+        $this->assertNotNull($docBytesResponseEx->Result);
 
-        @file_put_contents(TEMP_DIR . '/CascoCalcResults1.pdf', $response->Result->DocBytes); //Результаты расчета, pdf
+        @file_put_contents(TEMP_DIR . '/CascoCalcResults1.pdf', $docBytesResponseEx->Result->DocBytes); //печатная форма "Результаты расчета", pdf
+    }
+
+    /**
+     * @group printing-casco
+     */
+    public function testPrintDocumentsToBinaryFail()
+    {
+        $client = $this->createApi2();
+
+        $accountNumber = @file_get_contents(TEMP_DIR . '/CascoAccountNumber1.txt');
+        if (!$accountNumber) {
+            throw new \Exception("AccountNumber isn't calculated. Run calculation tests before.");
+        }
+
+        $param = new Request();
+        $param->AccountNumber = $accountNumber;
+        $param->isPrintAsOneDocument = true;
+        $param->printingParamsItems = new ContainerCollection([
+            new PrintingParams(['DocumentTypeId' => 2]), //Error Here
+        ]);
+
+        $response = $client->printDocumentsToBinary($param);
+
+        $this->assertGreaterThan(0, $response->DocBytesResponseEx->count());
+        /* @var DocBytesResponseEx $docBytesResponseEx */
+        $docBytesResponseEx = $response->DocBytesResponseEx->get(0);
+        $this->assertEquals(false, $docBytesResponseEx->Success);
     }
 
     /**

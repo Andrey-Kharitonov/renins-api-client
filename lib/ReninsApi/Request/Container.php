@@ -43,6 +43,17 @@ abstract class Container
     }
 
     /**
+     * Create instance from object
+     * @param object $obj
+     * @return static
+     */
+    public static function createFromObject($obj) {
+        $cont = new static();
+        $cont->fromObject($obj);
+        return $cont;
+    }
+
+    /**
      * Will be called before set initial data
      */
     protected function init() {
@@ -344,15 +355,53 @@ abstract class Container
      * @param object $obj
      * @return $this
      */
-    protected function fromObject(object $obj) {
-        $properties = get_object_vars($obj);
-        foreach($properties as $name => $value) {
-            if ($this->has($name)) {
-                $value = (string) $value;
-                $this->set($name, $value);
+    public function fromObject($obj) {
+        $properties = @get_object_vars($obj);
+        if ($properties) {
+            foreach($properties as $name => $value) {
+                if ($this->has($name)) {
+                    $this->set($name, $value);
+                }
             }
         }
+
         return $this;
+    }
+
+    /**
+     * Set specified properties by $obj properties
+     * Use into inheritances of fromObject().
+     * @param object $obj
+     * @param array $only - if not specified import all properties
+     */
+    protected function fromObjectOnly($obj, array $only) {
+        $properties = @get_object_vars($obj);
+        if ($properties) {
+            foreach($properties as $name => $value) {
+                if (!in_array($name, $only)) continue;
+                if ($this->has($name)) {
+                    $this->set($name, $value);
+                }
+            }
+        }
+    }
+
+    /**
+     * Set properties by $obj properties. Except specified.
+     * Use into inheritances of fromObject().
+     * @param object $obj
+     * @param array $except - if not specified, import all properties
+     */
+    protected function fromObjectExcept($obj, array $except = []) {
+        $properties = @get_object_vars($obj);
+        if ($properties) {
+            foreach($properties as $name => $value) {
+                if (in_array($name, $except)) continue;
+                if ($this->has($name)) {
+                    $this->set($name, $value);
+                }
+            }
+        }
     }
 
 }

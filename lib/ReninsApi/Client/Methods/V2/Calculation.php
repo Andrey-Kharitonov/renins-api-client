@@ -46,7 +46,7 @@ trait Calculation
                     ],
                 ]
             ];
-            $this->logMessage(__METHOD__, 'Making request', $args);
+            $this->logMessage(__METHOD__, 'Making request');
             $res = $client->makeRequest('MakeCalculation', $args);
 
             $res = MakeCalculationResult::createFromXml($res);

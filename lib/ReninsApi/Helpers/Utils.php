@@ -41,8 +41,9 @@ class Utils
      * @return string
      */
     public static function sxmlToStr(\SimpleXMLElement $sxml) {
-        $domxml = dom_import_simplexml($sxml);
-        return $domxml->ownerDocument->saveXML($domxml->ownerDocument->documentElement);
+        $domxml = dom_import_simplexml($sxml)->ownerDocument;
+        $domxml->formatOutput = true;
+        return $domxml->saveXML($domxml->documentElement);
     }
 
     /**

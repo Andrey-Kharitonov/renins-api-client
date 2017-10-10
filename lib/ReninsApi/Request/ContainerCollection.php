@@ -42,6 +42,21 @@ class ContainerCollection implements \Iterator
     }
 
     /**
+     * Create instance from array of object or one object
+     * @param object[]|object $object - array of object
+     * @param string $containerClass
+     * @return static|null
+     */
+    public static function createFromObject($object, string $containerClass) {
+        if ($object) {
+            $coll = new static();
+            $coll->fromObject($object, $containerClass);
+            return $coll;
+        }
+        return null;
+    }
+
+    /**
      * Add container
      * @param Container $container
      * @return $this
@@ -168,6 +183,31 @@ class ContainerCollection implements \Iterator
                 /* @var Container $cont */
                 $cont = new $containerClass();
                 $cont->fromXml($child);
+                $this->add($cont);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * Fill collection from array of objects or one object
+     * @param object[]|object $object - array of objects
+     * @param string $containerClass
+     * @return $this
+     */
+    public function fromObject($object, string $containerClass) {
+        if ($object) {
+            if (is_array($object)) {
+                foreach ($object as $obj) {
+                    /* @var Container $cont */
+                    $cont = new $containerClass();
+                    $cont->fromObject($obj);
+                    $this->add($cont);
+                }
+            } else {
+                /* @var Container $cont */
+                $cont = new $containerClass();
+                $cont->fromObject($object);
                 $this->add($cont);
             }
         }

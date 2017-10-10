@@ -4,6 +4,9 @@ namespace ReninsApi\Client\Methods\V2;
 
 use ReninsApi\Request\Soap\Printing\Request;
 use ReninsApi\Request\ValidatorMultiException;
+use ReninsApi\Response\Soap\Printing\GetAvailablePolicyDocumentTypesResult;
+use ReninsApi\Response\Soap\Printing\PrintDocumentsResult;
+use ReninsApi\Response\Soap\Printing\PrintDocumentsToBinaryResult;
 use ReninsApi\Soap\ClientPrint;
 
 /**
@@ -12,13 +15,11 @@ use ReninsApi\Soap\ClientPrint;
 trait Printing
 {
     /**
-     * Typical print request
-     * @param string $method
      * @param Request $param
-     * @return \stdClass
+     * @return GetAvailablePolicyDocumentTypesResult
      * @throws \Exception
      */
-    protected function makeTypicalRequest(string $method, Request $param): \stdClass {
+    public function getAvailablePolicyDocumentTypes(Request $param): GetAvailablePolicyDocumentTypesResult {
         /* @var $client ClientPrint */
         $client = $this->getSoapPrintClient();
 
@@ -37,17 +38,24 @@ trait Printing
 
         try {
             $args = [
-                $method => [
+                'GetAvailablePolicyDocumentTypes' => [
                     'request' => $param->toArray()
                 ]
             ];
             $this->logMessage(__METHOD__, 'Making request', $args);
-            $res = $client->makeRequest($method, $args);
+            $obj = $client->makeRequest('GetAvailablePolicyDocumentTypes', $args);
+
+            $res = GetAvailablePolicyDocumentTypesResult::createFromObject($obj);
+            $res->validateThrow();
+
             $this->logMessage(__METHOD__, 'Successful', [
                 'request' => $client->getLastRequest(),
                 'response' => $client->getLastResponse(),
                 'header' => $client->getLastHeader(),
             ]);
+        } catch (ValidatorMultiException $exc) {
+            $this->logMessage(__METHOD__, $exc->getMessage(), ['errors' => $exc->getErrors()]);
+            throw $exc;
         } catch(\Exception $exc) {
             $this->logMessage(__METHOD__, $exc->getMessage(), [
                 'request' => $client->getLastRequest(),
@@ -57,15 +65,7 @@ trait Printing
         }
 
         return $res;
-    }
 
-    /**
-     * @param Request $param
-     * @return \stdClass
-     * @throws \Exception
-     */
-    public function getAvailablePolicyDocumentTypes(Request $param): \stdClass {
-        return $this->makeTypicalRequest('GetAvailablePolicyDocumentTypes', $param);
 
         /*
         Success example:
@@ -121,11 +121,55 @@ trait Printing
 
     /**
      * @param Request $param
-     * @return \stdClass
+     * @return PrintDocumentsResult
      * @throws \Exception
      */
-    public function printDocuments(Request $param): \stdClass {
-        return $this->makeTypicalRequest('PrintDocuments', $param);
+    public function printDocuments(Request $param): PrintDocumentsResult {
+        /* @var $client ClientPrint */
+        $client = $this->getSoapPrintClient();
+
+        try {
+            $this->logMessage(__METHOD__, 'Checking param');
+            $param->PartnerName = $this->getClientSystemName();
+            $param->PartnerUId = $this->getPartnerUid();
+            $param->validateThrow();
+        } catch (ValidatorMultiException $exc) {
+            $this->logMessage(__METHOD__, $exc->getMessage(), ['errors' => $exc->getErrors()]);
+            throw $exc;
+        } catch (\Exception $exc) {
+            $this->logMessage(__METHOD__, $exc->getMessage());
+            throw $exc;
+        }
+
+        try {
+            $args = [
+                'PrintDocuments' => [
+                    'request' => $param->toArray()
+                ]
+            ];
+            $this->logMessage(__METHOD__, 'Making request', $args);
+            $obj = $client->makeRequest('PrintDocuments', $args);
+
+            $res = PrintDocumentsResult::createFromObject($obj);
+            $res->validateThrow();
+
+            $this->logMessage(__METHOD__, 'Successful', [
+                'request' => $client->getLastRequest(),
+                'response' => $client->getLastResponse(),
+                'header' => $client->getLastHeader(),
+            ]);
+        } catch (ValidatorMultiException $exc) {
+            $this->logMessage(__METHOD__, $exc->getMessage(), ['errors' => $exc->getErrors()]);
+            throw $exc;
+        } catch(\Exception $exc) {
+            $this->logMessage(__METHOD__, $exc->getMessage(), [
+                'request' => $client->getLastRequest(),
+                'response' => $client->getLastResponse(),
+            ]);
+            throw $exc;
+        }
+
+        return $res;
 
         /*
         Success example:
@@ -180,11 +224,55 @@ trait Printing
 
     /**
      * @param Request $param
-     * @return \stdClass
+     * @return PrintDocumentsToBinaryResult
      * @throws \Exception
      */
-    public function printDocumentsToBinary(Request $param): \stdClass {
-        return $this->makeTypicalRequest('PrintDocumentsToBinary', $param);
+    public function printDocumentsToBinary(Request $param): PrintDocumentsToBinaryResult {
+        /* @var $client ClientPrint */
+        $client = $this->getSoapPrintClient();
+
+        try {
+            $this->logMessage(__METHOD__, 'Checking param');
+            $param->PartnerName = $this->getClientSystemName();
+            $param->PartnerUId = $this->getPartnerUid();
+            $param->validateThrow();
+        } catch (ValidatorMultiException $exc) {
+            $this->logMessage(__METHOD__, $exc->getMessage(), ['errors' => $exc->getErrors()]);
+            throw $exc;
+        } catch (\Exception $exc) {
+            $this->logMessage(__METHOD__, $exc->getMessage());
+            throw $exc;
+        }
+
+        try {
+            $args = [
+                'PrintDocumentsToBinary' => [
+                    'request' => $param->toArray()
+                ]
+            ];
+            $this->logMessage(__METHOD__, 'Making request', $args);
+            $obj = $client->makeRequest('PrintDocumentsToBinary', $args);
+
+            $res = PrintDocumentsToBinaryResult::createFromObject($obj);
+            $res->validateThrow();
+
+            $this->logMessage(__METHOD__, 'Successful', [
+                'request' => $client->getLastRequest(),
+                'response' => $client->getLastResponse(),
+                'header' => $client->getLastHeader(),
+            ]);
+        } catch (ValidatorMultiException $exc) {
+            $this->logMessage(__METHOD__, $exc->getMessage(), ['errors' => $exc->getErrors()]);
+            throw $exc;
+        } catch(\Exception $exc) {
+            $this->logMessage(__METHOD__, $exc->getMessage(), [
+                'request' => $client->getLastRequest(),
+                'response' => $client->getLastResponse(),
+            ]);
+            throw $exc;
+        }
+
+        return $res;
 
         /*
         Success example:
@@ -247,6 +335,7 @@ trait Printing
 
     /**
      * Will return
+     * Doesn't return error
      *
      * @param string $storageKey
      * @return string
@@ -254,10 +343,6 @@ trait Printing
      */
     public function getDocumentInUrl(string $storageKey): string {
         return $this->makeRequestWithStorageKey('GetDocumentInUrl', $storageKey);
-
-        /*
-
-        */
     }
 
     /**
