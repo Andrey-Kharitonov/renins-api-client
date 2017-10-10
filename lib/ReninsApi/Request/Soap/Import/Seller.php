@@ -10,19 +10,19 @@ use ReninsApi\Request\ContainerCollection;
  *
  * @property string $TYPE
  * @property string $IPFLAG
- * @property EMPLOYEE $EMPLOYEE
- * @property PARTNER $PARTNER
+ * @property Employee $EMPLOYEE
+ * @property Partner $PARTNER
  * @property ContainerCollection $MANAGERS - Список ФИО оформляющих сотрудников
  */
-class SELLER extends Container
+class Seller extends Container
 {
     protected $rules = [
         'TYPE' => ['toString', 'required', 'in:EMPLOYEE|PARTNER'],
         'IPFLAG' => ['toYN'],
 
-        'EMPLOYEE' => ['container:' . EMPLOYEE::class],
-        'PARTNER' => ['container:' . PARTNER::class],
-        'MANAGERS' => ['containerCollection:' . MANAGER::class],
+        'EMPLOYEE' => ['container:' . Employee::class],
+        'PARTNER' => ['container:' . Partner::class],
+        'MANAGERS' => ['containerCollection:' . Manager::class],
     ];
 
     public function toXml(\SimpleXMLElement $xml)

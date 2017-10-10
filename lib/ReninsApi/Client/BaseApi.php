@@ -5,12 +5,16 @@ namespace ReninsApi\Client;
 use ReninsApi\Helpers\LogEvent;
 use ReninsApi\Rest\Client as RestClient;
 use ReninsApi\Soap\ClientCalc;
+use ReninsApi\Soap\ClientImport;
 use ReninsApi\Soap\ClientPrint;
 
 abstract class BaseApi
 {
     protected static $wsdlCalc = '';
     protected static $wsdlCalcTest = '';
+
+    protected static $wsdlImport = '';
+    protected static $wsdlImportTest = '';
 
     protected static $wsdlPrint = '';
     protected static $wsdlPrintTest = '';
@@ -30,13 +34,19 @@ abstract class BaseApi
 
     /**
      * Soap client instance for calculation
-     * @var SoapClient
+     * @var ClientCalc
      */
     protected $soapCalcClient;
 
     /**
+     * Soap client instance for calculation
+     * @var ClientImport
+     */
+    protected $soapImportClient;
+
+    /**
      * Soap client instance for printing
-     * @var SoapClient
+     * @var ClientPrint
      */
     protected $soapPrintClient;
 
@@ -96,6 +106,17 @@ abstract class BaseApi
             $this->soapCalcClient = new ClientCalc(($this->test) ? static::$wsdlCalcTest : static::$wsdlCalc);
         }
         return $this->soapCalcClient;
+    }
+
+    /**
+     * @return ClientImport
+     */
+    public function getSoapImportClient(): ClientImport
+    {
+        if (!$this->soapImportClient) {
+            $this->soapImportClient = new ClientImport(($this->test) ? static::$wsdlImportTest : static::$wsdlImport);
+        }
+        return $this->soapImportClient;
     }
 
     /**

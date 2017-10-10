@@ -17,12 +17,14 @@ use ReninsApi\Request\ContainerCollection;
  * @property string $INS_DATE_TO - Период страхования по ...
  * @property string $INS_TIME_TO - Время страхования по ...
  * @property string $INSURANCE_SUM - Сумма расчета
- * @property DOCUMENT_OF_PAYMENT $DOCUMENT_OF_PAYMENT - Платежный документ.
+ * @property string $CURRENCY - Валюта расчета.
+ * @property int $INS_DURATION - Срок страхования (месяцев).
+ * @property DocumentOfPayment $DOCUMENT_OF_PAYMENT - Платежный документ.
  * @property string $TOTALLY - На условиях Полная гибель.
- * @property PRE_INSURANCE_INSPECTION $PRE_INSURANCE_INSPECTION - Предстраховой осмотр
- * @property RISKS $RISKS - Риски/покрытия
+ * @property PreInsuranceInspection $PRE_INSURANCE_INSPECTION - Предстраховой осмотр
+ * @property Risks $RISKS - Риски/покрытия
  */
-class PRIVATE_QUOTE_INFO extends Container
+class PrivateQuoteInfo extends Container
 {
     protected $rules = [
         'POLICY_NUMBER' => ['toString', 'required', 'notEmpty'],
@@ -35,10 +37,10 @@ class PRIVATE_QUOTE_INFO extends Container
         'INSURANCE_SUM' => ['toString'],
         'CURRENCY' => ['toString', 'currency'],
         'INS_DURATION' => ['toInteger', 'min:1'],
-        'DOCUMENT_OF_PAYMENT' => ['container:' . DOCUMENT_OF_PAYMENT::class],
-        'TOTALLY' => ['toYM'],
-        'PRE_INSURANCE_INSPECTION' => ['container:' . PRE_INSURANCE_INSPECTION::class], //PRE-INSURANCE_INSPECTION!!!
-        'RISKS' => ['container:' . RISKS::class],
+        'DOCUMENT_OF_PAYMENT' => ['container:' . DocumentOfPayment::class],
+        'TOTALLY' => ['toYN'],
+        'PRE_INSURANCE_INSPECTION' => ['container:' . PreInsuranceInspection::class], //PRE-INSURANCE_INSPECTION!!!
+        'RISKS' => ['container:' . Risks::class],
     ];
 
     public function toXml(\SimpleXMLElement $xml)

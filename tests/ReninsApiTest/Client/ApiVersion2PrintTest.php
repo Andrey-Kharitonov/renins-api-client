@@ -19,7 +19,6 @@ class ApiVersion2PrintTest extends TestCase
 
     /**
      * @group soap
-     * @group current
      */
     public function testCalcCascoSuccessful()
     {

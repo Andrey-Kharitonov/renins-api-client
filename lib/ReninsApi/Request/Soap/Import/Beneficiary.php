@@ -10,16 +10,16 @@ use ReninsApi\Request\Container;
  * @property string $TYPE - физлицо / юрлицо
  * @property string $BENEF_ID
  * @property string $ADDITIONAL_TERMS_STATUS - Выгобоприобретатель указывается в особых условиях
- * @property CONTACT $CONTACT
+ * @property Contact $CONTACT
  */
-class BENEFICIARY extends Container
+class Beneficiary extends Container
 {
     protected $rules = [
         'TYPE' => ['toString', 'required', 'personType'],
         'BENEF_ID' => ['toString'],
         'ADDITIONAL_TERMS_STATUS' => ['toYN'],
 
-        'CONTACT' => ['container:' . CONTACT::class],
+        'CONTACT' => ['container:' . Contact::class],
     ];
 
     public function toXml(\SimpleXMLElement $xml)

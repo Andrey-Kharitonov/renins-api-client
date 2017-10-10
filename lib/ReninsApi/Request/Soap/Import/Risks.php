@@ -11,11 +11,11 @@ use ReninsApi\Request\ContainerCollection;
  * @property double $BONUS - Суммарная премия по всем рискам/покрытиям.
  * @property ContainerCollection $RISK
  */
-class RISKS extends Container
+class Risks extends Container
 {
     protected $rules = [
         'BONUS' => ['toDouble', 'required'],
-        'RISK' => ['containerCollection:' . RISK::class],
+        'RISK' => ['containerCollection:' . Risk::class],
     ];
 
     public function toXml(\SimpleXMLElement $xml)

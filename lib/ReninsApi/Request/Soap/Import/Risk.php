@@ -12,7 +12,7 @@ use ReninsApi\Request\ContainerCollection;
  * @property string $BONUS - Премия по риску/покрытию.
  * @property string $INSURANCE_SUM - Страховая сумма по риску/покрытию.
  */
-class RISK extends Container
+class Risk extends Container
 {
     protected $rules = [
         'NAME' => ['toString', 'required', 'notEmpty'],

@@ -15,7 +15,7 @@ use ReninsApi\Request\ContainerCollection;
  * @property int $AMOUNT - Количество единиц дополнительного оборудования.
  * @property string $UNIT - Комплектация дополнительного оборудования.
  */
-class EQUIPMENT extends Container
+class Equipment extends Container
 {
     protected $rules = [
         'TYPE' => ['toString'],

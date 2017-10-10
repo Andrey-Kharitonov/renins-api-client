@@ -16,7 +16,7 @@ use ReninsApi\Request\ContainerCollection;
  * @property string $HOUSE - Дом. Для военнослужащих указывать прочерк.
  * @property string $APPARTMENT - Квартира/Офис.
  */
-class ADDRESS extends Container
+class Address extends Container
 {
     protected $rules = [
         'TYPE' => ['toString', 'required', 'in:ADDR_ACNT_JUR|ADDR_ACNT_POST|ADDR_CON_REG|ADDR_CON_FACT|ADDR_CON_POST'],

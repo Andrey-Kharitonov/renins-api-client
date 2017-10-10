@@ -293,7 +293,26 @@ class Validator
 
         $dt = \DateTime::createFromFormat('Y-m-d', $value);
         if (!$dt || $dt->format('Y-m-d') !== $value) {
-            return "Isn't correct date";
+            return "Isn't correct date. Allow Y-m-d.";
+        }
+        return true;
+    }
+
+    /**
+     * It should be string "Y-m-d".
+     * Null will be passed.
+     * @param $value
+     * @param $params
+     * @return bool|string
+     */
+    public static function checkDateTime($value, $params = null)
+    {
+        if ($value === null) return true;
+
+        $dt = new \DateTime($value);
+        if ($dt->format('Y-m-d') . 'T' . $dt->format('H:i:s') !== $value
+            && $dt->format('Y-m-d H:i:s') != $value) {
+            return "Isn't correct date time. Allow Y-m-dTH:i:s or Y-m-d H:i:s.";
         }
         return true;
     }

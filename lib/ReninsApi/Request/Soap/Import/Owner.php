@@ -11,14 +11,15 @@ use ReninsApi\Request\ContainerCollection;
  *
  * @property string $TYPE - Физическое лицо / Юридическое лицо.
  * @property double $KBM - Коэффициент бонус-малус
+ * @property Contact $CONTACT - Физическое лицо
  */
-class OWNER extends Container
+class Owner extends Container
 {
     protected $rules = [
         'TYPE' => ['toString', 'required', 'personType'],
         'KBM' => ['toDouble', 'min:0'],
 
-        'CONTACT' => ['container:' . CONTACT::class],
+        'CONTACT' => ['container:' . Contact::class],
     ];
 
     public function toXml(\SimpleXMLElement $xml)

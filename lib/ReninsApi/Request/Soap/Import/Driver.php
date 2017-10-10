@@ -9,14 +9,14 @@ use ReninsApi\Request\ContainerCollection;
  * Водитель (физлицо)
  *
  * @property double $KBM - Коэффициент бонус-малус для водителя
- * @property CONTACT $CONTACT
+ * @property Contact $CONTACT
  */
-class DRIVER extends Container
+class Driver extends Container
 {
     protected $rules = [
         'KBM' => ['toDouble', 'min:0'],
 
-        'CONTACT' => ['container:' . CONTACT::class],
+        'CONTACT' => ['container:' . Contact::class],
     ];
 
     public function toXml(\SimpleXMLElement $xml)

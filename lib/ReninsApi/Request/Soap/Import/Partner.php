@@ -13,7 +13,7 @@ use ReninsApi\Request\Container;
  * @property string $DIVISION - Дивизион
  * @property string $FILIAL - Филиал
  */
-class PARTNER extends Container
+class Partner extends Container
 {
     protected $rules = [
         'NAME' => ['toString'],

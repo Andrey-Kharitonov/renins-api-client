@@ -15,7 +15,7 @@ use ReninsApi\Request\ContainerCollection;
  * @property string $STAFF - Штатные водители страхователя, используется для Мультидрайв.
  * @property ContainerCollection $DRIVER
  */
-class DRIVERS extends Container
+class Drivers extends Container
 {
     protected $rules = [
         'MULTI_DRIVE' => ['toYN'],
@@ -23,7 +23,7 @@ class DRIVERS extends Container
         'MIN_EXPERIENCE' => ['toInteger', 'min:0'],
         'STAFF' => ['toYN'],
 
-        'DRIVER' => ['containerCollection:' . DRIVER::class],
+        'DRIVER' => ['containerCollection:' . Driver::class],
     ];
 
     public function toXml(\SimpleXMLElement $xml)

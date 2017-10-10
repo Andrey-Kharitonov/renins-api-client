@@ -9,14 +9,14 @@ use ReninsApi\Request\Container;
  * todo: доделать по xsd
  *
  * @property string $TYPE
- * @property CONTACT $CONTACT
+ * @property Contact $CONTACT
  */
-class INSURANT extends Container
+class Insurant extends Container
 {
     protected $rules = [
         'TYPE' => ['toString', 'required', 'personType'],
 
-        'CONTACT' => ['container:' . CONTACT::class],
+        'CONTACT' => ['container:' . Contact::class],
     ];
 
     public function toXml(\SimpleXMLElement $xml)

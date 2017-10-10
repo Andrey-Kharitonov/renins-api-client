@@ -11,12 +11,12 @@ use ReninsApi\Request\ContainerCollection;
  * @property string $LAST_BENEF_ID
  * @property ContainerCollection $BENEFICIARY
  */
-class BENEFICIARIES extends Container
+class Beneficiaries extends Container
 {
     protected $rules = [
         'LAST_BENEF_ID' => ['toString'],
 
-        'BENEFICIARY' => ['containerCollection:' . BENEFICIARY::class],
+        'BENEFICIARY' => ['containerCollection:' . Beneficiary::class],
     ];
 
     public function toXml(\SimpleXMLElement $xml)

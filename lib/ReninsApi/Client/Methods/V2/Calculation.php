@@ -24,7 +24,7 @@ trait Calculation
 
         try {
             $this->logMessage(__METHOD__, 'Preparing xml');
-            $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><MakeCalculation xmlns="http://renins.com/"></MakeCalculation>');
+            $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8" ?><MakeCalculation xmlns="http://renins.com/"></MakeCalculation>');
             $doc = $xml->addChild('doc');
             $request = $doc->addChild('Request', null, '');
             $request->addAttribute('ClientSystemName', $this->clientSystemName);

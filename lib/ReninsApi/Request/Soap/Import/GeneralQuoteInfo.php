@@ -18,7 +18,7 @@ use ReninsApi\Request\Container;
  * @property string $CURRENCY - Валюта расчета.
  * @property string $PROLONGATION_PARAMS - Пролонгационные параметры.
  */
-class GENERAL_QUOTE_INFO extends Container
+class GeneralQuoteInfo extends Container
 {
     protected $rules = [
         'PROLONGATION_PREV_NUMBER' => ['toString'],
@@ -27,9 +27,9 @@ class GENERAL_QUOTE_INFO extends Container
         'PACKET_CALCBASED_ON' => ['toString'],
         'TYPE' => ['toString', 'in:Розничное страхование авто|Коммерческое страхование авто'],
         'COMMISSION' => ['toDouble'],
-        'SALE_DATE' => ['toString', 'date'],
+        'SALE_DATE' => ['toString', 'dateTime'],
         'INSURANCE_SUM' => ['toString'],
         'CURRENCY' => ['toString', 'currency'],
-        'PROLONGATION_PARAMS' => ['container:' . PROLONGATION_PARAMS::class],
+        'PROLONGATION_PARAMS' => ['container:' . ProlongationParams::class],
     ];
 }

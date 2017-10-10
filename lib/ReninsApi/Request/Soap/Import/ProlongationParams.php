@@ -15,7 +15,7 @@ use ReninsApi\Request\Container;
  * @property string $DMAIL_WITH_COST_FLAG - Флаг Письмо (direct mail) со стоимостью
  * @property string $DMAIL_NO_COST_FLAG - Флаг Письмо (direct mail) без стоимости
  */
-class PROLONGATION_PARAMS extends Container
+class ProlongationParams extends Container
 {
     protected $rules = [
         'CELL_CC_FLAG' => ['toYN'],

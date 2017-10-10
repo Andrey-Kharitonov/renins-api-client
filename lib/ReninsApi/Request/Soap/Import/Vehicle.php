@@ -29,7 +29,7 @@ use ReninsApi\Request\ContainerCollection;
  * @property ContainerCollection $VEHICLE_DOCUMENTS - Документы
  * @property ContainerCollection $EXTRAS - Дополнительное оборудование.
  */
-class VEHICLE extends Container
+class Vehicle extends Container
 {
     protected $rules = [
         'TYPE' => ['toString', 'required', 'vehicleType:import'],
@@ -43,13 +43,30 @@ class VEHICLE extends Container
         'COLOR' => ['toString'],
         'IS_LEASE' => ['toYN'],
         'IS_CREDIT' => ['toYN'],
-        'PURPOSE' => ['toYN'],
+        'PURPOSE' => ['toString'],
         'KEY_COUNT' => ['toInteger', 'min:0'],
         'ENGINE_VOLUME' => ['toString'],
         'ENGINE_TYPE' => ['toString', 'engineType'],
         'TRANSMISSION_TYPE' => ['toString', 'transmissionType'],
         'VEHICLE_BODY_TYPE' => ['toString', 'vehicleBodyType'],
-        'VEHICLE_DOCUMENTS' => ['containerCollection:' . DOCUMENT::class],
-        'EXTRAS' => ['containerCollection:' . EQUIPMENT::class],
+        'VEHICLE_DOCUMENTS' => ['containerCollection:' . Document::class],
+        'EXTRAS' => ['containerCollection:' . Equipment::class],
     ];
+
+    public function toXml(\SimpleXMLElement $xml)
+    {
+        $this->toXmlTagsExcept($xml, ['VEHICLE_DOCUMENTS', 'EXTRAS']);
+
+        if ($this->VEHICLE_DOCUMENTS) {
+            $added = $xml->addChild('VEHICLE_DOCUMENTS');
+            $this->VEHICLE_DOCUMENTS->toXml($added, 'DOCUMENT');
+        }
+        if ($this->EXTRAS) {
+            $added = $xml->addChild('EXTRAS');
+            $this->EXTRAS->toXml($added, 'EQUIPMENT');
+        }
+
+        return $this;
+    }
+
 }

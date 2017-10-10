@@ -25,7 +25,7 @@ use ReninsApi\Request\Container;
  * @property string $FILIAL - Филиал
  * @property int $DISCOUNT_B2B - Величина скидка за счет B2B.
  */
-class EMPLOYEE extends Container
+class Employee extends Container
 {
     protected $rules = [
         'LAST_NAME' => ['toString'],

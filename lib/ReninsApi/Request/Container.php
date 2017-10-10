@@ -185,7 +185,7 @@ abstract class Container
                 $value->toXml($added);
             } elseif ($value instanceof ContainerCollection) {
                 $added = $xml->addChild($property);
-                $tagName = (substr($property, -1) == 's') ? substr($property, 0, strlen($property) - 1) : $property . 'Item';
+                $tagName = (strcasecmp(substr($property, -1), 's') == 0) ? substr($property, 0, strlen($property) - 1) : $property . 'Item';
                 $value->toXml($added, $tagName);
             } else {
                 $xml->addChild($property, $value);
@@ -249,7 +249,7 @@ abstract class Container
                 $value->toXml($added);
             } elseif ($value instanceof ContainerCollection) {
                 $added = $xml->addChild($property);
-                $tagName = (substr($property, -1) == 's') ? substr($property, 0, strlen($property) - 1) : $property . 'Item';
+                $tagName = (strcasecmp(substr($property, -1), 's') == 0) ? substr($property, 0, strlen($property) - 1) : $property . 'Item';
                 $value->toXml($added, $tagName);
             } else {
                 $xml->addChild($property, $value);
@@ -274,7 +274,7 @@ abstract class Container
                 $value->toXml($added);
             } elseif ($value instanceof ContainerCollection) {
                 $added = $xml->addChild($property);
-                $tagName = (substr($property, -1) == 's') ? substr($property, 0, strlen($property) - 1) : $property . 'Item';
+                $tagName = (strcasecmp(substr($property, -1), 's') == 0) ? substr($property, 0, strlen($property) - 1) : $property . 'Item';
                 $value->toXml($added, $tagName);
             } else {
                 $xml->addChild($property, $value);

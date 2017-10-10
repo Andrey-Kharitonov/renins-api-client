@@ -11,7 +11,7 @@ use ReninsApi\Request\Container;
  * @property string $INSPECTION_IS_NEEDED - Требуется прдварительный осмотр
  * @property string $INSPECTION_NOT_NEEDED_OLD_OBJECT - Предварительный осмотр не требуется, ТС не новое (используется только при пролонгации).
  */
-class PRE_INSURANCE_INSPECTION extends Container
+class PreInsuranceInspection extends Container
 {
     protected $rules = [
         'NEW_OBJECT' => ['toYN'],

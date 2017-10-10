@@ -15,7 +15,7 @@ use ReninsApi\Request\ContainerCollection;
  * @property string $ISSUED_WHERE - Где/Кем выдано
  * @property string $ISSUED_DATE - Когда выдано
  */
-class DOCUMENT extends Container
+class Document extends Container
 {
     protected $rules = [
         'TYPE' => ['toString', 'required', 'docType:import'],

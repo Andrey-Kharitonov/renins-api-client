@@ -11,7 +11,7 @@ use ReninsApi\Request\Container;
  * @property string $PAY_DOC_NUMBER - Номер платежного документа.
  * @property string $PAY_DOC_ISSUE_DATE - Дата выдачи платежного документа.
  */
-class DOCUMENT_OF_PAYMENT extends Container
+class DocumentOfPayment extends Container
 {
     protected $rules = [
         'TYPE' => ['toString', 'required'],

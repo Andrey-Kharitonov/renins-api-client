@@ -9,7 +9,7 @@ use ReninsApi\Request\Container;
  *
  * @property string $name
  */
-class MANAGER extends Container
+class Manager extends Container
 {
     protected $rules = [
         'name' => ['toString', 'required', 'notEmpty'],
