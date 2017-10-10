@@ -12,13 +12,14 @@ trait VehicleBrands
 {
     /**
      * Method: /Vehicle/Brands/All
-     * @param VehicleBrandsAll $params
+     * @param null|string $VehicleType
      * @return \ReninsApi\Response\Rest\VehicleBrandsAll
+     * @internal param VehicleBrandsAll $params
      */
-    public function vehicleBrandsAll(VehicleBrandsAll $params) {
+    public function vehicleBrandsAll($VehicleType = null) {
         /* @var $client RestClient */
         $client = $this->getRestClient();
-        $xml = $client->get('Vehicle/Brands/All', $params);
+        $xml = $client->get('Vehicle/Brands/All', ['VehicleType' => $VehicleType]);
         return new \ReninsApi\Response\Rest\VehicleBrandsAll($xml);
     }
 }

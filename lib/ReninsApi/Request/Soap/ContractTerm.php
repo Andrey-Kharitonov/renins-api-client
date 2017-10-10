@@ -16,10 +16,10 @@ use ReninsApi\Request\ContainerCollection;
  * @property string $Currency
  * @property string $Purpose
  */
-abstract class ContractTerm extends Container
+class ContractTerm extends Container
 {
     protected static $rules = [
-        'Product' => ['toInteger', 'required', 'between:1,4'],
+        'Product' => ['toInteger', 'required', 'between:1,6'],
         'ProgramType' => ['toString', 'required', 'notEmpty'],
         'DurationMonth' => ['toInteger', 'required', 'min:1'],
         'PeriodUseMonth' => ['toInteger', 'between:3,12'], //OSAGO

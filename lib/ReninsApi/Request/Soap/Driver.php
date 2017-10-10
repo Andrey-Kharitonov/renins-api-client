@@ -19,7 +19,7 @@ use ReninsApi\Request\ContainerCollection;
  * @property string $DriveExperience
  * @property ContainerCollection $Documents
  */
-abstract class Driver extends Container
+class Driver extends Container
 {
     protected static $rules = [
         'IsIP' => ['toLogical'],
@@ -27,7 +27,7 @@ abstract class Driver extends Container
         'MiddleName' => ['toString', 'notEmpty'],
         'LastName' => ['toString', 'notEmpty'],
         'BirthDate' => ['toDate'],
-        'Gender' => ['toString', 'in:M,F'],
+        'Gender' => ['toString', 'in:M|F'],
         'MaritalStatus' => ['toInteger', 'between:1,4'],
         'HasChildren' => ['toLogical'],
         'DriveExperience' => ['toDate'],

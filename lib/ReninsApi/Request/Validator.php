@@ -35,10 +35,10 @@ class Validator
                 if ($propRule == '') continue;
 
                 $params = null;
-                $pos = mb_strrpos($propRule, ':');
+                $pos = mb_strpos($propRule, ':');
                 if ($pos !== false) {
-                    $propRule = mb_substr($propRule, 0, $pos);
                     $params = mb_substr($propRule, $pos + 1);
+                    $propRule = mb_substr($propRule, 0, $pos);
                 }
 
                 $method = 'check' . ucfirst($propRule);
@@ -58,14 +58,16 @@ class Validator
      * VALIDATION METHODS
      */
 
-    public static function checkRequired($value, $params = null) {
+    public static function checkRequired($value, $params = null)
+    {
         if ($value === null) {
             return 'Is required';
         }
         return true;
     }
 
-    public static function checkNotEmpty($value, $params = null) {
+    public static function checkNotEmpty($value, $params = null)
+    {
         if ($value === null) return true;
 
         if (is_string($value)) {
@@ -73,7 +75,7 @@ class Validator
             if ($value === '') {
                 return 'Is empty';
             }
-        } elseif($value instanceof ContainerCollection) {
+        } elseif ($value instanceof ContainerCollection) {
             if ($value->count() <= 0) {
                 return 'Is empty';
             }
@@ -85,7 +87,7 @@ class Validator
 
     public static function checkLogical($value, $params = null)
     {
-        return static::checkIn($value, 'YES,NO');
+        return static::checkIn($value, 'YES|NO');
     }
 
     public static function checkIn($value, $params = null)
@@ -151,7 +153,7 @@ class Validator
 
         $limits = explode(',', $params);
         if (count($limits) < 2) {
-            throw new ValidatorException("Invalid parameters for rule \"between\"");
+            throw new ValidatorException("Invalid parameters for rule \"between\" ({$params})");
         }
 
         $res = static::checkMin($value, $limits[0]);
@@ -169,7 +171,7 @@ class Validator
     {
         if ($value === null) return true;
 
-        if ($value instanceof Container) {
+        if (!($value instanceof Container)) {
             return "Isn't container";
         }
         return true;
@@ -179,13 +181,14 @@ class Validator
     {
         if ($value === null) return true;
 
-        if ($value instanceof ContainerCollection) {
+        if (!($value instanceof ContainerCollection)) {
             return "Isn't container collection";
         }
         return true;
     }
 
-    public static function checkDate($value, $params = null) {
+    public static function checkDate($value, $params = null)
+    {
         if ($value === null) return true;
 
         $dt = \DateTime::createFromFormat('Y-m-d', $value);
@@ -193,5 +196,21 @@ class Validator
             return "Isn't correct date";
         }
         return true;
+    }
+
+    public static function checkParticipantType($value, $params = null)
+    {
+        return self::checkIn($value, '1|2');
+    }
+
+    public static function checkVehicleType($value, $params = null)
+    {
+        return self::checkIn($value, 'Легковое ТС|Грузовое ТС|Автобус|Микроавтобус|Спецтехника|Малотоннажное ТС|Троллейбус|Трамвай|Мотоцикл');
+    }
+
+    public static function checkDocType($value, $params = null)
+    {
+        return self::checkIn($value, 'Паспорт РФ|PASSPORT|DRIVING_LICENCE|ZAGRAN_PASSPORT|FOREIGN_PASSPORT|MILITARY_CARD'
+            . '|REGISTRATION_CERTIFICATE|RESIDENTIAL_PERMIT|SOLDIER_IDENTIFY_CARD|PTS|DIAGNOSTIC_CARD|TALON_TECHOSMOTR|STS');
     }
 }

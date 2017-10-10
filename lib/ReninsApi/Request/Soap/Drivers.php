@@ -9,15 +9,15 @@ use ReninsApi\Request\ContainerCollection;
  * Drivers
  *
  * @property int $type
- * @property string $MultiDrive
+ * @property string|bool $MultiDrive
  * @property int $MinAge
  * @property int $MinExperience
  * @property ContainerCollection $Driver
  */
-abstract class Drivers extends Container
+class Drivers extends Container
 {
     protected static $rules = [
-        'type' => ['toInteger', 'in:1,2'],
+        'type' => ['toInteger', 'in:1|2'],
         'MultiDrive' => ['toLogical', 'required'],
         'MinAge' => ['toInteger', 'min:0'],
         'MinExperience' => ['toInteger', 'min:0'],

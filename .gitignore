@@ -10,3 +10,6 @@ composer.lock
 .swp
 /nbproject
 /phpunit.xml
+*.log
+/test.php
+tmp*.xsd

@@ -2,6 +2,7 @@
 
 namespace ReninsApi\Client;
 
+use ReninsApi\Helpers\LogEvent;
 use ReninsApi\Rest\Client as RestClient;
 use ReninsApi\Soap\Client as SoapClient;
 
@@ -28,6 +29,12 @@ abstract class BaseApi
      * @var SoapClient
      */
     protected $soapClient;
+
+    /**
+     * Log callback
+     * @var mixed
+     */
+    public $onLog;
 
     /**
      * Init version based client
@@ -88,4 +95,23 @@ abstract class BaseApi
     {
         return $this->test;
     }
+
+    /**
+     * Help method. Send a xml to describer
+     * @param string $method
+     * @param string $msg
+     * @param array $data
+     * @return $this
+     */
+    protected function logMessage(string $method, string $msg, array $data = []) {
+        if (is_callable($this->onLog)) {
+            $event = new LogEvent();
+            $event->method = $method;
+            $event->message = $msg;
+            $event->data = $data;
+            call_user_func($this->onLog, $event);
+        }
+        return $this;
+    }
+
 }

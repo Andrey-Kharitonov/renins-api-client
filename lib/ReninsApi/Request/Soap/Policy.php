@@ -11,16 +11,19 @@ use ReninsApi\Request\ContainerCollection;
  * @property ContractTerm $ContractTerm
  * @property ContainerCollection $Covers
  * @property Vehicle $Vehicle
+ * @property Participants $Participants
  */
-abstract class Policy extends Container
+class Policy extends Container
 {
     protected static $rules = [
         'ContractTerm' => ['container', 'required'],
         'Covers' => ['containerCollection'],
         'Vehicle' => ['container', 'required'],
+        'Participants' => ['container', 'required'],
     ];
 
     protected $ContractTerm;
     protected $Covers;
     protected $Vehicle;
+    protected $Participants;
 }

@@ -25,7 +25,7 @@ class ContainerCollection implements Iterator
             if (!($item instanceof Container)) {
                 throw new \InvalidArgumentException("Data must be an array of Container");
             }
-            $this->addContainer($item);
+            $this->add($item);
         }
     }
 
@@ -34,7 +34,7 @@ class ContainerCollection implements Iterator
      * @param Container $container
      * @return $this
      */
-    public function addContainer(Container $container) {
+    public function add(Container $container) {
         $this->items[] = $container;
         return $this;
     }

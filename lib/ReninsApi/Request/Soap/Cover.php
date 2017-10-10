@@ -10,10 +10,10 @@ use ReninsApi\Request\Container;
  * @property string $code
  * @property string $sum
  */
-abstract class Cover extends Container
+class Cover extends Container
 {
     protected static $rules = [
-        'code' => ['toString', 'required', 'in:UGON,USHERB,DO,NS,DAGO'],
+        'code' => ['toString', 'required', 'in:UGON|USHERB|DO|NS|DAGO'],
         'sum' => ['toDouble', 'required', 'notEmpty', 'min:0'],
     ];
 
