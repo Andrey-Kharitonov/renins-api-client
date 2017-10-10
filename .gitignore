@@ -9,3 +9,4 @@ composer.lock
 .project
 .swp
 /nbproject
+/phpunit.xml

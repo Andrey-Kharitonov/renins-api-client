@@ -24,7 +24,7 @@
         "email": "support@renins.com"
     },
     "autoload": {
-        "psr-0": { "RetailCrm\\": "lib/" }
+        "psr-0": { "ReninsApi\\": "lib/" }
     },
     "extra": {
     },
