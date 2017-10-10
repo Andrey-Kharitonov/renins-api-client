@@ -21,4 +21,15 @@ class Utils
         }
         return $ret;
     }
+
+    /**
+     * Add $from document to $to
+     * @param \SimpleXMLElement $to
+     * @param \SimpleXMLElement $from
+     */
+    public static function sxmlAppend(\SimpleXMLElement $to, \SimpleXMLElement $from) {
+        $toDom = dom_import_simplexml($to);
+        $fromDom = dom_import_simplexml($from);
+        $toDom->appendChild($toDom->ownerDocument->importNode($fromDom, true));
+    }
 }

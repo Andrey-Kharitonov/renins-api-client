@@ -3,20 +3,31 @@
 namespace ReninsApi\Client;
 
 use ReninsApi\Rest\Client as RestClient;
+use ReninsApi\Soap\Client as SoapClient;
 
 abstract class BaseApi
 {
-    const URL_SOAP_TEST = '';
-    const URL_SOAP = '';
+    protected static $wsdl = '';
+    protected static $wsdlTest = '';
 
-    const URL_REST = '';
-    const URL_REST_TEST = self::URL_REST;
+    protected static $urlRest = '';
+    protected static $urlRestTest = '';
 
     protected $clientSystemName;
     protected $partnerUid;
     protected $test;
 
+    /**
+     * Rest client instance
+     * @var RestClient
+     */
     protected $restClient;
+
+    /**
+     * Soap client instance
+     * @var SoapClient
+     */
+    protected $soapClient;
 
     /**
      * Init version based client
@@ -54,9 +65,20 @@ abstract class BaseApi
     public function getRestClient(): RestClient
     {
         if (!$this->restClient) {
-            $this->restClient = new RestClient(($this->test) ? self::URL_REST_TEST : self::URL_REST);
+            $this->restClient = new RestClient(($this->test) ? static::$urlRestTest : static::$urlRest);
         }
         return $this->restClient;
+    }
+
+    /**
+     * @return SoapClient
+     */
+    public function getSoapClient(): SoapClient
+    {
+        if (!$this->soapClient) {
+            $this->soapClient = new SoapClient(($this->test) ? static::$wsdlTest : static::$wsdl);
+        }
+        return $this->soapClient;
     }
 
     /**
