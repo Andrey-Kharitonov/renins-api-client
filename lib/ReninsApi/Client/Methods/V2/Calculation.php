@@ -6,7 +6,7 @@ use ReninsApi\Helpers\Utils;
 use ReninsApi\Request\Soap\CalculationCasco;
 use ReninsApi\Request\ValidatorMultiException;
 use ReninsApi\Response\Soap\MakeCalculationResult;
-use ReninsApi\Soap\Client as SoapClient;
+use ReninsApi\Soap\ClientCalc;
 
 /**
  * Calculation
@@ -19,11 +19,11 @@ trait Calculation
      * @throws \Exception
      */
     public function calcCasco(CalculationCasco $params) {
-        /* @var $client SoapClient */
-        $client = $this->getSoapClient();
+        /* @var $client ClientCalc */
+        $client = $this->getSoapCalcClient();
 
-        $this->logMessage(__METHOD__, 'Preparing xml');
         try {
+            $this->logMessage(__METHOD__, 'Preparing xml');
             $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><MakeCalculation xmlns="http://renins.com/"></MakeCalculation>');
             $doc = $xml->addChild('doc');
             $request = $doc->addChild('Request', null, '');
@@ -40,10 +40,12 @@ trait Calculation
             throw $exc;
         }
 
-        $this->logMessage(__METHOD__, 'Making request', [$xmlStr]);
         try {
+            $this->logMessage(__METHOD__, 'Making request', [$xmlStr]);
             $args = [new \SoapVar($xmlStr, XSD_ANYXML)];
             $res = $client->makeRequest('MakeCalculation', $args);
+            $res = MakeCalculationResult::createFromXml($res);
+            $res->validateThrow();
             $this->logMessage(__METHOD__, 'Successful', [
                 'request' => $client->getLastRequest(),
                 'response' => $client->getLastResponse(),

@@ -4,12 +4,16 @@ namespace ReninsApi\Client;
 
 use ReninsApi\Helpers\LogEvent;
 use ReninsApi\Rest\Client as RestClient;
-use ReninsApi\Soap\Client as SoapClient;
+use ReninsApi\Soap\ClientCalc;
+use ReninsApi\Soap\ClientPrint;
 
 abstract class BaseApi
 {
-    protected static $wsdl = '';
-    protected static $wsdlTest = '';
+    protected static $wsdlCalc = '';
+    protected static $wsdlCalcTest = '';
+
+    protected static $wsdlPrint = '';
+    protected static $wsdlPrintTest = '';
 
     protected static $urlRest = '';
     protected static $urlRestTest = '';
@@ -25,10 +29,16 @@ abstract class BaseApi
     protected $restClient;
 
     /**
-     * Soap client instance
+     * Soap client instance for calculation
      * @var SoapClient
      */
-    protected $soapClient;
+    protected $soapCalcClient;
+
+    /**
+     * Soap client instance for printing
+     * @var SoapClient
+     */
+    protected $soapPrintClient;
 
     /**
      * Log callback
@@ -78,14 +88,25 @@ abstract class BaseApi
     }
 
     /**
-     * @return SoapClient
+     * @return ClientCalc
      */
-    public function getSoapClient(): SoapClient
+    public function getSoapCalcClient(): ClientCalc
     {
-        if (!$this->soapClient) {
-            $this->soapClient = new SoapClient(($this->test) ? static::$wsdlTest : static::$wsdl);
+        if (!$this->soapCalcClient) {
+            $this->soapCalcClient = new ClientCalc(($this->test) ? static::$wsdlCalcTest : static::$wsdlCalc);
         }
-        return $this->soapClient;
+        return $this->soapCalcClient;
+    }
+
+    /**
+     * @return ClientPrint
+     */
+    public function getSoapPrintClient(): ClientPrint
+    {
+        if (!$this->soapPrintClient) {
+            $this->soapPrintClient = new ClientPrint(($this->test) ? static::$wsdlPrintTest : static::$wsdlPrint);
+        }
+        return $this->soapPrintClient;
     }
 
     /**
@@ -100,15 +121,15 @@ abstract class BaseApi
      * Help method. Send a xml to describer
      * @param string $method
      * @param string $msg
-     * @param array $data
+     * @param array|object|null $data
      * @return $this
      */
-    protected function logMessage(string $method, string $msg, array $data = []) {
+    protected function logMessage(string $method, string $msg, $data = []) {
         if (is_callable($this->onLog)) {
             $event = new LogEvent();
             $event->method = $method;
             $event->message = $msg;
-            $event->data = $data;
+            $event->data = (array) $data;
             call_user_func($this->onLog, $event);
         }
         return $this;

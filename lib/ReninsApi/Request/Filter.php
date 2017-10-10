@@ -23,10 +23,12 @@ class Filter
             $propRules = $this->rules[$property];
             if (!is_array($propRules)) {
                 $propRules = explode(',', $propRules);
+                $propRules = array_map(function($v) {
+                    return trim($v);
+                }, $propRules);
             }
 
             foreach ($propRules as $propRule) {
-                $propRule = trim($propRule);
                 if ($propRule == '' || substr($propRule, 0, 2) != 'to') continue;
 
                 $params = null;
@@ -74,7 +76,7 @@ class Filter
         }
     }
 
-    public static function filterToBoolean($value, $params) {
+    public static function filterToBooleanStr($value, $params) {
         if ($value === null) return $value;
 
         if (strcasecmp($value, 'true') == 0) {
@@ -84,6 +86,11 @@ class Filter
         } else {
             return ($value) ? 'true' : 'false';
         }
+    }
+
+    public static function filterToBoolean($value, $params) {
+        if ($value === null) return $value;
+        return (bool) $value;
     }
 
     public static function filterToInteger($value, $params) {

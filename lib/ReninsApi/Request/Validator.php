@@ -29,9 +29,11 @@ class Validator
 
             if (!is_array($propRules)) {
                 $propRules = explode(',', $propRules);
+                $propRules = array_map(function($v) {
+                    return trim($v);
+                }, $propRules);
             }
             foreach ($propRules as $propRule) {
-                $propRule = trim($propRule);
                 if ($propRule == '' || substr($propRule, 0, 2) == 'to') continue;
 
                 $params = null;
@@ -205,14 +207,14 @@ class Validator
      * Will return error, if $value < min or $value > max
      * It will pass null.
      * @param $value
-     * @param $params - string "min,max"
+     * @param $params - string "min|max"
      * @return bool|string
      */
     public static function checkBetween($value, $params = null)
     {
         if ($value === null) return true;
 
-        $limits = explode(',', $params);
+        $limits = explode('|', $params);
         if (count($limits) < 2) {
             throw new ValidatorException("Invalid parameters for rule \"between\" ({$params})");
         }
@@ -316,14 +318,14 @@ class Validator
      * Will return error, if $value have length < min or > max
      * It will pass null.
      * @param $value
-     * @param $params - Examples: "min,max", ",max", "min,"
+     * @param $params - Examples: "min|max", "|max", "min|"
      * @return bool|string
      */
     public static function checkLength($value, $params = null)
     {
         if ($value === null) return true;
 
-        $limits = explode(',', $params);
+        $limits = explode('|', $params);
         $limits = array_map(function($v) {
             return trim($v);
         }, $limits);
@@ -353,4 +355,62 @@ class Validator
 
         return true;
     }
+
+    /**
+     * It should be array. Each item of array will be checked by rule.
+     * Cascade calls are supported. It's possible: "array:array:between:1|8".
+     * It will pass null.
+     * @param $value
+     * @param $rule
+     * @return bool|string
+     */
+    public static function checkArray($value, $rule = null) {
+        if ($value === null) return true;
+
+        if (!is_array($value)) {
+            return "Isn't array";
+        }
+
+        if ($rule != '') {
+            $params = null;
+            $pos = mb_strpos($rule, ':');
+            if ($pos !== false) {
+                $params = mb_substr($rule, $pos + 1);
+                $rule = mb_substr($rule, 0, $pos);
+            }
+
+            $method = 'check' . ucfirst($rule);
+            if (!method_exists(static::class, $method)) {
+                throw new ValidatorException("Rule {$rule} isn't supported");
+            }
+
+            foreach($value as $index => $item) {
+                $res = static::{$method}($item, $params);
+                if ($res !== true) {
+                    return "{$index}: {$res}";
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * It should be string.
+     * Null will be passed.
+     * @param $value
+     * @param $params
+     * @return bool|string
+     */
+    public static function checkString($value, $params = null) {
+        if ($value === null) return true;
+
+        if (!is_string($value)) {
+            echo var_dump($value);
+            return "Isn't string";
+        }
+
+        return true;
+    }
+
 }

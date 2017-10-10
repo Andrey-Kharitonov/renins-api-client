@@ -2,8 +2,6 @@
 
 namespace ReninsApi\Soap;
 
-use ReninsApi\Response\Soap\MakeCalculationResult;
-
 /**
  * Soap client
  */
@@ -76,11 +74,11 @@ class Client
     /**
      * Make request
      *
-     * @param string $method - http method, default: 'get'
+     * @param string $method
      * @param array $arguments
-     * @return MakeCalculationResult
+     * @return mixed
      */
-    public function makeRequest(string $method, array $arguments = []): MakeCalculationResult {
+    public function makeRequest(string $method, array $arguments = []) {
         $soap = new \SoapClient($this->wsdl, [
             'exceptions' => true,
             'connection_timeout' => 30,
@@ -97,18 +95,6 @@ class Client
             $this->lastResponse = $soap->__getLastResponseHeaders() . $soap->__getLastResponse();
         }
 
-        //print_r($res);
-
-        if (!is_object($res)
-            || empty($res->MakeCalculationResult)
-            || !is_object($res->MakeCalculationResult)
-            || empty($res->MakeCalculationResult->any)) {
-            throw new ClientException("Unexpected type of answer. Expected {MakeCalculationResult: any: \"...\"}");
-        }
-
-        $ret = MakeCalculationResult::createFromXml($res->MakeCalculationResult->any);
-        $ret->validateThrow();
-
-        return $ret;
+        return $res;
     }
 }

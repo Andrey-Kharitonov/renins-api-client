@@ -9,9 +9,13 @@ class ApiVersion2 extends BaseApi
 {
     use Methods\V2\VehicleBrands;
     use Methods\V2\Calculation;
+    use Methods\V2\Printing;
 
-    protected static $wsdl = '';
-    protected static $wsdlTest = '';
+    protected static $wsdlCalc = '';
+    protected static $wsdlCalcTest = '';
+
+    protected static $wsdlPrint = '';
+    protected static $wsdlPrintTest = '';
 
     protected static $urlRest = '';
     protected static $urlRestTest = '';

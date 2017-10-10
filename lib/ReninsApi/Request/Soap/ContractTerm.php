@@ -19,10 +19,10 @@ use ReninsApi\Request\ContainerCollection;
 class ContractTerm extends Container
 {
     protected $rules = [
-        'Product' => ['toInteger', 'required', 'between:1,6'],
+        'Product' => ['toInteger', 'required', 'between:1|6'],
         'ProgramType' => ['toString', 'required', 'notEmpty'],
         'DurationMonth' => ['toInteger', 'required', 'min:1'],
-        'PeriodUseMonth' => ['toInteger', 'between:3,12'], //OSAGO
+        'PeriodUseMonth' => ['toInteger', 'between:3|12'], //OSAGO
         'PaymentType' => ['toInteger', 'required', 'min:1'],
         'Currency' => ['toString', 'required', 'in:RUR'],
         'Purpose' => ['toString', 'required', 'notEmpty'],

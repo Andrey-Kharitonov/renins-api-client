@@ -94,7 +94,6 @@ class ApiVersion2CascoTest extends TestCase
 
     /**
      * @group soap
-     * @group current
      */
     public function testCalcCascoInvalid()
     {

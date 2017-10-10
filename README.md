@@ -53,7 +53,7 @@ $rules представляет собой массив, ассоц. по име
         'LastName' => ['toString', 'notEmpty'],
         'BirthDate' => ['toDate'],
         'Gender' => ['toString', 'in:M|F'],
-        'MaritalStatus' => ['toInteger', 'between:1,4'],
+        'MaritalStatus' => ['toInteger', 'between:1|4'],
         'HasChildren' => ['toLogical'],
         'DriveExperience' => ['toDate'],
         'Documents' => ['containerCollection:' . Document::class],

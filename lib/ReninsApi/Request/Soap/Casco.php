@@ -46,7 +46,7 @@ class Casco extends Container
         'LeasingID' => ['toString'],
         'LeasingEnabled' => ['toLogical'],
         'BankEnabled' => ['toLogical'],
-        'CustomOptions' => ['containerCollection:' . Option::class, 'length:,7'],
+        'CustomOptions' => ['containerCollection:' . Option::class, 'length:|7'],
         'NewClient' => ['toLogical'],
         'GAPEnabled' => ['toLogical'],
         'B2BDiscount' => ['toLogical'],

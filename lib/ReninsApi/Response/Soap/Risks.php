@@ -20,8 +20,8 @@ class Risks extends Container
         'PacketName' => ['toString'], //unknown type
         'PacketCaption' => ['toString'], //unknown type
         'CanBeChoosen' => ['toString'], //unknown type
-        'Visible' => ['toBoolean'],
-        'Enabled' => ['toBoolean'],
+        'Visible' => ['toBooleanStr'],
+        'Enabled' => ['toBooleanStr'],
         'Risk' => ['containerCollection:' . Risk::class],
     ];
 

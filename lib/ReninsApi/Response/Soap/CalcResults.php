@@ -33,9 +33,9 @@ use ReninsApi\Request\Soap\Deductible;
 class CalcResults extends Container
 {
     protected $rules = [
-        'SuppressPercentage' => ['toBoolean'],
+        'SuppressPercentage' => ['toBooleanStr'],
         'PercentageAccuracy' => ['toString'],  //unknown type
-        'Success' => ['toBoolean', 'required'],
+        'Success' => ['toBooleanStr', 'required'],
         'b2b_id' => ['toInteger'],
         'AccountNumber' => ['toString'],
 
@@ -51,7 +51,7 @@ class CalcResults extends Container
         'KeysDocsDeductible' => ['toString'], //unknown type
         'DriversDeductible' => ['toString'], //unknown type
         'FourLossDeductible' => ['toString'], //unknown type
-        'TotalDestruction' => ['toBoolean'],
+        'TotalDestruction' => ['toBooleanStr'],
         'LossCount' => ['toString'], //unknown type
         'CoefLoss' => ['toString'], //unknown type
         'CoefProlongation' => ['toString'], //unknown type
