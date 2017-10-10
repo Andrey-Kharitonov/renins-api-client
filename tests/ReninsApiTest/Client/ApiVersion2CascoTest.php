@@ -5,80 +5,13 @@ namespace ReninsApiTest\Client;
 use PHPUnit\Framework\TestCase;
 use ReninsApi\Client\ApiVersion2;
 use ReninsApi\Helpers\LogEvent;
-use ReninsApi\Helpers\Utils;
 use ReninsApi\Request\ContainerCollection;
 
-class ApiVersion2Test extends TestCase
+class ApiVersion2CascoTest extends TestCase
 {
-    CONST CLIENT_SYSTEM_NAME = '';
-    CONST PARTNER_UID = '';
-
     public function onLog(LogEvent $event) {
         global $loggerCalc;
         $loggerCalc->info("{$event->method}: {$event->message}", $event->data);
-    }
-
-    /**
-     * @group rest
-     * @group soap
-     */
-    public function testConstruct()
-    {
-        $client = new ApiVersion2(self::CLIENT_SYSTEM_NAME);
-        $this->assertInstanceOf(ApiVersion2::class, $client);
-    }
-
-    /**
-     * @group rest
-     */
-    public function testVehicleBrandsAll()
-    {
-        $client = new ApiVersion2(self::CLIENT_SYSTEM_NAME);
-        $client->onLog = [$this, 'onLog'];
-
-        $response = $client->vehicleBrandsAll('Легковое ТС');
-        $this->assertInstanceOf(\ReninsApi\Response\Rest\VehicleBrandsAll::class, $response);
-        $this->assertGreaterThan(10, count($response->getBrands()));
-
-        $filtered = array_filter($response->getBrands(), function($item) {
-            return $item['Name'] == 'ВАЗ';
-        });
-        $this->assertEquals(1, count($filtered));
-    }
-
-    /**
-     * @group rest
-     */
-    public function testVehicleBrandsAll2()
-    {
-        $client = new ApiVersion2(self::CLIENT_SYSTEM_NAME);
-        $client->onLog = [$this, 'onLog'];
-
-        $response = $client->vehicleBrandsAll('Invalid value');
-        $this->assertInstanceOf(\ReninsApi\Response\Rest\VehicleBrandsAll::class, $response);
-        $this->assertEquals(0, count($response->getBrands()));
-    }
-
-    /**
-     * @group rest
-     */
-    public function testVehicleBrandsAllWithModels()
-    {
-        $client = new ApiVersion2(self::CLIENT_SYSTEM_NAME);
-        $client->onLog = [$this, 'onLog'];
-
-        $response = $client->vehicleBrandsAllWithModels('Легковое ТС');
-        $this->assertInstanceOf(\ReninsApi\Response\Rest\VehicleBrandsAll::class, $response);
-        $this->assertGreaterThan(10, count($response->getBrands()));
-
-        $filtered = array_filter($response->getBrands(), function($item) {
-            return $item['Name'] == 'ВАЗ';
-        });
-        $this->assertEquals(1, count($filtered));
-
-        $filtered = array_values($filtered);
-        $this->assertArrayHasKey('Models', $filtered[0]);
-        $this->assertGreaterThan(10, count($filtered[0]['Models']));
     }
 
     /**
@@ -87,7 +20,7 @@ class ApiVersion2Test extends TestCase
      */
     public function testCalcCasco()
     {
-        $client = new ApiVersion2(self::CLIENT_SYSTEM_NAME, self::PARTNER_UID);
+        $client = new ApiVersion2(CLIENT_SYSTEM_NAME, PARTNER_UID);
         $client->onLog = [$this, 'onLog'];
 
         $ContractTerm = new \ReninsApi\Request\Soap\ContractTerm();
@@ -126,11 +59,22 @@ class ApiVersion2Test extends TestCase
         $Participants->Insurant = $Insurant;
         $Participants->BeneficiaryType = 1;
 
+        //Product section
+        $Stoa = new ContainerCollection([
+            new \ReninsApi\Request\Soap\StoaType(['type' => 3, 'enabled' => false]),
+            new \ReninsApi\Request\Soap\StoaType(['type' => 2, 'enabled' => true]),
+        ]);
+
+        $Casco = new \ReninsApi\Request\Soap\Casco();
+        $Casco->Stoa = $Stoa;
+        //---
+
         $Policy = new \ReninsApi\Request\Soap\Policy();
         $Policy->ContractTerm = $ContractTerm;
         $Policy->Covers = $Covers;
         $Policy->Vehicle = $Vehicle;
         $Policy->Participants = $Participants;
+        $Policy->Casco = $Casco;
 
         $request = new \ReninsApi\Request\Soap\CalculationCasco();
         $request->genUuid();

@@ -27,12 +27,21 @@ class Filter
 
             foreach ($propRules as $propRule) {
                 $propRule = trim($propRule);
-                if ($propRule == '') continue;
+                if ($propRule == '' || substr($propRule, 0, 2) != 'to') continue;
+
+                $params = null;
+                $pos = mb_strpos($propRule, ':');
+                if ($pos !== false) {
+                    $params = mb_substr($propRule, $pos + 1);
+                    $propRule = mb_substr($propRule, 0, $pos);
+                }
 
                 $method = 'filter' . ucfirst($propRule);
-                if (!method_exists($this, $method)) continue;
+                if (!method_exists($this, $method)) {
+                    throw new FilterException("Rule {$propRule} isn't supported");
+                }
 
-                $data = $this::{$method}($data);
+                $data = $this::{$method}($data, $params);
             }
 
             return $data;
@@ -53,7 +62,7 @@ class Filter
         }
     }
 
-    public static function filterToLogical($value) {
+    public static function filterToLogical($value, $params) {
         if ($value === null) return $value;
 
         if ($value === 'YES') {
@@ -65,29 +74,29 @@ class Filter
         }
     }
 
-    public static function filterToInteger($value) {
+    public static function filterToInteger($value, $params) {
         if ($value === null) return $value;
 
         return (int) $value;
     }
 
-    public static function filterToInt($value) {
+    public static function filterToInt($value, $params) {
         return static::filterToInteger($value);
     }
 
-    public static function filterToString($value) {
+    public static function filterToString($value, $params) {
         if ($value === null) return $value;
 
         return (string) $value;
     }
 
-    public static function filterToDouble($value) {
+    public static function filterToDouble($value, $params) {
         if ($value === null) return $value;
 
         return (double) $value;
     }
 
-    public function filterToDate($value) {
+    public function filterToDate($value, $params) {
         if ($value === null) return $value;
 
         if (is_string($value)) {
@@ -99,4 +108,27 @@ class Filter
             return null;
         }
     }
+
+    public function filterToContainer($value, $className) {
+        if ($value === null || $value instanceof Container) return $value;
+
+        return new $className($value);
+    }
+
+    public function filterToContainerCollection($value, $className) {
+        if ($value === null || $value instanceof Container) return $value;
+
+        if (!is_array($value)) {
+            throw new \InvalidArgumentException("Invalid type of value, array is expected");
+        }
+
+        $coll = new ContainerCollection();
+        foreach ($value as $item) {
+            $coll->add($item);
+        }
+
+        return $coll;
+    }
+
+
 }

@@ -32,7 +32,7 @@ class Validator
             }
             foreach ($propRules as $propRule) {
                 $propRule = trim($propRule);
-                if ($propRule == '') continue;
+                if ($propRule == '' || substr($propRule, 0, 2) == 'to') continue;
 
                 $params = null;
                 $pos = mb_strpos($propRule, ':');
@@ -42,7 +42,9 @@ class Validator
                 }
 
                 $method = 'check' . ucfirst($propRule);
-                if (!method_exists($this, $method)) continue;
+                if (!method_exists($this, $method)) {
+                    throw new ValidatorException("Rule {$propRule} isn't supported");
+                }
 
                 $res = $this::{$method}($value, $params);
                 if ($res !== true) {

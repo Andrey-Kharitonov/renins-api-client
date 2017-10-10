@@ -9,7 +9,7 @@ class ValidatorMultiException extends \RuntimeException
     /**
      * @return mixed
      */
-    public function getErrors()
+    public function getErrors(): array
     {
         return $this->errors;
     }

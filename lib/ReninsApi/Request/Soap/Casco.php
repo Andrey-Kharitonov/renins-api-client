@@ -60,6 +60,21 @@ class Casco extends Container
         'Telematics' => ['toContainer'],
     ];
 
+    public function toXml(\SimpleXMLElement $xml)
+    {
+        $this->validateThrow();
+
+        //Stoa with custom children name
+        $added = $xml->addChild('Stoa');
+        $this->Stoa->toXml($added, 'StoaType');
+
+        //Other tags are typical
+        $rules = array_diff_key(static::$rules, ['Stoa' => true]);
+        $this->toXmlTags($xml, array_keys($rules));
+
+        return $this;
+    }
+
     protected $Stoa;
     protected $Deductible;
     protected $KeysDocsDeductible;
