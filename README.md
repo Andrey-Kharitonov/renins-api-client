@@ -100,7 +100,8 @@ $rules представляет собой массив, ассоц. по име
 2. request - внутренние тесты сериализаций в xml и array
 3. response - внутренние тесты десериализаций
 4. casco-full - тестирование полного цикла по КАСКО
-5. osago-full - тестирование полного цикла по ОСАГО
+5. casco-full-multidrive - тестирование полного цикла по КАСКО (мультидрайв)
+6. osago-full - тестирование полного цикла по ОСАГО
 
 Часть client разделена на группы calculation-casco, calculation-osago, import-casco, import-osago,
 printing-casco, printing-osago, rest.
@@ -138,6 +139,12 @@ casco-full проверяет сразу все операции по КАСКО
 
 ```bash
 phpunit --testsuite casco-full --debug
+```
+
+casco-full-multidrive проверяет сразу все операции по КАСКО (мультидрайв):
+
+```bash
+phpunit --testsuite casco-full-multidrive --debug
 ```
 
 osago-full проверяет сразу все операции по ОСАГО:

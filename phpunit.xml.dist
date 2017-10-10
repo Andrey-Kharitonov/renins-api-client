@@ -12,6 +12,7 @@
     <testsuite name="client">
       <directory>tests/ReninsApiTest/Client</directory>
       <exclude>tests/ReninsApiTest/Client/V2/FullCascoTest.php</exclude>
+      <exclude>tests/ReninsApiTest/Client/V2/FullCascoMultiDriveTest.php</exclude>
       <exclude>tests/ReninsApiTest/Client/V2/FullOsagoTest.php</exclude>
     </testsuite>
     <testsuite name="request">
@@ -22,6 +23,9 @@
     </testsuite>
     <testsuite name="casco-full">
       <file>tests/ReninsApiTest/Client/V2/FullCascoTest.php</file>
+    </testsuite>
+    <testsuite name="casco-full-multidrive">
+      <file>tests/ReninsApiTest/Client/V2/FullCascoMultiDriveTest.php</file>
     </testsuite>
     <testsuite name="osago-full">
       <file>tests/ReninsApiTest/Client/V2/FullOsagoTest.php</file>
