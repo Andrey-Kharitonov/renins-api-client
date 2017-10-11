@@ -531,7 +531,11 @@ class Validator
      */
     public static function checkVehicleBodyType($value, $params = null)
     {
-        return self::checkIn($value, 'Седан|Хэтчбек|Универсал|Минивэн|Кабриолет|Пикап|Фургон|Купе|Лимузин|Внедорожник|Иное');
+        if ($params == 'import') {
+            return self::checkIn($value, 'Седан|Хэтчбек|Универсал|Минивэн|Кабриолет|Пикап|Фургон|Купе|Лимузин|Внедорожник|Иное');
+        } else {
+            return self::checkIn($value, 'Седан|Хэтчбек|Универсал|Минивэн|Фургон|Пикап|Кабриолет|Купе|Другой тип кузова|Нет данных');
+        }
     }
 
     /**

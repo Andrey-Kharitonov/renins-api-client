@@ -89,7 +89,7 @@ class Vehicle extends Container
         'ENGINE_TYPE' => ['toString', 'engineType'],
         'IS_FOREIGN' => ['toYN'],
         'TRANSMISSION_TYPE' => ['toString', 'transmissionType:import'],
-        'VEHICLE_BODY_TYPE' => ['toString', 'vehicleBodyType'],
+        'VEHICLE_BODY_TYPE' => ['toString', 'vehicleBodyType:import'],
     ];
 
     public function toXml(\SimpleXMLElement $xml)

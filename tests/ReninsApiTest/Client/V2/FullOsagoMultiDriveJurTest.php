@@ -7,15 +7,23 @@ use ReninsApi\Request\ContainerCollection;
 use ReninsApi\Response\Soap\Printing\DocBytesResponseEx;
 use ReninsApiTest\Client\Log;
 
-class FullCascoMultiDriveJurTest extends TestCase
+class FullOsagoMultiDriveJurTest extends TestCase
 {
     use Log;
 
+    /**
+     * Дата начала срока действия договора полноценной роли не играет. Датой начала страхования является SALE_DATE.
+     * @return \DateTime
+     */
     private function getDateBegin() {
-        return (new \DateTime())->add(new \DateInterval('P3D'))
+        return (new \DateTime())
             ->setTime(12, 0, 0);
     }
 
+    /**
+     * Поскольку ОСАГО считает датой начала страхования SALE_DATE, то здесь должно быть + 1 год - 1 день относительно SALE_DATE
+     * @return \DateTime
+     */
     private function getDateEnd() {
         $dtBegin = $this->getDateBegin();
         $dtBegin->add(new \DateInterval('P1Y'))->sub(new \DateInterval('P1D'))->setTime(23, 59, 59);
@@ -23,44 +31,42 @@ class FullCascoMultiDriveJurTest extends TestCase
     }
 
     /**
-     * Мультидрайв, Страхователь - юр.лицо
+     * Мультидрайв, страхователь - юр. лицо
      * @return \ReninsApi\Request\Soap\Calculation\Request
      */
     private function getCalcRequest() {
+        $dt = new \DateTime();
+
         $ContractTerm = new \ReninsApi\Request\Soap\Calculation\ContractTerm();
         $ContractTerm->Product = 1;
-        $ContractTerm->ProgramType = 'KASKO';
+        $ContractTerm->ProgramType = 'OSAGO';
         $ContractTerm->DurationMonth = 12;
         $ContractTerm->PeriodUseMonth = $ContractTerm->DurationMonth;
         $ContractTerm->PaymentType = 1;
         $ContractTerm->Purpose = 'прочее';
 
-        $Covers = new ContainerCollection();
-        $Covers->add(new \ReninsApi\Request\Soap\Calculation\Cover(['code' => 'USHERB', 'sum' => 450000]));
-        $Covers->add(new \ReninsApi\Request\Soap\Calculation\Cover(['code' => 'UGON', 'sum' => 450000]));
-        $Covers->add(new \ReninsApi\Request\Soap\Calculation\Cover(['code' => 'NS', 'sum' => 100000]));
-
         $Vehicle = new \ReninsApi\Request\Soap\Calculation\Vehicle();
-        $Vehicle->Manufacturer = 'Audi';
-        $Vehicle->Model = 'A8';
-        $Vehicle->Year = date('Y');
-        $Vehicle->Cost = 1500000;
+        $Vehicle->Manufacturer = 'УАЗ';
+        $Vehicle->Model = '3163 Patriot';
+        $Vehicle->Year = '2016';
+        $Vehicle->Cost = 700000;
         $Vehicle->Type = 'Легковое ТС';
         $Vehicle->ManufacturerType = 0;
-        $Vehicle->IsNew = true;
-        $Vehicle->IsTaxi = false;
-        $Vehicle->Power = 220;
-        $Vehicle->CarBodyType = 'Седан';
-        $Vehicle->TransmissionType = 'Автоматическая';
+        $Vehicle->Power = 180;
+        $Vehicle->CarBodyType = 'Другой тип кузова';
+        $Vehicle->TransmissionType = 'Механическая';
         $Vehicle->EngineType = 'Дизельный';
         $Vehicle->CarIdent = new \ReninsApi\Request\Soap\Calculation\CarIdent([
-            'LicensePlate' => 'А111АА777',
+            'LicensePlate' => 'О888ОО82RUS',
+            'VIN' => 'CC1C3F3F5GH456780',
+            'BodyNumber' => 'DD3847343JH334',
+            'ChassisNumber' => 'FF3847343JH334',
         ]);
 
         $Drivers = new \ReninsApi\Request\Soap\Calculation\Drivers();
         $Drivers->Multidrive = true;
-        $Drivers->MinExperience = 15;
         $Drivers->MinAge = 40;
+        $Drivers->MinExperience = 20;
 
         $Insurant = new \ReninsApi\Request\Soap\Calculation\Insurant();
         $Insurant->type = 2;
@@ -70,30 +76,43 @@ class FullCascoMultiDriveJurTest extends TestCase
         $Participants->Insurant = $Insurant;
         $Participants->BeneficiaryType = 1;
         $Participants->Owner = new \ReninsApi\Request\Soap\Calculation\Owner([
-            'type' => 2
+            'type' => 2,
+            'Account' => new \ReninsApi\Request\Soap\Calculation\Account([
+                'Name' => 'ООО "РосНАНО"',
+                'INN' => '7728864753',
+            ])
         ]);
 
         //Product section
-        $Stoa = new ContainerCollection([
-            new \ReninsApi\Request\Soap\Calculation\StoaType(['type' => 2, 'enabled' => true]),
+        $CalcKBMRequest = new \ReninsApi\Request\Soap\Calculation\CalcKBMRequest();
+        $CalcKBMRequest->DateKBM = $dt->format('Y-m-d') . 'T00:00:00';
+        $CalcKBMRequest->JuridicalPerson = new \ReninsApi\Request\Soap\Calculation\JuridicalPerson([
+            'OrgName' => 'Общество с ограниченной ответственностью "РосНАНО"',
+            'OrgINN' => '7728864753',
+            'OPF' => 'ООО',
+            'OrgKbm' => 1.0,
+            'PreviousData' => new \ReninsApi\Request\Soap\Calculation\PreviousDataJur([
+                'OrgName' => 'Рога и копыта',
+                'OrgINN' => '7728864754',
+            ])
         ]);
 
-        $Casco = new \ReninsApi\Request\Soap\Calculation\Casco();
-        $Casco->Stoa = $Stoa;
-        $Casco->CustomOptions = new ContainerCollection([
-            new \ReninsApi\Request\Soap\Calculation\Option([
-                'type' => 1,
-                'enabled' => true,
-            ]),
-        ]);
+        $Osago = new \ReninsApi\Request\Soap\Calculation\Osago();
+        $Osago->CalculationType = 1;
+        $Osago->RegistrationPlace = 'Москва';
+        $Osago->Kbm = 1.00;
+        $Osago->SeasonUse = false;
+        $Osago->RegistrationCountry = 'Россия';
+        $Osago->Transit = false;
+        $Osago->KNEnable = false;
+        $Osago->CalcKBMRequest = $CalcKBMRequest;
         //---
 
         $Policy = new \ReninsApi\Request\Soap\Calculation\Policy();
         $Policy->ContractTerm = $ContractTerm;
-        $Policy->Covers = $Covers;
         $Policy->Vehicle = $Vehicle;
         $Policy->Participants = $Participants;
-        $Policy->Casco = $Casco;
+        $Policy->Osago = $Osago;
 
         $request = new \ReninsApi\Request\Soap\Calculation\Request();
         $request->type = 1;
@@ -111,26 +130,26 @@ class FullCascoMultiDriveJurTest extends TestCase
         $dtMinusDay = (clone $dt)->sub(new \DateInterval('P1D'));
 
         $generalQuoteInfo = new \ReninsApi\Request\Soap\Import\GeneralQuoteInfo();
-        $generalQuoteInfo->SALE_DATE = $dt->format('Y-m-d') . 'T12:00:00';
+        $generalQuoteInfo->SALE_DATE = $this->getDateBegin()->format('Y-m-d') . 'T12:00:00';
         $generalQuoteInfo->CURRENCY = 'RUR';
 
-        $employee = new \ReninsApi\Request\Soap\Import\Employee();
-        $employee->LAST_NAME = 'Кротова';
-        $employee->FIRST_NAME = 'Елизавета';
-        $employee->LAST_NAME = 'Павловна';
-        $employee->BIRTH_DATE = '1980-02-07';
-        $employee->ROLE = 'сотрудник';
+        $partner = new \ReninsApi\Request\Soap\Import\Partner();
+        $partner->NAME = 'Link_Auto';
+        $partner->DEPARTMENT = '001';
+        $partner->DIVISION = 'Москва';
+        $partner->FILIAL = 'Москва';
 
         $seller = new \ReninsApi\Request\Soap\Import\Seller();
-        $seller->TYPE = 'EMPLOYEE';
-        $seller->EMPLOYEE = $employee;
+        $seller->TYPE = 'PARTNER';
+        $seller->PARTNER = $partner;
         $seller->MANAGERS = new ContainerCollection([
-            new \ReninsApi\Request\Soap\Import\Manager(['name' => 'Иванова И.И.']),
+            new \ReninsApi\Request\Soap\Import\Manager(['name' => 'Иванов И.И.']),
         ]);
 
         $account = new \ReninsApi\Request\Soap\Import\Account();
         $account->DOCUMENT = new \ReninsApi\Request\Soap\Import\Document([
             'TYPE' => 'REGISTRATION_CERTIFICATE',
+            'SERIES' => '54', //В КАСКО это не проверяется, а здесь проверяется
             'NUMBER' => '2342332',
             'ISSUED_DATE' => '1998-10-10',
         ]);
@@ -161,8 +180,8 @@ class FullCascoMultiDriveJurTest extends TestCase
             'PAY_DOC_NUMBER' => '2342342333',
             'PAY_DOC_ISSUE_DATE' => $dtMinusDay->format('Y-m-d'),
         ]);
-        $privateQuoteInfo->BSO_NUMBER = '1234567'; //for test
-        $privateQuoteInfo->CREATION_DATE = $dtMinusDay->format('Y-m-d');
+        $privateQuoteInfo->POLICY_NUMBER = mt_rand(10000, 99999) . mt_rand(10000, 99999);
+        $privateQuoteInfo->BSO_NUMBER = '1234567';
         $privateQuoteInfo->INS_DATE_FROM = $this->getDateBegin()->format('Y-m-d');
         $privateQuoteInfo->INS_TIME_FROM = $this->getDateBegin()->format('H:i:s');
         $privateQuoteInfo->INS_DATE_TO = $this->getDateEnd()->format('Y-m-d');
@@ -171,30 +190,32 @@ class FullCascoMultiDriveJurTest extends TestCase
         $privateQuoteInfo->INS_DURATION = 12;
         $privateQuoteInfo->TOTALLY = false;
         $privateQuoteInfo->RISKS = new \ReninsApi\Request\Soap\Import\Risks([
-            'RISK' => new ContainerCollection(),
+            'RISK' => new ContainerCollection([
+            ]),
         ]);
 
         $vehicle = new \ReninsApi\Request\Soap\Import\Vehicle();
         $vehicle->TYPE = 'Легковое ТС';
-        $vehicle->BRAND = 'Audi';
-        $vehicle->MODEL = 'A8';
-        $vehicle->PRICE = '1500000';
-        $vehicle->POWER = '220';
-        $vehicle->YEAR = date('Y');
-        $vehicle->VIN = 'CCCCDE23FGH457789';
-        $vehicle->REG_SIGN = 'А111АА777';
-        $vehicle->COLOR = 'Металик';
+        $vehicle->BRAND = 'УАЗ';
+        $vehicle->MODEL = '3163 Patriot';
+        $vehicle->PRICE = '700000';
+        $vehicle->POWER = '180';
+        $vehicle->YEAR = '2016';
+        $vehicle->VIN = 'CC1C3F3F5GH456780';
+        $vehicle->REG_SIGN = 'О888ОО82RUS';
+        $vehicle->COLOR = 'Черный';
         $vehicle->PURPOSE = 'прочее';
-        $vehicle->ENGINE_VOLUME = '2800';
-        $vehicle->KEY_COUNT = 3;
+        $vehicle->KEY_COUNT = 10;
+        $vehicle->ENGINE_VOLUME = '2200';
         $vehicle->ENGINE_TYPE = 'Дизельный';
-        $vehicle->TRANSMISSION_TYPE = 'АКПП';
-        $vehicle->VEHICLE_BODY_TYPE = 'Седан';
+        $vehicle->TRANSMISSION_TYPE = 'МКПП';
+        $vehicle->VEHICLE_BODY_TYPE = 'Внедорожник';
         $vehicle->VEHICLE_DOCUMENTS = new ContainerCollection([
             new \ReninsApi\Request\Soap\Import\Document([
                 'TYPE' => 'PTS',
-                'SERIES' => '43AA',
-                'NUMBER' => '345344',
+                'SERIES' => '5765',
+                'NUMBER' => '855675',
+                'ISSUED_DATE' => '2016-02-03',
             ]),
         ]);
 
@@ -217,7 +238,7 @@ class FullCascoMultiDriveJurTest extends TestCase
         $context->DRIVERS = new \ReninsApi\Request\Soap\Import\Drivers([
             'MULTI_DRIVE' => true,
             'MIN_AGE' => 40,
-            'MIN_EXPERIENCE' => 15,
+            'MIN_EXPERIENCE' => 20,
         ]);
 
         $inputMessage = new \ReninsApi\Request\Soap\Import\InputMessage();
@@ -244,7 +265,7 @@ class FullCascoMultiDriveJurTest extends TestCase
         ob_start();
         print_r($response->toArray());
         $data = ob_get_clean();
-        @file_put_contents(TEMP_DIR . '/CascoCalcResponse4.txt', $data);
+        @file_put_contents(TEMP_DIR . '/OsagoCalcResponse4.txt', $data);
 
         $this->assertEquals($response->isSuccessful(), true);
         $this->assertGreaterThan(0, $response->CalcResults->count());
@@ -259,19 +280,19 @@ class FullCascoMultiDriveJurTest extends TestCase
         $this->assertNotNull($calcResults->Risks->Risk);
         $this->assertGreaterThan(0, $calcResults->Risks->Risk->count());
 
-        @file_put_contents(TEMP_DIR . '/CascoCalcResults4.txt', serialize($calcResults->toArray())); //Результаты расчета для импорта
+        @file_put_contents(TEMP_DIR . '/OsagoCalcResults4.txt', serialize($calcResults->toArray())); //Результаты расчета для импорта
 
-        @file_put_contents(TEMP_DIR . '/CascoAccountNumber4.txt', $calcResults->AccountNumber); //Номер котировки
+        @file_put_contents(TEMP_DIR . '/OsagoAccountNumber4.txt', $calcResults->AccountNumber); //Номер котировки
     }
 
     /**
-     * Печать результатов расчета
+     * Печать заявления
      */
     public function testPrePrint()
     {
         $client = $this->createApi2();
 
-        $accountNumber = @file_get_contents(TEMP_DIR . '/CascoAccountNumber4.txt');
+        $accountNumber = @file_get_contents(TEMP_DIR . '/OsagoAccountNumber4.txt');
         if (!$accountNumber) {
             throw new \Exception("AccountNumber isn't calculated.");
         }
@@ -280,7 +301,7 @@ class FullCascoMultiDriveJurTest extends TestCase
         $param->AccountNumber = $accountNumber;
         $param->isPrintAsOneDocument = true;
         $param->printingParamsItems = new ContainerCollection([
-            new \ReninsApi\Request\Soap\Printing\PrintingParams(['DocumentTypeId' => 1]),
+            new \ReninsApi\Request\Soap\Printing\PrintingParams(['DocumentTypeId' => 13]),
         ]);
 
         $response = $client->printDocumentsToBinary($param);
@@ -291,30 +312,7 @@ class FullCascoMultiDriveJurTest extends TestCase
         $this->assertEquals(true, $docBytesResponseEx->Success);
         $this->assertNotNull($docBytesResponseEx->Result);
 
-        @file_put_contents(TEMP_DIR . '/CascoCalcResults4-1.pdf', $docBytesResponseEx->Result->DocBytes); //печатная форма "Результаты расчета", pdf
-    }
-
-    /**
-     * Получить номер полиса для импорта
-     */
-    public function testGetPolicyNumber()
-    {
-        $client = $this->createApi2();
-
-        $accountNumber = @file_get_contents(TEMP_DIR . '/CascoAccountNumber4.txt');
-        if (!$accountNumber) {
-            throw new \Exception("AccountNumber isn't calculated.");
-        }
-
-        $request = new \ReninsApi\Request\Soap\Import\Request();
-        $request->AccountNumber = $accountNumber;
-        $response = $client->GetPolicyNumber($request);
-
-        //print_r($response);
-
-        $this->assertEquals(true, $response->Success);
-
-        @file_put_contents(TEMP_DIR . '/CascoPolicyNumber4.txt', $response->Number); //Номер, который нужен при импорте
+        @file_put_contents(TEMP_DIR . '/OsagoCalcResults4-13.pdf', $docBytesResponseEx->Result->DocBytes); //печатная форма "Заявление", pdf
     }
 
     /**
@@ -324,7 +322,7 @@ class FullCascoMultiDriveJurTest extends TestCase
     {
         $client = $this->createApi2();
 
-        $calcResults = @file_get_contents(TEMP_DIR . '/CascoCalcResults4.txt');
+        $calcResults = @file_get_contents(TEMP_DIR . '/OsagoCalcResults4.txt');
         if (!$calcResults) {
             throw new \Exception("CalcResults aren't calculated.");
         }
@@ -333,14 +331,9 @@ class FullCascoMultiDriveJurTest extends TestCase
             throw new \Exception("CalcResults has invalid format");
         }
 
-        $accountNumber = @file_get_contents(TEMP_DIR . '/CascoAccountNumber4.txt');
+        $accountNumber = @file_get_contents(TEMP_DIR . '/OsagoAccountNumber4.txt');
         if (!$accountNumber) {
             throw new \Exception("AccountNumber isn't calculated.");
-        }
-
-        $policyNumber = @file_get_contents(TEMP_DIR . '/CascoPolicyNumber4.txt');
-        if (!$policyNumber) {
-            throw new \Exception("PolicyNumber isn't calculated.");
         }
 
         $request = $this->getImportRequest();
@@ -350,7 +343,6 @@ class FullCascoMultiDriveJurTest extends TestCase
 
         /* @var \ReninsApi\Request\Soap\Import\Context $context */
         $context = $request->LIST_OF_CONTEXTS->get(0);
-        $context->PRIVATE_QUOTE_INFO->POLICY_NUMBER = $policyNumber;
         $context->PRIVATE_QUOTE_INFO->INSURANCE_SUM = $calcResults['Total']['Sum'];
 
         $context->PRIVATE_QUOTE_INFO->RISKS->BONUS = $calcResults['Total']['Bonus'];
@@ -363,14 +355,14 @@ class FullCascoMultiDriveJurTest extends TestCase
         }
 
         $response = $client->ImportPolicy($request);
-        print_r($response->toArray());
+        //print_r($response->toArray());
 
         $this->assertGreaterThan(0, strlen($response->PolicyId));
         $this->assertGreaterThan(0, strlen($response->AccountNumber));
         $this->assertGreaterThan(0, strlen($response->PrintToken));
         $this->assertGreaterThan(0, $response->AvailableDocumentTypes->count());
 
-        @file_put_contents(TEMP_DIR . '/CascoPrintToken4.txt', $response->PrintToken); //Номер, который нужен для окончательной печати полиса
+        @file_put_contents(TEMP_DIR . '/OsagoPrintToken4.txt', $response->PrintToken); //Номер, который нужен для окончательной печати полиса
     }
 
     /**
@@ -380,11 +372,11 @@ class FullCascoMultiDriveJurTest extends TestCase
     {
         $client = $this->createApi2();
 
-        $accountNumber = @file_get_contents(TEMP_DIR . '/CascoAccountNumber4.txt');
+        $accountNumber = @file_get_contents(TEMP_DIR . '/OsagoAccountNumber4.txt');
         if (!$accountNumber) {
             throw new \Exception("AccountNumber isn't calculated.");
         }
-        $printToken = @file_get_contents(TEMP_DIR . '/CascoPrintToken4.txt');
+        $printToken = @file_get_contents(TEMP_DIR . '/OsagoPrintToken4.txt');
         if (!$printToken) {
             throw new \Exception("PrintToken isn't calculated.");
         }
@@ -405,11 +397,6 @@ class FullCascoMultiDriveJurTest extends TestCase
         $this->assertEquals(true, $docBytesResponseEx->Success);
         $this->assertNotNull($docBytesResponseEx->Result);
 
-        @file_put_contents(TEMP_DIR . '/CascoCalcResults4-7.pdf', $docBytesResponseEx->Result->DocBytes); //печатная форма "Результаты расчета", pdf
+        @file_put_contents(TEMP_DIR . '/OsagoCalcResults4-7.pdf', $docBytesResponseEx->Result->DocBytes); //печатная форма "Результаты расчета", pdf
     }
-
-
-
-
-
 }

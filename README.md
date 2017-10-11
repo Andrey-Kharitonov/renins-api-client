@@ -103,6 +103,8 @@ $rules представляет собой массив, ассоц. по име
 5. casco-full-multidrive - тестирование полного цикла по КАСКО (мультидрайв)
 6. casco-full-multidrive-jur - тестирование полного цикла по КАСКО (мультидрайв, страхователь - юр. лицо)
 7. osago-full - тестирование полного цикла по ОСАГО
+8. osago-full-multidrive - тестирование полного цикла по ОСАГО (мультидрайв)
+9. osago-full-multidrive-jur - тестирование полного цикла по ОСАГО (мультидрайв, страхователь - юр. лицо)
 
 Часть client разделена на группы calculation-casco, calculation-osago, import-casco, import-osago,
 printing-casco, printing-osago, rest.
@@ -162,6 +164,18 @@ osago-full проверяет сразу все операции по ОСАГО
 
 ```bash
 phpunit --testsuite osago-full --debug
+```
+
+osago-full-multidrive проверяет сразу все операции по ОСАГО (мультидрайв):
+
+```bash
+phpunit --testsuite osago-full-multidrive --debug
+```
+
+osago-full-multidrive-jur проверяет сразу все операции по ОСАГО (мультидрайв, страхователь - юр. лицо):
+
+```bash
+phpunit --testsuite osago-full-multidrive-jur --debug
 ```
 
 

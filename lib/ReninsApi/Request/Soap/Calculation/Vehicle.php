@@ -46,7 +46,7 @@ class Vehicle extends Container
         'GrossWeight' => ['toInteger', 'min:0'],
         'PassangerCapacity' => ['toInteger', 'min:0'],
         'Category' => ['toString', 'vehicleCategory'],
-        'CarBodyType' => ['toString', 'required', 'notEmpty'],
+        'CarBodyType' => ['toString', 'required', 'vehicleBodyType'],
         'TransmissionType' => ['toString', 'transmissionType'],
         'EngineType' => ['toString', 'engineType'],
         'CarIdent' => ['container:' . CarIdent::class],
