@@ -11,12 +11,15 @@ use ReninsApi\Request\Container;
  * @property int $type - default 0. Тип запроса. 1 - с котировкой
  * @property string $uid - GUID сообщения, используется техподдержкой для поиска информации о запросах и анализа ситуаций.
  * @property Policy $Policy
+ * @property string $AccountNumber - определяет идентификатор исходной котировки, для которой необходимо выполнить перерасчет/переоформление
  */
 class Request extends Container
 {
     protected $rules = [
         'type' => ['toInteger', 'required', 'in:0|1'],
         'uid' => ['toString', 'required', 'notEmpty'],
+        'AccountNumber' => ['toString'],
+
         'Policy' => ['container:' . Policy::class, 'required'],
     ];
 
@@ -27,7 +30,7 @@ class Request extends Container
 
     public function toXml(\SimpleXMLElement $xml)
     {
-        $this->toXmlAttributes($xml, ['type', 'uid']);
+        $this->toXmlAttributes($xml, ['type', 'uid', 'AccountNumber']);
         $this->toXmlTags($xml, ['Policy']);
 
         return $this;
