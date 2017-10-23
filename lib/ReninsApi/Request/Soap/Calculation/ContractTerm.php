@@ -42,13 +42,13 @@ class ContractTerm extends Container
 {
     protected $rules = [
         'Product' => ['toInteger', 'required', 'between:1|6'],
-        'ProgramType' => ['toString', 'required', 'notEmpty'],
-        'DurationMonth' => ['toInteger', 'required', 'min:1'],
+        'ProgramType' => ['toString', 'notEmpty'],
+        'DurationMonth' => ['toInteger', 'min:1'],
         'PeriodUseMonth' => ['toInteger', 'between:3|12'],
         'Periods' => ['containerCollection:' . Period::class],
-        'PaymentType' => ['toInteger', 'required', 'min:1'],
+        'PaymentType' => ['toInteger', 'min:1'],
         'Currency' => ['toString', 'required', 'currency'],
-        'Purpose' => ['toString', 'required', 'purpose'],
+        'Purpose' => ['toString', 'purpose'],
         'DsasCoordinationId' => ['toString'],
         'CascoPolicyNumber' => ['toString'],
         'OsagoPolicyNumber' => ['toString'],

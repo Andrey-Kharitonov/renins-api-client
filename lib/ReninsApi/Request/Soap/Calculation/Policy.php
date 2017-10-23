@@ -24,7 +24,7 @@ class Policy extends Container
         'ContractTerm' => ['container:' . ContractTerm::class, 'required'],
         'Covers' => ['containerCollection:' . Cover::class],
         'Vehicle' => ['container:' . Vehicle::class, 'required'],
-        'Participants' => ['container:' . Participants::class, 'required'],
+        'Participants' => ['container:' . Participants::class],
         'Casco' => ['container:' . Casco::class],
         'Osago' => ['container:' . Osago::class],
     ];

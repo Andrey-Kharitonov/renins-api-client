@@ -42,6 +42,12 @@ class Client
      */
     protected $lastResponse;
 
+    /**
+     * Will xsd validation fail throw an exception?
+     * @var bool
+     */
+    protected $isFatalXsdFail = false;
+
     public function __construct(string $wsdl)
     {
         $this->wsdl = $wsdl;
@@ -72,6 +78,24 @@ class Client
     }
 
     /**
+     * @return bool
+     */
+    public function isFatalXsdFail(): bool
+    {
+        return $this->isFatalXsdFail;
+    }
+
+    /**
+     * @param bool $isFatalXsdFail
+     * @return $this
+     */
+    public function setIsFatalXsdFail(bool $isFatalXsdFail)
+    {
+        $this->isFatalXsdFail = $isFatalXsdFail;
+        return $this;
+    }
+
+    /**
      * Make request
      *
      * @param string $method
@@ -96,10 +120,12 @@ class Client
         }
 
         //XsdValidation
-        if ($this->lastHeader && !empty($this->lastHeader['XsdValidation'])) {
-            $xsdValidation = $this->lastHeader['XsdValidation'];
-            if (!empty($xsdValidation->In)) {
-                throw new ClientException("Xsd validation failed: " . str_replace("\n", ' ', $xsdValidation->In));
+        if ($this->isFatalXsdFail) {
+            if ($this->lastHeader && !empty($this->lastHeader['XsdValidation'])) {
+                $xsdValidation = $this->lastHeader['XsdValidation'];
+                if (!empty($xsdValidation->In)) {
+                    throw new ClientException("Xsd validation failed: " . str_replace("\n", ' ', $xsdValidation->In));
+                }
             }
         }
 

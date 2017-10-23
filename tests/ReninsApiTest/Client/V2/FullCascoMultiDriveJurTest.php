@@ -363,7 +363,7 @@ class FullCascoMultiDriveJurTest extends TestCase
         }
 
         $response = $client->ImportPolicy($request);
-        print_r($response->toArray());
+        //print_r($response->toArray());
 
         $this->assertGreaterThan(0, strlen($response->PolicyId));
         $this->assertGreaterThan(0, strlen($response->AccountNumber));
