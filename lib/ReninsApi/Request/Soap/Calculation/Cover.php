@@ -18,8 +18,8 @@ use ReninsApi\Request\Container;
 class Cover extends Container
 {
     protected $rules = [
-        'code' => ['toString', 'required', 'in:UGON|USHERB|DO|NS|DAGO'],
-        'sum' => ['toDouble', 'required', 'notEmpty', 'min:0'],
+        'code' => ['toString', 'required', 'notEmpty'],
+        'sum' => ['toDouble', 'required', 'min:0'],
     ];
 
     public function toXml(\SimpleXMLElement $xml)
